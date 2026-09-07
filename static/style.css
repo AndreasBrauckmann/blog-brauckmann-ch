@@ -35,20 +35,10 @@ body {
   padding: 0 1rem;
 }
 
-header.site-header, footer.site-footer {
+footer.site-footer {
   max-width: 70ch;
   margin: 0 auto;
   padding: 1.5rem 0;
-}
-
-header.site-header a.site-title {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--fg);
-  text-decoration: none;
-}
-
-footer.site-footer {
   border-top: 1px solid var(--border);
   color: var(--fg-muted);
   font-size: 0.9rem;
