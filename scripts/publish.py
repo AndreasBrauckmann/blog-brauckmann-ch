@@ -10,6 +10,7 @@ Nutzung:
 
 import argparse
 import json
+import mimetypes
 import os
 import re
 import subprocess
@@ -68,6 +69,20 @@ def wait_for_pages_deploy(commit_sha: str) -> bool:
     run_id = str(runs[0]["databaseId"])
     watch = run(["gh", "run", "watch", run_id, "--exit-status"])
     return watch.returncode == 0
+
+
+def _bluesky_link_card(meta: dict, canonical_url: str) -> dict:
+    """Bluesky unfurlt Links beim API-Post NICHT von selbst (anders als
+    Mastodon) - ohne diese Karte waere der Link nur blauer Text ohne
+    Vorschau. Das Bild kommt aus demselben Frontmatter-Feld wie og:image."""
+    card = {"uri": canonical_url, "title": meta["title"], "description": meta["description"]}
+    image = meta.get("image")
+    if image:
+        path = ROOT / image.lstrip("/")
+        if path.exists():
+            mime_type = mimetypes.guess_type(path.name)[0] or "image/png"
+            card["thumb"] = (path.read_bytes(), mime_type)
+    return card
 
 
 def write_manual_posts(manual_texts: dict[str, str]) -> None:
@@ -180,7 +195,8 @@ def main() -> int:
                 )
             elif channel == "bluesky":
                 result = bluesky.post(
-                    os.environ["BLUESKY_HANDLE"], os.environ["BLUESKY_APP_PASSWORD"], text
+                    os.environ["BLUESKY_HANDLE"], os.environ["BLUESKY_APP_PASSWORD"], text,
+                    link_card=_bluesky_link_card(meta, canonical_url),
                 )
             elif channel == "linkedin":
                 token = os.environ["LINKEDIN_ACCESS_TOKEN"]

@@ -114,7 +114,11 @@ def _link_facets(text: str) -> list[dict]:
     return facets
 
 
-def post(handle: str, app_password: str, text: str) -> dict:
+def post(handle: str, app_password: str, text: str, *, link_card: dict | None = None) -> dict:
+    """``link_card`` (optional): {"uri", "title", "description", "thumb": (bytes, mime_type)}
+    baut eine Karte wie Mastodons automatisches Link-Unfurling - Bluesky
+    macht das beim reinen API-Post NICHT von selbst, die Karte muss als
+    ``app.bsky.embed.external`` mitgeschickt werden."""
     session = create_session(handle, app_password)
     record = {
         "$type": "app.bsky.feed.post",
@@ -125,6 +129,18 @@ def post(handle: str, app_password: str, text: str) -> dict:
     if facets:
         record["facets"] = facets
 
+    if link_card is not None:
+        external = {
+            "uri": link_card["uri"],
+            "title": link_card["title"],
+            "description": link_card["description"],
+        }
+        thumb = link_card.get("thumb")
+        if thumb is not None:
+            data, mime_type = thumb
+            external["thumb"] = upload_blob(session["accessJwt"], data, mime_type)
+        record["embed"] = {"$type": "app.bsky.embed.external", "external": external}
+
     result = _post_json(
         f"{API}/com.atproto.repo.createRecord",
         {"repo": session["did"], "collection": "app.bsky.feed.post", "record": record},
@@ -133,3 +149,12 @@ def post(handle: str, app_password: str, text: str) -> dict:
     rkey = result["uri"].rsplit("/", 1)[-1]
     url = f"https://bsky.app/profile/{handle}/post/{rkey}"
     return {"url": url, "uri": result["uri"]}
+
+
+def delete_post(handle: str, app_password: str, rkey: str) -> None:
+    session = create_session(handle, app_password)
+    _post_json(
+        f"{API}/com.atproto.repo.deleteRecord",
+        {"repo": session["did"], "collection": "app.bsky.feed.post", "rkey": rkey},
+        token=session["accessJwt"],
+    )
