@@ -123,8 +123,11 @@ def summarize_all(meta: dict, cfg: dict) -> dict:
         text = summarize_short(meta, channels["mastodon"]["max_chars"] - len(canonical_url) - 1, with_hashtags=True)
         result["mastodon"] = f"{text}\n{canonical_url}"
     if "bluesky" in channels:
-        text = summarize_short(meta, channels["bluesky"]["max_chars"] - len(canonical_url) - 1)
-        result["bluesky"] = f"{text}\n{canonical_url}"
+        # Nur die Beschreibung, kein Titel und kein nackter Link: beides
+        # liefert schon die Link-Vorschaukarte (_bluesky_link_card in
+        # publish.py) - sonst steht alles doppelt im Post (siehe Screenshot-
+        # Vergleich, Ticket vom 7.9.).
+        result["bluesky"] = truncate(meta["description"], channels["bluesky"]["max_chars"])
     if "x" in channels:
         result["x"] = summarize_short(meta, channels["x"]["max_chars"])
     if "linkedin" in channels:
