@@ -68,13 +68,23 @@ def hashtags(tags: list[str]) -> str:
 
 
 def summarize_short(meta: dict, max_chars: int, with_hashtags: bool = False) -> str:
-    text = meta["description"]
-    if with_hashtags:
-        tags = hashtags(meta.get("tags", []))
-        if tags:
-            budget = max_chars - len(tags) - 1
-            return f"{truncate(text, budget)} {tags}"
-    return truncate(text, max_chars)
+    """Ueberschrift zuerst, dann die Beschreibung - wie bei summarize_linkedin,
+    nur kompakter (Titel + Leerzeile + Text statt eigener Absaetze). Reicht
+    das Budget nicht fuer beides, faellt nur die Beschreibung der Kuerzung
+    zum Opfer; der Titel bleibt ganz, ausser er sprengt das Budget bereits
+    allein (dann wird nur er gekuerzt)."""
+    tags = hashtags(meta.get("tags", [])) if with_hashtags else ""
+    budget = max_chars - len(tags) - 1 if tags else max_chars
+    title = meta["title"]
+    sep = "\n\n"
+    body_budget = budget - len(title) - len(sep)
+    if body_budget >= 20:
+        text = f"{title}{sep}{truncate(meta['description'], body_budget)}"
+    else:
+        text = truncate(title, budget)
+    if tags:
+        text = f"{text} {tags}"
+    return text
 
 
 def summarize_linkedin(meta: dict, min_chars: int, max_chars: int) -> str:
