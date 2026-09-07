@@ -4,14 +4,20 @@
 Nutzung:
     .venv/bin/python scripts/admin/app.py [--host 127.0.0.1] [--port 5151]
 
-Nur intern erreichbar vorgesehen - Zugriff von aussen über
-`tailscale serve` auf 127.0.0.1:<port>, nicht über einen offenen Port.
-Zusätzlich durch ADMIN_PASSWORD (.env) geschützt.
+Nur intern erreichbar: der Kontor-edge-Caddy (trader-kontor/edge/Caddyfile)
+reicht /verwaltung/* unveraendert (handle, nicht handle_path) an
+127.0.0.1:5151 durch - deshalb tragen alle Routen hier das Praefix
+/verwaltung selbst, genau wie Kontors eigene Routen /kontor tragen. Nur auf
+den Tailnet- und LAN-Listenern erreichbar, nicht ueber den oeffentlichen
+Cloudflare-Listener - kein Passwort, kein Login, dieselbe
+Vertrauensannahme wie bei Kontors LAN/Tailnet-Stufen (siehe require_internal
+unten): wer hierher durchkommt, kam schon durch edge, und edge ist die
+einzige Stelle, die den Flask-Prozess ueberhaupt erreichen kann (bindet nur
+an 127.0.0.1, edge selbst laeuft mit network_mode: host).
 """
 
 import argparse
 import os
-import secrets
 import subprocess
 import sys
 import urllib.parse
@@ -21,16 +27,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from build import ROOT, load_config, parse_article  # noqa: E402
 from envutil import load_dotenv  # noqa: E402
 from social import bluesky, linkedin, mastodon  # noqa: E402
-from summarize import summarize_all  # noqa: E402
+from summarize import headline, summarize_all  # noqa: E402
 
 import re
 
-from flask import Flask, redirect, render_template_string, request, session, url_for
+from flask import Flask, abort, redirect, render_template_string, request, url_for
 
 load_dotenv(ROOT / ".env")
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("ADMIN_SECRET_KEY") or secrets.token_hex(32)
 
 ENV_VARS = {
     "mastodon": ["MASTODON_ACCESS_TOKEN"],
@@ -72,15 +77,6 @@ pre.log { white-space:pre-wrap; background:var(--card); border:1px solid var(--b
 {{ body|safe }}
 </body>
 </html>
-"""
-
-LOGIN_HTML = """
-<h1>Blog-Verwaltung</h1>
-<form method="post">
-  <input type="password" name="password" placeholder="Passwort" autofocus>
-  <button class="primary" type="submit">Anmelden</button>
-</form>
-{% if error %}<p style="color:var(--bad)">{{ error }}</p>{% endif %}
 """
 
 DASHBOARD_HTML = """
@@ -152,31 +148,14 @@ document.querySelectorAll('textarea[readonly]').forEach(function(ta, i) {
 """
 
 
-def require_login():
-    if not session.get("logged_in"):
-        return redirect(url_for("login"))
-    return None
-
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    error = None
-    admin_password = os.environ.get("ADMIN_PASSWORD")
-    if request.method == "POST":
-        if not admin_password:
-            error = "ADMIN_PASSWORD ist in .env nicht gesetzt."
-        elif secrets.compare_digest(request.form.get("password", ""), admin_password):
-            session["logged_in"] = True
-            return redirect(url_for("dashboard"))
-        else:
-            error = "Falsches Passwort."
-    return render_template_string(BASE_HTML, body=render_template_string(LOGIN_HTML, error=error))
-
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
+def require_internal() -> None:
+    """Bricht mit 403 ab, wenn die Anfrage nicht ueber edge kam. Praktisch
+    unerreichbar, solange edge/Caddyfile /verwaltung nur auf den beiden
+    internen Listenern (Tailnet :8088, LAN :8090) einhaengt und den Header
+    dort immer setzt - das ist das Sicherheitsnetz, falls diese App je
+    direkt (ohne edge davor) erreichbar gemacht wird."""
+    if not request.headers.get("X-Blog-Verwaltung-Intern"):
+        abort(403)
 
 
 def list_articles(cfg: dict) -> list[dict]:
@@ -207,11 +186,9 @@ def deep_link_for(channel: str, cfg: dict, canonical_url: str, meta: dict, text)
     return None
 
 
-@app.route("/", methods=["GET"])
+@app.route("/verwaltung", methods=["GET"])
 def dashboard():
-    redirect_resp = require_login()
-    if redirect_resp:
-        return redirect_resp
+    require_internal()
 
     cfg = load_config()
     articles = list_articles(cfg)
@@ -235,7 +212,10 @@ def dashboard():
         text = summaries.get(name)
         if entry["manual"]:
             if text is None:
-                text = f"{meta['description']}\n\n{canonical_url}"
+                # Kanaele ohne eigene summarize_*-Funktion (Facebook, YouTube
+                # Community, Microsoft Tech Community): derselbe Aufbau wie
+                # ueberall sonst - Slogan zuerst, dann Titel, dann Beschreibung.
+                text = f"{headline(meta)}\n\n{meta['description']}\n\n{canonical_url}"
             entry["text"] = text["body"] if isinstance(text, dict) else text
             entry["deep_link"] = deep_link_for(name, cfg, canonical_url, meta, text)
         channels[name] = entry
@@ -262,11 +242,9 @@ def set_channel_enabled(cfg_path: Path, name: str, enabled: bool) -> None:
     cfg_path.write_text(patched, encoding="utf-8")
 
 
-@app.route("/toggle", methods=["POST"])
+@app.route("/verwaltung/toggle", methods=["POST"])
 def toggle():
-    redirect_resp = require_login()
-    if redirect_resp:
-        return redirect_resp
+    require_internal()
 
     cfg_path = ROOT / "config.yaml"
     cfg = load_config()
@@ -277,11 +255,9 @@ def toggle():
     return redirect(url_for("dashboard", slug=request.form.get("slug", "")))
 
 
-@app.route("/publish", methods=["POST"])
+@app.route("/verwaltung/publish", methods=["POST"])
 def publish():
-    redirect_resp = require_login()
-    if redirect_resp:
-        return redirect_resp
+    require_internal()
 
     slug = request.form["slug"]
     selected = request.form.getlist("channels")
@@ -298,9 +274,6 @@ def main() -> int:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=5151)
     args = parser.parse_args()
-
-    if not os.environ.get("ADMIN_PASSWORD"):
-        print("WARNUNG: ADMIN_PASSWORD ist in .env nicht gesetzt - Login schlägt fehl.", file=sys.stderr)
 
     app.run(host=args.host, port=args.port)
     return 0

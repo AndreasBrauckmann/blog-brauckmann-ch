@@ -116,8 +116,13 @@ def summarize_linkedin(meta: dict, min_chars: int, max_chars: int) -> str:
 
 
 def summarize_reddit(meta: dict, canonical_url: str) -> dict:
+    # "title" bleibt der reine, technische Titel - Reddits eigenes
+    # Titelfeld ist einzeilig, ein Slogan davor waere dort unpassend. Im
+    # Body (Fliesstext) gilt dieselbe Regel wie ueberall sonst: Slogan zuerst.
     paragraphs = strip_markdown(meta["body_md"])[:4]
-    body = "\n\n".join(paragraphs)
+    parts = [meta["slogan"]] if meta.get("slogan") else []
+    parts += paragraphs
+    body = "\n\n".join(parts)
     body += (
         f"\n\nWas ist eure Erfahrung damit? Vollständiger Artikel mit Details: {canonical_url}"
     )
