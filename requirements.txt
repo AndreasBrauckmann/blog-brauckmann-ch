@@ -3,3 +3,7 @@
 Markdown==3.10.3
 Pygments==2.21.0
 PyYAML==6.0.3
+
+# Verwaltungsseite (scripts/admin/app.py): eigenes Routing + Formular-
+# Handling per stdlib http.server wäre mehr Code als Flask selbst.
+Flask==3.1.3

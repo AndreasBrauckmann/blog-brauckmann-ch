@@ -40,9 +40,9 @@ channels:
     manual: false
     max_chars: 290
   linkedin:
-    enabled: false
+    enabled: true
     manual: false
-    note: "API-Automatisierung ab Stufe 3, benötigt verifizierte Company-Page"
+    note: "Höchste Priorität (Stufe 3). Benötigt LINKEDIN_ACCESS_TOKEN in .env, App mit verifizierter Company-Page."
     min_chars: 1200
     max_chars: 1800
   x:
