@@ -14,11 +14,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import ROOT, load_config, parse_article  # noqa: E402
 
 
+_BILD_ZEILE = re.compile(r"^!\[[^\]]*\]\([^)]*\)$")
+_LI_INHALT = re.compile(r"<li>(.*?)</li>")
+_TAG = re.compile(r"<[^>]+>")
+
+
 def strip_markdown(body_md: str) -> list[str]:
     """Zerlegt den Artikel-Body in reine Text-Absätze (keine Überschriften,
-    Codeblöcke, Trennlinien)."""
+    Codeblöcke, Trennlinien, Bilder). Roh-HTML-Listen (z.B. die
+    "fünf-techniken-liste" fürs Web-Layout) werden zu Markdown-Bullets -
+    Reddit rendert das, und ueberall sonst bleibt es lesbarer Klartext als
+    rohe <ul>/<li>-Tags in der Zwischenablage."""
     paragraphs = []
     in_code_block = False
+    in_html_liste = False
     buffer: list[str] = []
 
     def flush():
@@ -35,6 +44,21 @@ def strip_markdown(body_md: str) -> list[str]:
             flush()
             continue
         if in_code_block:
+            continue
+        if stripped.startswith("<ul"):
+            flush()
+            in_html_liste = True
+            continue
+        if in_html_liste:
+            if stripped.startswith("</ul"):
+                in_html_liste = False
+                continue
+            treffer = _LI_INHALT.search(stripped)
+            if treffer:
+                paragraphs.append(f"- {_TAG.sub('', treffer.group(1)).strip()}")
+            continue
+        if _BILD_ZEILE.match(stripped):
+            flush()
             continue
         if not stripped or stripped == "---":
             flush()
