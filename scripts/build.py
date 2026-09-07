@@ -8,6 +8,7 @@ Nutzung:
 import argparse
 import html
 import json
+import re
 import shutil
 import sys
 from datetime import datetime, timezone
@@ -77,12 +78,24 @@ def build_jsonld(meta: dict, cfg: dict, canonical_url: str) -> str:
     return json.dumps(data, ensure_ascii=False, indent=2)
 
 
+def slugify_tag(tag: str) -> str:
+    slug = tag.strip().lower().replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("ß", "ss")
+    slug = re.sub(r"[^a-z0-9]+", "-", slug).strip("-")
+    return slug or "tag"
+
+
+def tags_html_linked(tags: list[str]) -> str:
+    return "".join(
+        f'<a class="tag" href="/tag/{slugify_tag(t)}/">{html.escape(t)}</a>' for t in tags
+    )
+
+
 def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_style: str) -> tuple[str, str]:
     site = cfg["site"]
     canonical_url = f"{site['base_url']}/artikel/{meta['slug']}/"
     content_html = render_markdown(meta["body_md"])
     tags = meta.get("tags", [])
-    tags_html = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tags)
+    tags_html = tags_html_linked(tags)
     og_image = site["base_url"] + meta["image"] if meta.get("image") else ""
 
     context = {
@@ -111,35 +124,104 @@ def wrap_tables(content_html: str) -> str:
     )
 
 
-def build_index(articles: list[dict], cfg: dict, template: str, style: str) -> str:
-    site = cfg["site"]
+def paginate(items: list, page_size: int) -> list[list]:
+    if not items:
+        return [[]]
+    return [items[i : i + page_size] for i in range(0, len(items), page_size)]
+
+
+def render_article_list_html(articles: list[dict]) -> str:
     items = []
     for meta in articles:
         url = f"/artikel/{meta['slug']}/"
-        tags_html = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in meta.get("tags", []))
         items.append(
             f'<div class="article-list-item">'
             f'<h2><a href="{url}">{html.escape(meta["title"])}</a></h2>'
             f'<time class="article-date" datetime="{meta["date"]}">{meta["date"]}</time>'
-            f'<div class="tags">{tags_html}</div>'
+            f'<div class="tags">{tags_html_linked(meta.get("tags", []))}</div>'
             f'<p class="teaser">{html.escape(meta["description"])}</p>'
             f"</div>"
         )
+    return "\n".join(items)
+
+
+def render_pagination_html(url_prefix: str, page_num: int, total_pages: int) -> str:
+    if total_pages <= 1:
+        return ""
+
+    def page_url(n: int) -> str:
+        return url_prefix if n == 1 else f"{url_prefix}page/{n}/"
+
+    if page_num > 1:
+        prev_link = f'<a href="{page_url(page_num - 1)}">&larr; Neuer</a>'
+    else:
+        prev_link = '<span class="disabled">&larr; Neuer</span>'
+    if page_num < total_pages:
+        next_link = f'<a href="{page_url(page_num + 1)}">Älter &rarr;</a>'
+    else:
+        next_link = '<span class="disabled">Älter &rarr;</span>'
+    return f'<nav class="pagination">{prev_link}<span>Seite {page_num}/{total_pages}</span>{next_link}</nav>'
+
+
+def build_list_page(
+    cfg: dict,
+    template: str,
+    style: str,
+    page_articles: list[dict],
+    page_num: int,
+    total_pages: int,
+    url_path: str,
+    page_title: str,
+    description: str,
+    heading_html: str = "",
+) -> str:
+    site = cfg["site"]
+    canonical_url = f"{site['base_url']}{url_path}" if page_num == 1 else f"{site['base_url']}{url_path}page/{page_num}/"
     context = {
         "language": site["language"],
         "site_title": html.escape(site["title"]),
-        "description": html.escape(site["description"]),
+        "page_title": html.escape(page_title),
+        "description": html.escape(description),
+        "canonical_url": canonical_url,
         "base_url": site["base_url"],
         "style": style,
-        "article_list_html": "\n".join(items),
+        "heading_html": heading_html,
+        "article_list_html": render_article_list_html(page_articles),
+        "pagination_html": render_pagination_html(url_path, page_num, total_pages),
         "author": html.escape(site["author"]),
     }
     return render(template, context)
 
 
-def build_sitemap(articles: list[dict], cfg: dict) -> str:
-    base = cfg["site"]["base_url"]
-    urls = [f"{base}/"] + [f"{base}/artikel/{m['slug']}/" for m in articles]
+def write_paginated(
+    dist_dir: Path,
+    cfg: dict,
+    template: str,
+    style: str,
+    articles: list[dict],
+    url_path: str,
+    page_title: str,
+    description: str,
+    heading_html: str = "",
+) -> list[str]:
+    page_size = cfg.get("pagination", {}).get("page_size", 10)
+    pages = paginate(articles, page_size)
+    total_pages = len(pages)
+    urls = []
+    base_dir = dist_dir / url_path.strip("/") if url_path.strip("/") else dist_dir
+    for i, page_articles in enumerate(pages, start=1):
+        page_html = build_list_page(
+            cfg, template, style, page_articles, i, total_pages, url_path, page_title, description, heading_html
+        )
+        out_dir = base_dir if i == 1 else base_dir / "page" / str(i)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "index.html").write_text(page_html, encoding="utf-8")
+        urls.append(f"{cfg['site']['base_url']}{url_path}" if i == 1 else f"{cfg['site']['base_url']}{url_path}page/{i}/")
+    return urls
+
+
+def build_sitemap(article_urls: list[str], list_urls: list[str]) -> str:
+    urls = list_urls + article_urls
     body = "\n".join(f"  <url><loc>{xml_escape(u)}</loc></url>" for u in urls)
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -215,10 +297,33 @@ def main() -> int:
         out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "index.html").write_text(page_html, encoding="utf-8")
 
-    (dist_dir / "index.html").write_text(
-        build_index(articles, cfg, index_template, style), encoding="utf-8"
+    site = cfg["site"]
+    article_urls = [f"{site['base_url']}/artikel/{m['slug']}/" for m in articles]
+    list_urls = write_paginated(
+        dist_dir, cfg, index_template, style, articles, "/", site["title"], site["description"]
     )
-    (dist_dir / "sitemap.xml").write_text(build_sitemap(articles, cfg), encoding="utf-8")
+
+    tags: dict[str, list[dict]] = {}
+    for meta in articles:
+        for tag in meta.get("tags", []):
+            tags.setdefault(tag, []).append(meta)
+
+    for tag, tag_articles in tags.items():
+        slug = slugify_tag(tag)
+        heading = f'<h1 class="list-heading">Tag: {html.escape(tag)} <a href="/">&larr; alle Artikel</a></h1>'
+        list_urls += write_paginated(
+            dist_dir,
+            cfg,
+            index_template,
+            style,
+            tag_articles,
+            f"/tag/{slug}/",
+            f"{tag} · {site['title']}",
+            f"Artikel zum Thema {tag} auf {site['title']}",
+            heading,
+        )
+
+    (dist_dir / "sitemap.xml").write_text(build_sitemap(article_urls, list_urls), encoding="utf-8")
     (dist_dir / "rss.xml").write_text(build_rss(articles, cfg), encoding="utf-8")
     (dist_dir / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {cfg['site']['base_url']}/sitemap.xml\n",

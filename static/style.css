@@ -87,6 +87,23 @@ time.article-date {
   margin-right: 0.4rem;
 }
 
+a.tag { text-decoration: none; }
+a.tag:visited { color: var(--fg-muted); }
+
+.list-heading { margin-bottom: 0.5rem; }
+.list-heading a { text-decoration: none; color: var(--fg-muted); font-size: 0.9rem; }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.pagination a { text-decoration: none; }
+.pagination .disabled { color: var(--fg-muted); }
+
 img { max-width: 100%; height: auto; }
 
 .table-wrap {

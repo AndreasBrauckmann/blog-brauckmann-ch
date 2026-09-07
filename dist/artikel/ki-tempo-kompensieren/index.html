@@ -124,6 +124,23 @@ time.article-date {
   margin-right: 0.4rem;
 }
 
+a.tag { text-decoration: none; }
+a.tag:visited { color: var(--fg-muted); }
+
+.list-heading { margin-bottom: 0.5rem; }
+.list-heading a { text-decoration: none; color: var(--fg-muted); font-size: 0.9rem; }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.pagination a { text-decoration: none; }
+.pagination .disabled { color: var(--fg-muted); }
+
 img { max-width: 100%; height: auto; }
 
 .table-wrap {
@@ -248,7 +265,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <header>
       <h1>KI-Tempo kompensieren: warum Prozesse wichtiger werden als Tools</h1>
       <time class="article-date" datetime="2026-09-07">2026-09-07</time>
-      <div class="tags"><span class="tag">KI</span><span class="tag">Automatisierung</span><span class="tag">MSP</span></div>
+      <div class="tags"><a class="tag" href="/tag/ki/">KI</a><a class="tag" href="/tag/automatisierung/">Automatisierung</a><a class="tag" href="/tag/msp/">MSP</a></div>
     </header>
     <p>Neue KI-Werkzeuge erscheinen schneller, als Teams sie evaluieren können. Der
 Reflex, jedes neue Tool sofort auszuprobieren, führt in vielen MSPs zu einem

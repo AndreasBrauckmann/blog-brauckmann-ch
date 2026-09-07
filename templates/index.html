@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{site_title}}</title>
+<title>{{page_title}}</title>
 <meta name="description" content="{{description}}">
-<link rel="canonical" href="{{base_url}}/">
+<link rel="canonical" href="{{canonical_url}}">
 <link rel="alternate" type="application/rss+xml" title="{{site_title}}" href="{{base_url}}/rss.xml">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="{{site_title}}">
+<meta property="og:title" content="{{page_title}}">
 <meta property="og:description" content="{{description}}">
-<meta property="og:url" content="{{base_url}}/">
+<meta property="og:url" content="{{canonical_url}}">
 
 <style>
 {{style}}
@@ -23,7 +23,9 @@
 </header>
 
 <main>
+  {{heading_html}}
   {{article_list_html}}
+  {{pagination_html}}
 </main>
 
 <footer class="site-footer">

@@ -8,6 +8,9 @@ site:
   base_url: "https://blog.brauckmann.ch"
   language: "de"
 
+pagination:
+  page_size: 10
+
 paths:
   articles_dir: "articles"
   drafts_dir: "articles/.drafts"
