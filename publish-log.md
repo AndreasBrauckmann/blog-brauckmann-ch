@@ -21,3 +21,8 @@
 
 - sieben-monate-elf-umbrueche: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3muwkz4xa572l (Text = Einstiegssatz statt description, um Dopplung mit der Karte zu vermeiden; alter Post 3muwksvi7jh2x geloescht)
 - sieben-monate-elf-umbrueche: mastodon: https://mastodon.social/@brauckmannblog/117229237044143149 (bearbeitet: fuenf statt vier Techniken, Vorschaukarte neu geholt)
+
+## 2026-09-07 (Slogan-Feld)
+
+- sieben-monate-elf-umbrueche: mastodon: https://mastodon.social/@brauckmannblog/117229237044143149 (bearbeitet: Slogan zuerst, dann Titel, dann Beschreibung)
+- sieben-monate-elf-umbrueche: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3muwnrzteds2z (Text jetzt aus dem neuen slogan-Feld statt Ad-hoc-Text; alter Post 3muwkz4xa572l geloescht)

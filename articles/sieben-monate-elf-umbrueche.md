@@ -1,4 +1,5 @@
 ---
+slogan: "Wer mit dem KI-Tempo mithalten will, muss anders ablegen statt schneller lernen: fünf Techniken gegen den ständigen Modellwechsel."
 title: "KI-Tempo, Nov.25 – Sep.26: Elf Monate, zwei Wellen — warum jetzt andere Regeln gelten"
 slug: sieben-monate-elf-umbrueche
 date: 2026-09-07

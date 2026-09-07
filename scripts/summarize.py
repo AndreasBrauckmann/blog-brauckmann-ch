@@ -67,21 +67,30 @@ def hashtags(tags: list[str]) -> str:
     return " ".join("#" + re.sub(r"[^A-Za-z0-9]", "", t) for t in tags)
 
 
+def headline(meta: dict) -> str:
+    """Slogan (falls im Frontmatter gesetzt) plus technischer Titel - der
+    Slogan ist die griffige Zusammenfassung und muss ZUERST stehen, der
+    genaue/technische Titel erst danach. Ohne slogan-Feld bleibt nur der
+    Titel wie zuvor."""
+    slogan = meta.get("slogan")
+    return f"{slogan}\n\n{meta['title']}" if slogan else meta["title"]
+
+
 def summarize_short(meta: dict, max_chars: int, with_hashtags: bool = False) -> str:
-    """Ueberschrift zuerst, dann die Beschreibung - wie bei summarize_linkedin,
-    nur kompakter (Titel + Leerzeile + Text statt eigener Absaetze). Reicht
+    """Slogan+Titel zuerst, dann die Beschreibung - wie bei summarize_linkedin,
+    nur kompakter (Kopf + Leerzeile + Text statt eigener Absaetze). Reicht
     das Budget nicht fuer beides, faellt nur die Beschreibung der Kuerzung
-    zum Opfer; der Titel bleibt ganz, ausser er sprengt das Budget bereits
+    zum Opfer; der Kopf bleibt ganz, ausser er sprengt das Budget bereits
     allein (dann wird nur er gekuerzt)."""
     tags = hashtags(meta.get("tags", [])) if with_hashtags else ""
     budget = max_chars - len(tags) - 1 if tags else max_chars
-    title = meta["title"]
+    head = headline(meta)
     sep = "\n\n"
-    body_budget = budget - len(title) - len(sep)
+    body_budget = budget - len(head) - len(sep)
     if body_budget >= 20:
-        text = f"{title}{sep}{truncate(meta['description'], body_budget)}"
+        text = f"{head}{sep}{truncate(meta['description'], body_budget)}"
     else:
-        text = truncate(title, budget)
+        text = truncate(head, budget)
     if tags:
         text = f"{text} {tags}"
     return text
@@ -89,7 +98,7 @@ def summarize_short(meta: dict, max_chars: int, with_hashtags: bool = False) -> 
 
 def summarize_linkedin(meta: dict, min_chars: int, max_chars: int) -> str:
     paragraphs = strip_markdown(meta["body_md"])
-    hook = f"{meta['title']}\n\n{meta['description']}"
+    hook = f"{headline(meta)}\n\n{meta['description']}"
     parts = [hook]
     length = len(hook)
     for p in paragraphs:
@@ -125,13 +134,14 @@ def summarize_all(meta: dict, cfg: dict) -> dict:
     if "bluesky" in channels:
         # Die Karte (_bluesky_link_card in publish.py) zeigt schon Titel +
         # description + Bild - der Post-Text braucht deshalb einen ANDEREN
-        # Satz als die description, sonst steht dieselbe Zeile doppelt auf
-        # der Seite (Screenshot-Vergleich, Ticket vom 7.9.). Der erste Absatz
-        # des Artikelkoerpers (der kursive Teaser direkt unter der
-        # Ueberschrift) ist genau dafuer da und unterscheidet sich von der
-        # SEO-description so gut wie immer.
+        # Satz, sonst steht dieselbe Zeile doppelt auf der Seite
+        # (Screenshot-Vergleich, Ticket vom 7.9.). Der Slogan ist genau
+        # dafuer da: er steht nirgends sonst im Post, und er ist die Zeile,
+        # die zuerst stehen soll. Ohne slogan-Feld faellt es auf den ersten
+        # Artikelabsatz zurueck (unterscheidet sich von der description
+        # so gut wie immer), zuletzt auf die description selbst.
         paragraphs = strip_markdown(meta["body_md"])
-        lead = paragraphs[0] if paragraphs else meta["description"]
+        lead = meta.get("slogan") or (paragraphs[0] if paragraphs else meta["description"])
         result["bluesky"] = truncate(lead, channels["bluesky"]["max_chars"])
     if "x" in channels:
         result["x"] = summarize_short(meta, channels["x"]["max_chars"])
