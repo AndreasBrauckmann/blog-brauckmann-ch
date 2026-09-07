@@ -15,15 +15,13 @@ draft: false
 
  **Fünf Techniken in fünf Sätzen**
 
- 🔒 **Isolieren:** Die Sandbox-Grenze einmal ziehen — dann kostet ein neues Modell nur einen Versuch, kein Freigabeverfahren.
-
- 📄 **Kodifizieren:** Wissen einmal als Skill aufschreiben — dann überlebt es jede Modellgeneration, die danach kommt.
-
- 🔁 **Übergeben:** Den Stand in einem Handover festhalten — dann verrottet er nicht im Chatverlauf.
-
- 🎫 **Priorisieren:** Jeder Neuigkeit eine Kategorie und Priorität geben — dann schlägt Tempo nicht in Hektik um.
-
- 🎯 **Dirigieren:** Das Ziel nennen, den Weg nicht vorschreiben — dann wird Autonomie nicht zum Ratespiel.
+<ul class="funf-techniken-liste">
+  <li><span class="fte">🔒</span> <strong>Isolieren:</strong> Die Sandbox-Grenze einmal ziehen — dann kostet ein neues Modell nur einen Versuch, kein Freigabeverfahren.</li>
+  <li><span class="fte">📄</span> <strong>Kodifizieren:</strong> Wissen einmal als Skill aufschreiben — dann überlebt es jede Modellgeneration, die danach kommt.</li>
+  <li><span class="fte">🔁</span> <strong>Übergeben:</strong> Den Stand in einem Handover festhalten — dann verrottet er nicht im Chatverlauf.</li>
+  <li><span class="fte">🎫</span> <strong>Priorisieren:</strong> Jeder Neuigkeit eine Kategorie und Priorität geben — dann schlägt Tempo nicht in Hektik um.</li>
+  <li><span class="fte">🎯</span> <strong>Dirigieren:</strong> Das Ziel nennen, den Weg nicht vorschreiben — dann wird Autonomie nicht zum Ratespiel.</li>
+</ul>
 
 ## Der Prompt, der alle fünf Techniken zusammenbringt
 

@@ -205,6 +205,28 @@ article img {
   cursor: zoom-out;
 }
 
+/* ---------- Fünf-Techniken-Liste: Symbol als Aufzählungszeichen, Einzug für Zeilenumbruch ---------- */
+.funf-techniken-liste {
+  list-style: none;
+  margin: 18px 0 24px;
+  padding: 0;
+}
+.funf-techniken-liste li {
+  position: relative;
+  padding-left: 2.3em;
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+.funf-techniken-liste li:last-child {
+  margin-bottom: 0;
+}
+.funf-techniken-liste .fte {
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  font-size: 1.1em;
+}
+
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -284,7 +306,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </head>
 <body>
 <header class="site-header">
-  <a class="site-title" href="https://blog.brauckmann.ch/">Brauckmann Blog</a>
+  <a class="site-title" href="https://blog.brauckmann.ch/" aria-label="Brauckmann Blog">🏠</a>
 </header>
 
 <main>
@@ -297,11 +319,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <p><em>Von November 2025 bis September 2026 hat sich nicht nur das Tempo erhöht — die Ebene hat gewechselt: vom Modell zum Werkzeug drumherum. Wer weiter nach dem einen besten Modell sucht, spielt das falsche Spiel.</em></p>
 <p><img alt="Fünf Techniken, damit Wissen den Modellwechsel überlebt" src="/static/img/00-eyecatcher-fuenf-techniken.png" /></p>
 <p><strong>Fünf Techniken in fünf Sätzen</strong></p>
-<p>🔒 <strong>Isolieren:</strong> Die Sandbox-Grenze einmal ziehen — dann kostet ein neues Modell nur einen Versuch, kein Freigabeverfahren.</p>
-<p>📄 <strong>Kodifizieren:</strong> Wissen einmal als Skill aufschreiben — dann überlebt es jede Modellgeneration, die danach kommt.</p>
-<p>🔁 <strong>Übergeben:</strong> Den Stand in einem Handover festhalten — dann verrottet er nicht im Chatverlauf.</p>
-<p>🎫 <strong>Priorisieren:</strong> Jeder Neuigkeit eine Kategorie und Priorität geben — dann schlägt Tempo nicht in Hektik um.</p>
-<p>🎯 <strong>Dirigieren:</strong> Das Ziel nennen, den Weg nicht vorschreiben — dann wird Autonomie nicht zum Ratespiel.</p>
+<ul class="funf-techniken-liste">
+  <li><span class="fte">🔒</span> <strong>Isolieren:</strong> Die Sandbox-Grenze einmal ziehen — dann kostet ein neues Modell nur einen Versuch, kein Freigabeverfahren.</li>
+  <li><span class="fte">📄</span> <strong>Kodifizieren:</strong> Wissen einmal als Skill aufschreiben — dann überlebt es jede Modellgeneration, die danach kommt.</li>
+  <li><span class="fte">🔁</span> <strong>Übergeben:</strong> Den Stand in einem Handover festhalten — dann verrottet er nicht im Chatverlauf.</li>
+  <li><span class="fte">🎫</span> <strong>Priorisieren:</strong> Jeder Neuigkeit eine Kategorie und Priorität geben — dann schlägt Tempo nicht in Hektik um.</li>
+  <li><span class="fte">🎯</span> <strong>Dirigieren:</strong> Das Ziel nennen, den Weg nicht vorschreiben — dann wird Autonomie nicht zum Ratespiel.</li>
+</ul>
+
 <h2 id="der-prompt-der-alle-funf-techniken-zusammenbringt">Der Prompt, der alle fünf Techniken zusammenbringt</h2>
 <p>So sieht das in der Praxis aus — nicht an einem Software-Beispiel, sondern an einer Frage, die gerade jeder Autokäufer umtreibt: Verbrenner, Hybrid oder Elektro — und lohnt sich ein chinesisches Modell gegenüber einer etablierten Marke? Ein einzelner Prompt, aufgebaut wie ein Ticket, nicht wie eine Bitte. Fünf Techniken in einem Prompt — und jeder versteht sofort, worum es geht.</p>
 <div class="codehilite"><pre><span></span><code>[Request · Priorität B]
