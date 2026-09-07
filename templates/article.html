@@ -36,8 +36,18 @@
     <header>
       <h1>{{title}}</h1>
       <time class="article-date" datetime="{{date_iso}}">{{date_display}}</time>
-      <div class="tags">{{tags_html}}</div>
+      <div class="article-meta-row">
+        <div class="tags">{{tags_html}}</div>
+        <button type="button" class="summary-toggle" id="summary-toggle" aria-expanded="false" aria-controls="summary-box">
+          Zusammenfassung <span class="summary-toggle-icon" aria-hidden="true">&#9662;</span>
+        </button>
+      </div>
     </header>
+    <div class="summary-box" id="summary-box">
+      <div class="summary-box-inner">
+        {{summary_html}}
+      </div>
+    </div>
     {{content}}
   </article>
 </main>
@@ -74,6 +84,15 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeLightbox();
   });
+
+  var summaryBtn = document.getElementById('summary-toggle');
+  var summaryBox = document.getElementById('summary-box');
+  if (summaryBtn && summaryBox) {
+    summaryBtn.addEventListener('click', function () {
+      var isOpen = summaryBox.classList.toggle('is-open');
+      summaryBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
 })();
 </script>
 </body>
