@@ -1,0 +1,5 @@
+# Kein eigener Markdown-Parser: Tabellen, Fussnoten und Codeblöcke mit
+# Syntax-Highlighting von Hand nachzubauen wäre unnötiger Aufwand.
+Markdown==3.10.3
+Pygments==2.21.0
+PyYAML==6.0.3

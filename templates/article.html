@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="{{language}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}} · {{site_title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical_url}}">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical_url}}">
+<meta property="og:image" content="{{og_image}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{title}}">
+<meta name="twitter:description" content="{{description}}">
+<meta name="twitter:image" content="{{og_image}}">
+
+<script type="application/ld+json">
+{{jsonld}}
+</script>
+
+<style>
+{{style}}
+{{pygments_style}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="{{base_url}}/">{{site_title}}</a>
+</header>
+
+<main>
+  <article>
+    <header>
+      <h1>{{title}}</h1>
+      <time class="article-date" datetime="{{date_iso}}">{{date_display}}</time>
+      <div class="tags">{{tags_html}}</div>
+    </header>
+    {{content}}
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p>{{author}} — <a href="{{base_url}}/rss.xml">RSS</a></p>
+</footer>
+</body>
+</html>

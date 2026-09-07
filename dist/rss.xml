@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <title>Brauckmann Blog</title>
+  <link>https://blog.brauckmann.ch</link>
+  <description>IT, KI und Automatisierung für Fachpublikum</description>
+  <item>
+    <title>KI-Tempo kompensieren: warum Prozesse wichtiger werden als Tools</title>
+    <link>https://blog.brauckmann.ch/artikel/ki-tempo-kompensieren/</link>
+    <guid>https://blog.brauckmann.ch/artikel/ki-tempo-kompensieren/</guid>
+    <description>Warum MSPs bei KI-Einführung zuerst in Prozesse statt in Tools investieren sollten, mit einem konkreten Beispiel aus dem Alltag.</description>
+    <pubDate>Mon, 07 Sep 2026 00:00:00 +0000</pubDate>
+  </item>
+</channel></rss>

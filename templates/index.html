@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="{{language}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{site_title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{base_url}}/">
+<link rel="alternate" type="application/rss+xml" title="{{site_title}}" href="{{base_url}}/rss.xml">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{site_title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{base_url}}/">
+
+<style>
+{{style}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="{{base_url}}/">{{site_title}}</a>
+</header>
+
+<main>
+  {{article_list_html}}
+</main>
+
+<footer class="site-footer">
+  <p>{{author}} — <a href="{{base_url}}/rss.xml">RSS</a></p>
+</footer>
+</body>
+</html>

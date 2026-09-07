@@ -1,0 +1,72 @@
+# Zentrale Konfiguration für Blog, Build und Verteilung.
+# Enthält keine Secrets - Tokens liegen ausschliesslich in .env
+
+site:
+  title: "Brauckmann Blog"
+  author: "Andreas Brauckmann"
+  description: "IT, KI und Automatisierung für Fachpublikum"
+  base_url: "https://blog.brauckmann.ch"
+  language: "de"
+
+paths:
+  articles_dir: "articles"
+  drafts_dir: "articles/.drafts"
+  templates_dir: "templates"
+  static_dir: "static"
+  dist_dir: "dist"
+
+github:
+  repo: "blog-brauckmann-ch"
+
+# Verbotene Begriffe: Push-Prüfung bricht ab, wenn einer davon im Diff auftaucht.
+# Kundennamen, interne Hostnamen/IPs, Firmeninterna hier ergänzen.
+forbidden_terms:
+  - "TODO-BEISPIEL-NIEMALS-COMMITTEN"
+
+# Kanäle für die Verwaltungsseite und publish.py.
+# enabled: Schalter für automatisches Posten (per API)
+# manual: kein API-Zugang, Verwaltungsseite bietet Text + Deep-Link zum Kopieren
+channels:
+  mastodon:
+    enabled: true
+    manual: false
+    instance: "https://mastodon.social"
+    max_chars: 480
+  bluesky:
+    enabled: true
+    manual: false
+    max_chars: 290
+  linkedin:
+    enabled: false
+    manual: false
+    note: "API-Automatisierung ab Stufe 3, benötigt verifizierte Company-Page"
+    min_chars: 1200
+    max_chars: 1800
+  x:
+    enabled: false
+    manual: false
+    note: "Kostenpflichtig (Pay-per-Use). Modul vorbereitet, standardmässig inaktiv."
+    max_chars: 270
+  reddit:
+    enabled: false
+    manual: true
+    note: "Community-Normen sanktionieren automatisierte Eigenwerbung"
+    subreddits: ["sysadmin", "msp"]
+  facebook:
+    enabled: false
+    manual: true
+    note: "Persönliches Profil seit 2018 nicht per Graph API postbar, nur Pages"
+  youtube_community:
+    enabled: false
+    manual: true
+    note: "Keine offizielle Schreib-API für Community Posts"
+  microsoft_tech_community:
+    enabled: false
+    manual: true
+    note: "Kein öffentlicher Schreibzugang für externe Autoren"
+
+# Backlog: dokumentiert, nicht implementiert.
+backlog_channels:
+  - discord
+  - telegram
+  - dev_to
