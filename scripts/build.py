@@ -232,6 +232,10 @@ def main() -> int:
     if hostname:
         (dist_dir / "CNAME").write_text(hostname + "\n", encoding="utf-8")
 
+    public_root_dir = ROOT / "public-root"
+    if public_root_dir.exists():
+        shutil.copytree(public_root_dir, dist_dir, dirs_exist_ok=True)
+
     print(f"Gebaut: {len(articles)} Artikel -> {dist_dir}")
     return 0
 
