@@ -12,6 +12,7 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 from xml.sax.saxutils import escape as xml_escape
 
 import markdown
@@ -226,6 +227,10 @@ def main() -> int:
 
     if static_dir.exists():
         shutil.copytree(static_dir, dist_dir / "static", dirs_exist_ok=True)
+
+    hostname = urlparse(cfg["site"]["base_url"]).hostname
+    if hostname:
+        (dist_dir / "CNAME").write_text(hostname + "\n", encoding="utf-8")
 
     print(f"Gebaut: {len(articles)} Artikel -> {dist_dir}")
     return 0
