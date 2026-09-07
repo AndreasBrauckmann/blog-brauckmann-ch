@@ -45,6 +45,28 @@ def post_status(instance: str, access_token: str, text: str) -> dict:
     return {"url": result.get("url"), "id": result.get("id")}
 
 
+def edit_status(instance: str, access_token: str, status_id: str, text: str) -> dict:
+    """PUT /api/v1/statuses/:id - stösst nebenbei ein neues Abrufen der
+    Link-Vorschaukarte an, nützlich wenn sich das og:image der verlinkten
+    Seite geändert hat, nachdem der Toot schon stand."""
+    body = urllib.parse.urlencode({"status": text}).encode()
+    req = urllib.request.Request(
+        f"{instance}/api/v1/statuses/{status_id}",
+        data=body,
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        method="PUT",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read())
+    except urllib.error.HTTPError as exc:
+        raise MastodonError(f"Mastodon-Bearbeiten fehlgeschlagen: {exc.code} {exc.read().decode()}") from exc
+    return {"url": result.get("url"), "id": result.get("id")}
+
+
 def update_credentials(
     instance: str,
     access_token: str,

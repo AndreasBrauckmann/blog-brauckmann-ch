@@ -16,3 +16,8 @@
 ## 2026-09-07 13:00 UTC
 
 - sieben-monate-elf-umbrueche: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3muwksvi7jh2x (Text auf Beschreibung gekuerzt, Titel/Link nur noch in der Karte, alter Post 3muwkemar7e24 geloescht)
+
+## 2026-09-07 (Nachtrag)
+
+- sieben-monate-elf-umbrueche: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3muwkz4xa572l (Text = Einstiegssatz statt description, um Dopplung mit der Karte zu vermeiden; alter Post 3muwksvi7jh2x geloescht)
+- sieben-monate-elf-umbrueche: mastodon: https://mastodon.social/@brauckmannblog/117229237044143149 (bearbeitet: fuenf statt vier Techniken, Vorschaukarte neu geholt)

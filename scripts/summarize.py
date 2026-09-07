@@ -123,11 +123,16 @@ def summarize_all(meta: dict, cfg: dict) -> dict:
         text = summarize_short(meta, channels["mastodon"]["max_chars"] - len(canonical_url) - 1, with_hashtags=True)
         result["mastodon"] = f"{text}\n{canonical_url}"
     if "bluesky" in channels:
-        # Nur die Beschreibung, kein Titel und kein nackter Link: beides
-        # liefert schon die Link-Vorschaukarte (_bluesky_link_card in
-        # publish.py) - sonst steht alles doppelt im Post (siehe Screenshot-
-        # Vergleich, Ticket vom 7.9.).
-        result["bluesky"] = truncate(meta["description"], channels["bluesky"]["max_chars"])
+        # Die Karte (_bluesky_link_card in publish.py) zeigt schon Titel +
+        # description + Bild - der Post-Text braucht deshalb einen ANDEREN
+        # Satz als die description, sonst steht dieselbe Zeile doppelt auf
+        # der Seite (Screenshot-Vergleich, Ticket vom 7.9.). Der erste Absatz
+        # des Artikelkoerpers (der kursive Teaser direkt unter der
+        # Ueberschrift) ist genau dafuer da und unterscheidet sich von der
+        # SEO-description so gut wie immer.
+        paragraphs = strip_markdown(meta["body_md"])
+        lead = paragraphs[0] if paragraphs else meta["description"]
+        result["bluesky"] = truncate(lead, channels["bluesky"]["max_chars"])
     if "x" in channels:
         result["x"] = summarize_short(meta, channels["x"]["max_chars"])
     if "linkedin" in channels:
