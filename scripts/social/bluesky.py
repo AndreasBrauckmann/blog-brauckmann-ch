@@ -31,6 +31,13 @@ def create_session(handle: str, app_password: str) -> dict:
     return _post_json(f"{API}/com.atproto.server.createSession", {"identifier": handle, "password": app_password})
 
 
+def create_app_password(access_jwt: str, name: str) -> dict:
+    """Erzeugt ein neues App-Passwort für die eingeloggte Session - Bluesky
+    erlaubt das regulär authentifiziert per API, nicht nur über die
+    Einstellungen-Seite im Browser."""
+    return _post_json(f"{API}/com.atproto.server.createAppPassword", {"name": name}, token=access_jwt)
+
+
 def _link_facets(text: str) -> list[dict]:
     facets = []
     for match in re.finditer(r"https?://\S+", text):
