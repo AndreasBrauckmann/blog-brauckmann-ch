@@ -157,6 +157,33 @@ article > p, article > ul, article > ol { max-width: 70ch; }
 
 .footnote-backref { text-decoration: none; }
 
+/* ---------- Bild-Lightbox: Klick zum Vergrössern ---------- */
+article img {
+  cursor: zoom-in;
+}
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  cursor: zoom-out;
+}
+.lightbox-overlay.is-open {
+  display: flex;
+}
+.lightbox-overlay img {
+  max-width: 96vw;
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  cursor: zoom-out;
+}
+
 </style>
 </head>
 <body>

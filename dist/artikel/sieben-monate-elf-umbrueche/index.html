@@ -178,6 +178,33 @@ article > p, article > ul, article > ol { max-width: 70ch; }
 
 .footnote-backref { text-decoration: none; }
 
+/* ---------- Bild-Lightbox: Klick zum Vergrössern ---------- */
+article img {
+  cursor: zoom-in;
+}
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  cursor: zoom-out;
+}
+.lightbox-overlay.is-open {
+  display: flex;
+}
+.lightbox-overlay img {
+  max-width: 96vw;
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  cursor: zoom-out;
+}
+
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -307,6 +334,14 @@ Ablaufdatum: Ende der aktuellen Förder- oder Rabattaktion.
 </code></pre></div>
 
 <p><strong>① Isolieren</strong> — die Recherche bleibt auf öffentlichen Test- und Herstellerseiten, Probefahrt oder Anzahlung brauchen ausdrückliches Okay. <strong>② Kodifizieren</strong> — die Skills <code>autokauf-vergleich</code> und <code>quellen-check</code> müssen nicht bei jeder Kaufentscheidung neu erklärt werden. <strong>③ Übergeben</strong> — das Handover am Ende, mit Ablaufdatum (der Förderfrist). <strong>④ Priorisieren</strong> — die Kategorie <code>Request · Priorität B</code> im Kopf: wichtig, aber nicht brennend. <strong>⑤ Dirigieren</strong> — Ziel, "was gilt sowieso", der Freiheits-Regler und der Gegenlese-Schritt.</p>
+<h2 id="der-realitatscheck">Der Realitätscheck</h2>
+<p>Der Bruch liegt nicht im Februar. Er liegt in den letzten Wochen des Jahres 2025 — und ein Rückblick, der erst im Februar beginnt, schneidet den eigentlichen Auslöser ab. Der ehrliche Zeitraum reicht von November 2025 bis September 2026: elf Monate, zwei Spitzen.</p>
+<p><img alt="Elf Monate, zwei Wellen — Realitätscheck November 2025 bis September 2026" src="/static/img/01-realitaetscheck-zeitstreifen.png" /></p>
+<p>Die Schlagzeilen liefern die beiden Ränder: November/Dezember 2025 mit vier Flaggschiff-Modellen in Wochen und dem Start der Agent-Frameworks, Juli bis September 2026 mit explodierenden Kontextfenstern und einem Preiszusammenbruch von 80 Prozent. Die Details dazu stehen in der Grafik oben.</p>
+<p>Interessant ist aber nicht der Rand — interessant ist die Mitte. Zwischen April und Juni wurde es scheinbar ruhig. Tatsächlich verschob sich in diesen drei Monaten etwas Grundlegenderes: Nicht mehr das Modell entschied über den Vorsprung, sondern das Harness — die Orchestrierung drumherum. Die Konsolidierung war keine Pause. Sie war ein Ebenenwechsel.</p>
+<p><img alt="Zwei Wellen, ein Ebenenwechsel — was sich zwischen November 2025 und September 2026 wirklich verschoben hat" src="/static/img/02-zwei-wellen-vergleich.png" /></p>
+<p>Wer in dieser Umgebung versucht, "auf dem Laufenden zu bleiben", verliert. Nicht aus Mangel an Fleiss, sondern aus einem strukturellen Grund: Das Wissen, das man sich aneignet, ist an Artefakte gebunden, die schneller veralten, als man sie aufbaut. Und weil sich die Ebene selbst verschoben hat, gelten ab jetzt andere Regeln: Nicht das beste Modell gewinnt, sondern das robusteste Werkzeug drumherum.</p>
+<p>*Quellen: <a href="https://thenewstack.io/biggest-ai-moments-2026/">10 moments that defined AI's turbulent first half of 2026 — The New Stack</a> &middot; <a href="https://www.contextstudios.ai/blog/the-ai-model-reset-the-most-important-releases-of-february-2026">The AI Model Reset: February 2026 — Context Studios</a> &middot; <a href="https://www.digitalapplied.com/blog/march-2026-ai-roundup-month-that-changed-everything">March 2026 AI Roundup — Digital Applied</a> &middot; <a href="https://optimusflow.consulting/blog/neue-ki-modelle-august-2026-vergleich">Neue KI-Modelle August 2026 im Vergleich — OptimusFlow</a> &middot; <a href="https://llmgateway.io/timeline">New AI Model Releases Timeline — LLM Gateway</a> &middot; <a href="https://www.machinebrief.com/timeline">AI Timeline 2020–2026 — Machine Brief</a></p>
 <h2 id="der-eigentliche-fehler">Der eigentliche Fehler</h2>
 <p>Die meisten Menschen legen ihr KI-Wissen an zwei Orten ab, die beide nicht haltbar sind.</p>
 <p>Der erste Ort ist der <strong>Chatverlauf</strong>. Ein langes Gespräch, in dem über Wochen Kontext gewachsen ist: Entscheidungen, Präferenzen, Erklärungen, halbfertige Gedanken. Das fühlt sich produktiv an. Es ist aber die flüchtigste Form von Wissen, die es gibt. Der Verlauf lässt sich nicht auf ein neues Modell übertragen. Er lässt sich nicht mit Kollegen teilen. Er wird mit jeder Nachricht teurer, weil das komplette Fenster erneut verarbeitet wird. Und er wird nachweislich schlechter: Chroma hat unter dem Namen <em>Context Rot</em> dokumentiert, dass die Antwortqualität mit wachsender Kontextlänge sinkt — auch weit unterhalb des technischen Limits. Das Modell verliert die Mitte, klammert sich an frühe Festlegungen und wiederholt Fehler, die es einmal gemacht hat.</p>
@@ -362,14 +397,6 @@ Ablaufdatum: Ende der aktuellen Förder- oder Rabattaktion.
 <p>Was dabei entsteht, ist eine Wissensschicht ausserhalb des Modells: Skills, die beschreiben, wie hier gearbeitet wird. Handovers, die festhalten, wo man steht. Sandboxes, in denen Neues gefahrlos getestet wird. Ein Ticketbestand, der Wichtiges von Lautem trennt. Ein Dirigent, der jedes Ergebnis hört, bevor es übernommen wird.</p>
 <p>Diese Schicht ist der eigentliche Besitz. Modelle werden dagegen austauschbar — und das ist keine Kapitulation, sondern das Ziel. Wenn im November das nächste Modell erscheint, ist die Frage nicht mehr, wie viel man neu lernen muss. Die Frage ist nur noch, ob die Evals durchlaufen.</p>
 <p>Das ist der Unterschied zwischen Hinterherlaufen und Profitieren.</p>
-<h2 id="der-realitatscheck">Der Realitätscheck</h2>
-<p>Der Bruch liegt nicht im Februar. Er liegt in den letzten Wochen des Jahres 2025 — und ein Rückblick, der erst im Februar beginnt, schneidet den eigentlichen Auslöser ab. Der ehrliche Zeitraum reicht von November 2025 bis September 2026: elf Monate, zwei Spitzen.</p>
-<p><img alt="Elf Monate, zwei Wellen — Realitätscheck November 2025 bis September 2026" src="/static/img/01-realitaetscheck-zeitstreifen.png" /></p>
-<p>Die Schlagzeilen liefern die beiden Ränder: November/Dezember 2025 mit vier Flaggschiff-Modellen in Wochen und dem Start der Agent-Frameworks, Juli bis September 2026 mit explodierenden Kontextfenstern und einem Preiszusammenbruch von 80 Prozent. Die Details dazu stehen in der Grafik oben.</p>
-<p>Interessant ist aber nicht der Rand — interessant ist die Mitte. Zwischen April und Juni wurde es scheinbar ruhig. Tatsächlich verschob sich in diesen drei Monaten etwas Grundlegenderes: Nicht mehr das Modell entschied über den Vorsprung, sondern das Harness — die Orchestrierung drumherum. Die Konsolidierung war keine Pause. Sie war ein Ebenenwechsel.</p>
-<p><img alt="Zwei Wellen, ein Ebenenwechsel — was sich zwischen November 2025 und September 2026 wirklich verschoben hat" src="/static/img/02-zwei-wellen-vergleich.png" /></p>
-<p>Wer in dieser Umgebung versucht, "auf dem Laufenden zu bleiben", verliert. Nicht aus Mangel an Fleiss, sondern aus einem strukturellen Grund: Das Wissen, das man sich aneignet, ist an Artefakte gebunden, die schneller veralten, als man sie aufbaut. Und weil sich die Ebene selbst verschoben hat, gelten ab jetzt andere Regeln: Nicht das beste Modell gewinnt, sondern das robusteste Werkzeug drumherum.</p>
-<p>*Quellen: <a href="https://thenewstack.io/biggest-ai-moments-2026/">10 moments that defined AI's turbulent first half of 2026 — The New Stack</a> &middot; <a href="https://www.contextstudios.ai/blog/the-ai-model-reset-the-most-important-releases-of-february-2026">The AI Model Reset: February 2026 — Context Studios</a> &middot; <a href="https://www.digitalapplied.com/blog/march-2026-ai-roundup-month-that-changed-everything">March 2026 AI Roundup — Digital Applied</a> &middot; <a href="https://optimusflow.consulting/blog/neue-ki-modelle-august-2026-vergleich">Neue KI-Modelle August 2026 im Vergleich — OptimusFlow</a> &middot; <a href="https://llmgateway.io/timeline">New AI Model Releases Timeline — LLM Gateway</a> &middot; <a href="https://www.machinebrief.com/timeline">AI Timeline 2020–2026 — Machine Brief</a></p>
 <hr />
 <p><em>Grundlage: Recherche vom 7. September 2026 zu Sandboxing, Agent Skills, Kontext-Handovers und ITIL-basierter Priorisierung, erstellt in einer orchestrierten Multi-Agenten-Struktur. Belegte Ereignisdaten stammen aus Primär- und Sekundärquellen des Zeitraums November 2025 bis September 2026.</em></p>
   </article>
@@ -378,5 +405,36 @@ Ablaufdatum: Ende der aktuellen Förder- oder Rabattaktion.
 <footer class="site-footer">
   <p>Andreas Brauckmann — <a href="https://blog.brauckmann.ch/rss.xml">RSS</a></p>
 </footer>
+
+<div class="lightbox-overlay" id="lightbox-overlay">
+  <img id="lightbox-img" src="" alt="">
+</div>
+<script>
+(function () {
+  var overlay = document.getElementById('lightbox-overlay');
+  var overlayImg = document.getElementById('lightbox-img');
+
+  function openLightbox(src, alt) {
+    overlayImg.src = src;
+    overlayImg.alt = alt || '';
+    overlay.classList.add('is-open');
+  }
+  function closeLightbox() {
+    overlay.classList.remove('is-open');
+    overlayImg.src = '';
+  }
+
+  document.querySelectorAll('article img').forEach(function (el) {
+    el.addEventListener('click', function () {
+      openLightbox(el.getAttribute('src'), el.getAttribute('alt'));
+    });
+  });
+
+  overlay.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+})();
+</script>
 </body>
 </html>

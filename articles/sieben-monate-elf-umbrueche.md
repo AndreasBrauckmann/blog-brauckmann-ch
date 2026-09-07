@@ -61,6 +61,22 @@ Ablaufdatum: Ende der aktuellen Förder- oder Rabattaktion.
 
 **① Isolieren** — die Recherche bleibt auf öffentlichen Test- und Herstellerseiten, Probefahrt oder Anzahlung brauchen ausdrückliches Okay. **② Kodifizieren** — die Skills `autokauf-vergleich` und `quellen-check` müssen nicht bei jeder Kaufentscheidung neu erklärt werden. **③ Übergeben** — das Handover am Ende, mit Ablaufdatum (der Förderfrist). **④ Priorisieren** — die Kategorie `Request · Priorität B` im Kopf: wichtig, aber nicht brennend. **⑤ Dirigieren** — Ziel, "was gilt sowieso", der Freiheits-Regler und der Gegenlese-Schritt.
 
+## Der Realitätscheck
+
+Der Bruch liegt nicht im Februar. Er liegt in den letzten Wochen des Jahres 2025 — und ein Rückblick, der erst im Februar beginnt, schneidet den eigentlichen Auslöser ab. Der ehrliche Zeitraum reicht von November 2025 bis September 2026: elf Monate, zwei Spitzen.
+
+![Elf Monate, zwei Wellen — Realitätscheck November 2025 bis September 2026](/static/img/01-realitaetscheck-zeitstreifen.png)
+
+Die Schlagzeilen liefern die beiden Ränder: November/Dezember 2025 mit vier Flaggschiff-Modellen in Wochen und dem Start der Agent-Frameworks, Juli bis September 2026 mit explodierenden Kontextfenstern und einem Preiszusammenbruch von 80 Prozent. Die Details dazu stehen in der Grafik oben.
+
+Interessant ist aber nicht der Rand — interessant ist die Mitte. Zwischen April und Juni wurde es scheinbar ruhig. Tatsächlich verschob sich in diesen drei Monaten etwas Grundlegenderes: Nicht mehr das Modell entschied über den Vorsprung, sondern das Harness — die Orchestrierung drumherum. Die Konsolidierung war keine Pause. Sie war ein Ebenenwechsel.
+
+![Zwei Wellen, ein Ebenenwechsel — was sich zwischen November 2025 und September 2026 wirklich verschoben hat](/static/img/02-zwei-wellen-vergleich.png)
+
+Wer in dieser Umgebung versucht, "auf dem Laufenden zu bleiben", verliert. Nicht aus Mangel an Fleiss, sondern aus einem strukturellen Grund: Das Wissen, das man sich aneignet, ist an Artefakte gebunden, die schneller veralten, als man sie aufbaut. Und weil sich die Ebene selbst verschoben hat, gelten ab jetzt andere Regeln: Nicht das beste Modell gewinnt, sondern das robusteste Werkzeug drumherum.
+
+*Quellen: [10 moments that defined AI's turbulent first half of 2026 — The New Stack](https://thenewstack.io/biggest-ai-moments-2026/) &middot; [The AI Model Reset: February 2026 — Context Studios](https://www.contextstudios.ai/blog/the-ai-model-reset-the-most-important-releases-of-february-2026) &middot; [March 2026 AI Roundup — Digital Applied](https://www.digitalapplied.com/blog/march-2026-ai-roundup-month-that-changed-everything) &middot; [Neue KI-Modelle August 2026 im Vergleich — OptimusFlow](https://optimusflow.consulting/blog/neue-ki-modelle-august-2026-vergleich) &middot; [New AI Model Releases Timeline — LLM Gateway](https://llmgateway.io/timeline) &middot; [AI Timeline 2020–2026 — Machine Brief](https://www.machinebrief.com/timeline)
+
 ## Der eigentliche Fehler
 
 Die meisten Menschen legen ihr KI-Wissen an zwei Orten ab, die beide nicht haltbar sind.
@@ -166,22 +182,6 @@ Was dabei entsteht, ist eine Wissensschicht ausserhalb des Modells: Skills, die 
 Diese Schicht ist der eigentliche Besitz. Modelle werden dagegen austauschbar — und das ist keine Kapitulation, sondern das Ziel. Wenn im November das nächste Modell erscheint, ist die Frage nicht mehr, wie viel man neu lernen muss. Die Frage ist nur noch, ob die Evals durchlaufen.
 
 Das ist der Unterschied zwischen Hinterherlaufen und Profitieren.
-
-## Der Realitätscheck
-
-Der Bruch liegt nicht im Februar. Er liegt in den letzten Wochen des Jahres 2025 — und ein Rückblick, der erst im Februar beginnt, schneidet den eigentlichen Auslöser ab. Der ehrliche Zeitraum reicht von November 2025 bis September 2026: elf Monate, zwei Spitzen.
-
-![Elf Monate, zwei Wellen — Realitätscheck November 2025 bis September 2026](/static/img/01-realitaetscheck-zeitstreifen.png)
-
-Die Schlagzeilen liefern die beiden Ränder: November/Dezember 2025 mit vier Flaggschiff-Modellen in Wochen und dem Start der Agent-Frameworks, Juli bis September 2026 mit explodierenden Kontextfenstern und einem Preiszusammenbruch von 80 Prozent. Die Details dazu stehen in der Grafik oben.
-
-Interessant ist aber nicht der Rand — interessant ist die Mitte. Zwischen April und Juni wurde es scheinbar ruhig. Tatsächlich verschob sich in diesen drei Monaten etwas Grundlegenderes: Nicht mehr das Modell entschied über den Vorsprung, sondern das Harness — die Orchestrierung drumherum. Die Konsolidierung war keine Pause. Sie war ein Ebenenwechsel.
-
-![Zwei Wellen, ein Ebenenwechsel — was sich zwischen November 2025 und September 2026 wirklich verschoben hat](/static/img/02-zwei-wellen-vergleich.png)
-
-Wer in dieser Umgebung versucht, "auf dem Laufenden zu bleiben", verliert. Nicht aus Mangel an Fleiss, sondern aus einem strukturellen Grund: Das Wissen, das man sich aneignet, ist an Artefakte gebunden, die schneller veralten, als man sie aufbaut. Und weil sich die Ebene selbst verschoben hat, gelten ab jetzt andere Regeln: Nicht das beste Modell gewinnt, sondern das robusteste Werkzeug drumherum.
-
-*Quellen: [10 moments that defined AI's turbulent first half of 2026 — The New Stack](https://thenewstack.io/biggest-ai-moments-2026/) &middot; [The AI Model Reset: February 2026 — Context Studios](https://www.contextstudios.ai/blog/the-ai-model-reset-the-most-important-releases-of-february-2026) &middot; [March 2026 AI Roundup — Digital Applied](https://www.digitalapplied.com/blog/march-2026-ai-roundup-month-that-changed-everything) &middot; [Neue KI-Modelle August 2026 im Vergleich — OptimusFlow](https://optimusflow.consulting/blog/neue-ki-modelle-august-2026-vergleich) &middot; [New AI Model Releases Timeline — LLM Gateway](https://llmgateway.io/timeline) &middot; [AI Timeline 2020–2026 — Machine Brief](https://www.machinebrief.com/timeline)
 
 ---
 
