@@ -399,36 +399,46 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p>Diese Grenzen sind bewusst so gesetzt, dass "einfach mal alles auf Verdacht abziehen" nicht funktioniert — wer aber gezielt filtert und nur lädt, was er braucht, kommt jederzeit klar durch.</p>
 <h2 id="sechs-downloadformate-fur-jedes-werkzeug-das-passende">Sechs Downloadformate — für jedes Werkzeug das passende</h2>
 <p>Nicht jeder will mit einer API arbeiten. Deshalb gibt es den kompletten Datenbestand auch direkt zum Herunterladen, in sechs Formaten — als eigene Knöpfe direkt auf der Seite, jeder mit eigenem Icon:</p>
-<p><img src="/static/img/03-download-icons.png" alt="Download-Knöpfe der Kalenderseite: .CSV, XLSX, Numbers, .sqlite, .JSON, .ICS" style="max-width:100%;border-radius:6px;border:1px solid #e4e6ea"></p>
-<div class="table-wrap"><table>
+<style>
+.dl-format-tabelle svg { width: 22px; height: 22px; display: block; }
+.dl-format-tabelle td:first-child { width: 44px; text-align: center; }
+</style>
+<div class="table-wrap"><table class="dl-format-tabelle">
 <thead>
 <tr>
+<th></th>
 <th>Format</th>
 <th>Wofür</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td><svg viewBox="0 0 20 20" aria-hidden="true" style="color:#185abd"><path d="M4.5 2h7l4 4v12h-11z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M11.5 2v4h4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="6.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.3"/><line x1="6.5" y1="13.3" x2="13.5" y2="13.3" stroke="currentColor" stroke-width="1.3"/><line x1="6.5" y1="16.1" x2="11" y2="16.1" stroke="currentColor" stroke-width="1.3"/></svg></td>
 <td><strong>CSV</strong> (klassisch)</td>
 <td>Skripte, jede Programmiersprache</td>
 </tr>
 <tr>
+<td><svg viewBox="0 0 20 20" aria-hidden="true" style="color:#185abd"><path d="M4.5 2h7l4 4v12h-11z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M11.5 2v4h4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="6.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.3"/><line x1="6.5" y1="13.3" x2="13.5" y2="13.3" stroke="currentColor" stroke-width="1.3"/><line x1="6.5" y1="16.1" x2="11" y2="16.1" stroke="currentColor" stroke-width="1.3"/></svg></td>
 <td><strong>CSV (Excel-Variante)</strong></td>
 <td>öffnet sich in Excel/Numbers/Google Sheets ohne Umwege bei Umlauten und Zahlenformat</td>
 </tr>
 <tr>
+<td><svg viewBox="0 0 20 20" aria-hidden="true" style="color:#107c41"><rect x="2.5" y="3" width="15" height="14" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="2.5" y1="7.7" x2="17.5" y2="7.7" stroke="currentColor" stroke-width="1.4"/><line x1="2.5" y1="12.3" x2="17.5" y2="12.3" stroke="currentColor" stroke-width="1.4"/><line x1="7.5" y1="3" x2="7.5" y2="17" stroke="currentColor" stroke-width="1.4"/><line x1="12.5" y1="3" x2="12.5" y2="17" stroke="currentColor" stroke-width="1.4"/></svg></td>
 <td><strong>XLSX</strong></td>
-<td>fertige Excel-Arbeitsmappe, direkt weiterrechnen</td>
+<td>fertige Excel-Arbeitsmappe, direkt weiterrechnen — öffnet auch in Apple Numbers</td>
 </tr>
 <tr>
+<td><svg viewBox="0 0 20 20" aria-hidden="true" style="color:#0f80cc"><ellipse cx="10" cy="4.3" rx="6.5" ry="2.3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 4.3v11.4c0 1.27 2.91 2.3 6.5 2.3s6.5-1.03 6.5-2.3V4.3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 10c0 1.27 2.91 2.3 6.5 2.3s6.5-1.03 6.5-2.3" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></td>
 <td><strong>SQLite</strong></td>
 <td>die komplette Datenbank als eine Datei — eigene Abfragen, eigene Auswertungen</td>
 </tr>
 <tr>
+<td><svg viewBox="0 0 20 20" aria-hidden="true" style="color:#e8730c"><path d="M4.5 2h7l4 4v12h-11z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M11.5 2v4h4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="6.5" y1="10.5" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.3"/><line x1="6.5" y1="13.3" x2="13.5" y2="13.3" stroke="currentColor" stroke-width="1.3"/><line x1="6.5" y1="16.1" x2="11" y2="16.1" stroke="currentColor" stroke-width="1.3"/></svg></td>
 <td><strong>NDJSON</strong></td>
 <td>Zeile für Zeile ein JSON-Objekt, ideal für Datenpipelines</td>
 </tr>
 <tr>
+<td><svg viewBox="0 0 20 20" aria-hidden="true" style="color:#d13438"><rect x="2.5" y="3.5" width="15" height="14" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="2.5" y1="7.3" x2="17.5" y2="7.3" stroke="currentColor" stroke-width="1.4"/><line x1="6" y1="2" x2="6" y2="5" stroke="currentColor" stroke-width="1.4"/><line x1="14" y1="2" x2="14" y2="5" stroke="currentColor" stroke-width="1.4"/><rect x="5.3" y="10" width="2.6" height="2.6" fill="currentColor"/></svg></td>
 <td><strong>ICS</strong></td>
 <td>als Kalenderabo in Outlook, Apple Kalender oder Google Kalender einbinden — Termine erscheinen direkt im eigenen Kalender</td>
 </tr>
