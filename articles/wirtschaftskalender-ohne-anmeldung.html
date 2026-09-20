@@ -381,11 +381,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .chip-abschnitt.chip-links img.chip-bild { float: left; margin-right: 0.6rem; }
 .chip-abschnitt h2 { clear: both; width: 100%; }
 .chip-abschnitt p { text-align: justify; }
+.durchgestrichen { position: relative; display: inline-block; }
+.durchgestrichen::before, .durchgestrichen::after {
+  content: ""; position: absolute; left: -6%; right: -6%; top: 50%; height: 9px;
+  background: #d21f1f; border-radius: 3px; transform-origin: center;
+}
+.durchgestrichen::before { transform: translateY(-52%) rotate(18deg) scaleY(1.15); }
+.durchgestrichen::after { transform: translateY(-48%) rotate(-16deg) scaleY(1.15); }
 @media (max-width: 520px) {
   .chip-abschnitt img.chip-bild { float: none; display: block; margin: 0 auto 1rem; max-width: 55%; }
 }
 </style>
-<h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der Anmeldepflicht für öffentliche Zahlen</h2>
+<h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der <span class="durchgestrichen">Anmeldepflicht</span> für öffentliche Zahlen</h2>
 <p>Konjunkturdaten — wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen — sind öffentliche Zahlen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
 <p><em>Das ist der Teil, der sich nicht rechtfertigen lässt — und genau den räumt dieser Kalender weg. Alles, was ohnehin öffentlich ist, bleibt hier öffentlich: keine Paywall vor der Ansicht, keine Anmeldung vor der API, kein Konto vor dem Download.</em></p>
 <p>Hier wird nichts verlangt. Zahlen, die von Zentralbanken und Statistikämtern stammen, aus Steuergeldern finanziert sind, gehören niemandem — also bleiben sie frei, ohne Kleingedrucktes, ohne "Premium"-Stufe, ohne Kreditkarte im Kleingedruckten.</p>
