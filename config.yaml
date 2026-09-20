@@ -40,9 +40,9 @@ channels:
     manual: false
     max_chars: 290
   linkedin:
-    enabled: true
-    manual: false
-    note: "Höchste Priorität (Stufe 3). Benötigt LINKEDIN_ACCESS_TOKEN in .env, App mit verifizierter Company-Page."
+    enabled: false
+    manual: true
+    note: "Manuell: eigene Company-Page/App-Verifizierung zu aufwendig für den Nutzen. Text kopieren, in \"Beitrag erstellen\" einfügen - Linkvorschau holt LinkedIn automatisch aus den og:-Tags des Artikels."
     min_chars: 1200
     max_chars: 1800
   x:
