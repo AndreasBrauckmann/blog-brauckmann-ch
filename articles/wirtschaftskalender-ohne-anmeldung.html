@@ -372,121 +372,22 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
     <p><em>Ein Wirtschaftskalender, für den man sich nirgends anmelden muss — nicht für die Ansicht, nicht für die API, nicht für den Download. Zahlen, die ohnehin öffentlich sind, gehören niemandem.</em></p>
     <style>
-    .highlight-stempel {
-      display: flex; flex-wrap: wrap; gap: 1.3rem 1.5rem; margin: 2rem 0 2.2rem;
-      justify-content: flex-start;
-    }
-    .chip { display: block; transition: transform 0.15s ease; cursor: default; }
-    .chip:hover { transform: translateY(-3px) scale(1.03); }
-    </style>
-    <div class="highlight-stempel">
-      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="16 Jahre Konjunkturdaten seit 2010">
-        <circle cx="60" cy="60" r="58" fill="#8a1f1a"/>
-        <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="7 5.5" stroke-dashoffset="2"/>
-        <circle cx="60" cy="60" r="53" fill="none" stroke="#8a1f1a" stroke-width="1"/>
-        <circle cx="60" cy="60" r="49" fill="#faf6ec"/>
-        <defs>
-          <path id="bogenO0" d="M 21.5,74.0 A 41,41 0 1 1 98.5,74.0" fill="none"/>
-          <path id="bogenU0" d="M 29.0,48.7 A 33,33 0 1 0 91.0,48.7" fill="none"/>
-        </defs>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="15" letter-spacing="0.2" fill="#8a1f1a">
-          <textPath href="#bogenO0" startOffset="50%" text-anchor="middle">16 JAHRE</textPath>
-        </text>
-        <text x="60" y="69" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" fill="#1a1a1a">16</text>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="13" letter-spacing="0.1" fill="#8a1f1a">
-          <textPath href="#bogenU0" startOffset="50%" text-anchor="middle">SEIT 2010</textPath>
-        </text>
-      </svg>
-      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="19 Länder, zehn Währungen">
-        <circle cx="60" cy="60" r="58" fill="#14468a"/>
-        <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="7 5.5" stroke-dashoffset="2"/>
-        <circle cx="60" cy="60" r="53" fill="none" stroke="#14468a" stroke-width="1"/>
-        <circle cx="60" cy="60" r="49" fill="#faf6ec"/>
-        <defs>
-          <path id="bogenO1" d="M 21.5,74.0 A 41,41 0 1 1 98.5,74.0" fill="none"/>
-          <path id="bogenU1" d="M 29.0,48.7 A 33,33 0 1 0 91.0,48.7" fill="none"/>
-        </defs>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="15" letter-spacing="0.2" fill="#14468a">
-          <textPath href="#bogenO1" startOffset="50%" text-anchor="middle">19 LÄNDER</textPath>
-        </text>
-        <text x="60" y="69" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" fill="#1a1a1a">19</text>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="9.3" letter-spacing="0.1" fill="#14468a">
-          <textPath href="#bogenU1" startOffset="50%" text-anchor="middle">ZEHN WÄHRUNGEN</textPath>
-        </text>
-      </svg>
-      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="Kostenlose API und Downloads">
-        <circle cx="60" cy="60" r="58" fill="#166a37"/>
-        <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="7 5.5" stroke-dashoffset="2"/>
-        <circle cx="60" cy="60" r="53" fill="none" stroke="#166a37" stroke-width="1"/>
-        <circle cx="60" cy="60" r="49" fill="#faf6ec"/>
-        <defs>
-          <path id="bogenO2" d="M 21.5,74.0 A 41,41 0 1 1 98.5,74.0" fill="none"/>
-          <path id="bogenU2" d="M 29.0,48.7 A 33,33 0 1 0 91.0,48.7" fill="none"/>
-        </defs>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="11.5" letter-spacing="0.2" fill="#166a37">
-          <textPath href="#bogenO2" startOffset="50%" text-anchor="middle">KOSTENLOSE API</textPath>
-        </text>
-        <text x="60" y="69" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="30" fill="#1a1a1a">FREE</text>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="10.0" letter-spacing="0.1" fill="#166a37">
-          <textPath href="#bogenU2" startOffset="50%" text-anchor="middle">UND DOWNLOADS</textPath>
-        </text>
-      </svg>
-      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="Sechs Formate zum Download">
-        <circle cx="60" cy="60" r="58" fill="#5a2f8a"/>
-        <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="7 5.5" stroke-dashoffset="2"/>
-        <circle cx="60" cy="60" r="53" fill="none" stroke="#5a2f8a" stroke-width="1"/>
-        <circle cx="60" cy="60" r="49" fill="#faf6ec"/>
-        <defs>
-          <path id="bogenO3" d="M 21.5,74.0 A 41,41 0 1 1 98.5,74.0" fill="none"/>
-          <path id="bogenU3" d="M 29.0,48.7 A 33,33 0 1 0 91.0,48.7" fill="none"/>
-        </defs>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="12.4" letter-spacing="0.2" fill="#5a2f8a">
-          <textPath href="#bogenO3" startOffset="50%" text-anchor="middle">SECHS FORMATE</textPath>
-        </text>
-        <text x="60" y="69" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" fill="#1a1a1a">6</text>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="10.8" letter-spacing="0.1" fill="#5a2f8a">
-          <textPath href="#bogenU3" startOffset="50%" text-anchor="middle">ZUM DOWNLOAD</textPath>
-        </text>
-      </svg>
-      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="Amtliche Quellen bei 98 Prozent">
-        <circle cx="60" cy="60" r="58" fill="#2b2b2b"/>
-        <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="7 5.5" stroke-dashoffset="2"/>
-        <circle cx="60" cy="60" r="53" fill="none" stroke="#2b2b2b" stroke-width="1"/>
-        <circle cx="60" cy="60" r="49" fill="#faf6ec"/>
-        <defs>
-          <path id="bogenO4" d="M 21.5,74.0 A 41,41 0 1 1 98.5,74.0" fill="none"/>
-          <path id="bogenU4" d="M 29.0,48.7 A 33,33 0 1 0 91.0,48.7" fill="none"/>
-        </defs>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="10.1" letter-spacing="0.2" fill="#2b2b2b">
-          <textPath href="#bogenO4" startOffset="50%" text-anchor="middle">AMTLICHE QUELLEN</textPath>
-        </text>
-        <text x="60" y="69" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="30" fill="#1a1a1a">98%</text>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="9.3" letter-spacing="0.1" fill="#2b2b2b">
-          <textPath href="#bogenU4" startOffset="50%" text-anchor="middle">BEI 98 PROZENT</textPath>
-        </text>
-      </svg>
-      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="KI-Recherche und Analyse">
-        <circle cx="60" cy="60" r="58" fill="#b3720c"/>
-        <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="7 5.5" stroke-dashoffset="2"/>
-        <circle cx="60" cy="60" r="53" fill="none" stroke="#b3720c" stroke-width="1"/>
-        <circle cx="60" cy="60" r="49" fill="#faf6ec"/>
-        <defs>
-          <path id="bogenO5" d="M 21.5,74.0 A 41,41 0 1 1 98.5,74.0" fill="none"/>
-          <path id="bogenU5" d="M 29.0,48.7 A 33,33 0 1 0 91.0,48.7" fill="none"/>
-        </defs>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="13.4" letter-spacing="0.2" fill="#b3720c">
-          <textPath href="#bogenO5" startOffset="50%" text-anchor="middle">KI-RECHERCHE</textPath>
-        </text>
-        <text x="60" y="69" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="44" fill="#1a1a1a">KI</text>
-        <text font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="11.8" letter-spacing="0.1" fill="#b3720c">
-          <textPath href="#bogenU5" startOffset="50%" text-anchor="middle">UND ANALYSE</textPath>
-        </text>
-      </svg>
-    </div>
+.chip-zeile { display: flex; gap: 2rem; align-items: flex-start; margin: 1.5rem 0; flex-wrap: wrap; }
+.chip-zeile.chip-links { flex-direction: row-reverse; }
+.chip-zeile .chip-text { flex: 1 1 60%; min-width: 260px; }
+.chip-zeile .chip-bild { flex: 1 1 40%; min-width: 180px; max-width: 240px; display: flex; justify-content: center; align-items: flex-start; padding-top: 0.5rem; }
+.chip-zeile .chip-bild img { width: 100%; max-width: 220px; height: auto; }
+.chip-zeile .chip-text h2 { margin-top: 0; }
+@media (max-width: 640px) {
+  .chip-zeile, .chip-zeile.chip-links { flex-direction: column; }
+  .chip-zeile .chip-bild { max-width: 160px; margin: 0 auto; }
+}
+</style>
 <h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der Anmeldepflicht für öffentliche Zahlen</h2>
 <p>Konjunkturdaten — wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen — sind öffentliche Zahlen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
 <p><em>Das ist der Teil, der sich nicht rechtfertigen lässt — und genau den räumt dieser Kalender weg. Alles, was ohnehin öffentlich ist, bleibt hier öffentlich: keine Paywall vor der Ansicht, keine Anmeldung vor der API, kein Konto vor dem Download.</em></p>
 <p>Hier wird nichts verlangt. Zahlen, die von Zentralbanken und Statistikämtern stammen, aus Steuergeldern finanziert sind, gehören niemandem — also bleiben sie frei, ohne Kleingedrucktes, ohne "Premium"-Stufe, ohne Kreditkarte im Kleingedruckten.</p>
+<div class="chip-zeile chip-rechts"><div class="chip-text">
 <h2 id="was-drinsteckt-84000-termine-16-jahre">Was drinsteckt: über 84.000 Termine, 16 Jahre</h2>
 <p>Unter <a href="https://brauckmann.ch/kalender/">brauckmann.ch/kalender</a> steht kein Ausschnitt, sondern ein vollständiges Archiv:</p>
 <ul>
@@ -496,12 +397,16 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>Zuletzt aktualisiert: automatisch, mehrmals täglich — der genaue Zeitpunkt steht live auf der Seite (<code>Stand: …</code>)</li>
 </ul>
 <p>Jeder einzelne Termin trägt Ist-Wert, Prognose und Vorwert, Kategorie, Marktwirkung (Hoch/Mittel/Niedrig) und — wo bekannt — einen kleinen <strong>Sparkline-Verlauf</strong>: die letzten zwölf Veröffentlichungen derselben Kennzahl als Diagramm, Ist-Werte als durchgezogene Linie, Prognosen gestrichelt daneben. Auf einen Blick sieht man, ob eine Zahl gerade steigt, fällt oder seitwärts pendelt — ohne eine einzige Tabellenzelle lesen zu müssen.</p>
+</div><div class="chip-bild"><img src="/static/img/chips/19-laender.png" alt="19 Länder, 10 Währungsräume"></div></div>
+<div class="chip-zeile chip-links"><div class="chip-text">
 <h2 id="warum-16-jahre-historie-mehr-sind-als-ein-archiv">Warum 16 Jahre Historie mehr sind als ein Archiv</h2>
 <p>Eine einzelne Veröffentlichung sagt wenig. Erst im Vergleich über Jahre wird eine Kennzahl aussagekräftig: Wie oft lag die Prognose daneben? In welche Richtung? Und wie schnell hat sich die Lücke zwischen Ist und Prognose danach wieder geschlossen?</p>
 <p>Genau das lässt sich mit 16 Jahren Historie beantworten, nicht nur mit den letzten drei Terminen. Als Beispiel die komplette US-Arbeitslosenquote seit 2010 — Ist-Wert und Prognose direkt übereinandergelegt:</p>
 <p><img alt="US-Arbeitslosenquote, Ist gegen Prognose, 2010 bis 2026" src="/static/img/01-arbeitslosenquote-usa-light.png" /></p>
 <p>Über weite Strecken liegen beide Linien fast deckungsgleich — der Markt preist diese Kennzahl gut ein. Auffällig wird es genau dort, wo sie auseinanderlaufen: im Frühjahr 2020, mit dem Corona-Schock, springt die Quote von 4,4 % im März auf 14,7 % im Mai — und selbst diese Prognose lag mit 16,0 % noch darüber, im Folgemonat mit 19,4 % gegen tatsächliche 13,3 % sogar noch deutlicher daneben. Ein sichtbares Zeichen dafür, wie schwer diese Phase einzuschätzen war. Wer solche Muster über eine ganze Kennzahlen-Reihe sieht statt nur den letzten Termin, bekommt ein Gefühl dafür, wie verlässlich der Marktkonsens bei genau dieser Zahl normalerweise ist — und wann er es ausnahmsweise nicht war.</p>
 <p>Dieselbe Auswertung lässt sich für jede der 1.492 Kennzahlen-Reihen selbst nachbauen: die komplette Historie steht als Download bereit (dazu gleich mehr), keine Programmierkenntnisse nötig, ein Tabellenprogramm reicht.</p>
+</div><div class="chip-bild"><img src="/static/img/chips/16-jahre.png" alt="16 Jahre Historie seit 2010"></div></div>
+<div class="chip-zeile chip-rechts"><div class="chip-text">
 <h2 id="die-api-kostenlos-dokumentiert-mit-vernunftigem-limit">Die API: kostenlos, dokumentiert, mit vernünftigem Limit</h2>
 <p>Wer selbst etwas bauen will, muss nicht scrapen. Es gibt eine echte JSON-API:</p>
 <div class="codehilite"><pre><span></span><code>GET https://brauckmann.ch/kalender/api/v1/termine
@@ -509,6 +414,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <p>Filterbar nach Zeitraum, Währung, Wichtigkeit, Kategorie, Freitextsuche. Ohne jeden Schlüssel stehen <strong>10 Abfragen pro Stunde</strong> zur Verfügung — reicht für normales Stöbern und kleine Skripte. Wer mehr braucht, holt sich kostenlos einen API-Schlüssel und bekommt <strong>100 Abfragen pro Stunde</strong>. Die vollständige Referenz liegt als OpenAPI-Spezifikation direkt auf der Seite, keine separate Anmeldung für die Doku nötig.</p>
 <p>Diese Grenzen sind bewusst so gesetzt, dass "einfach mal alles auf Verdacht abziehen" nicht funktioniert — wer aber gezielt filtert und nur lädt, was er braucht, kommt jederzeit klar durch.</p>
+</div><div class="chip-bild"><img src="/static/img/chips/kostenlose-app.png" alt="Kostenlose API"></div></div>
+<div class="chip-zeile chip-links"><div class="chip-text">
 <h2 id="sechs-downloadformate-fur-jedes-werkzeug-das-passende">Sechs Downloadformate — für jedes Werkzeug das passende</h2>
 <p>Nicht jeder will mit einer API arbeiten. Deshalb gibt es den kompletten Datenbestand auch direkt zum Herunterladen, in sechs Formaten — als eigene Knöpfe direkt auf der Seite, jeder mit eigenem Icon:</p>
 <style>
@@ -557,6 +464,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tbody>
 </table></div>
 <p>Auch die Downloads sind kostenlos, mit einem knapperen Limit (1× pro Stunde ohne Schlüssel, 4× mit Schlüssel) — wieder: gegen Massenabzug, nicht gegen normale Nutzung.</p>
+</div><div class="chip-bild"><img src="/static/img/chips/sechs-formate.png" alt="Sechs Downloadformate"></div></div>
+<div class="chip-zeile chip-rechts"><div class="chip-text">
 <h2 id="originalquellen-bei-98-direkt-zur-amtlichen-stelle">Originalquellen: bei 98 % direkt zur amtlichen Stelle</h2>
 <p>Eine Zahl ohne Herkunft ist nur eine Behauptung. Deshalb verlinkt praktisch jede Kennzahl direkt auf die <strong>amtliche Originalquelle</strong> — die Statistikbehörde, Zentralbank oder Institution, die die Zahl tatsächlich veröffentlicht hat, nicht auf eine dritte Website, die sie nur zitiert.</p>
 <p>Die eigene <a href="https://brauckmann.ch/kalender/quellen">Quellen-Übersicht</a> zeigt den Stand ehrlich:</p>
@@ -566,6 +475,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li>Die verbleibenden 1,9 % sind offen ausgewiesen, nicht versteckt — bekannte Lücke, keine Behauptung</li>
 </ul>
 <p>Im Termin-Detail steht die Quelle direkt unter „Originalquelle": Titel der amtlichen Seite, ein Klick genügt.</p>
+</div><div class="chip-bild"><img src="/static/img/chips/amtliche-quellen.png" alt="98 Prozent amtliche Quellen"></div></div>
+<div class="chip-zeile chip-links"><div class="chip-text">
 <h2 id="nachlesen-recherche-in-googles-ki-modus-ein-klick">„Nachlesen": Recherche in Googles KI-Modus, ein Klick</h2>
 <p>Jeder Termin trägt zusätzlich einen Knopf: <strong>Nachlesen</strong>. Der öffnet keine Stichwortsuche, sondern einen vollständig ausformulierten Recherche-Auftrag in Googles KI-Modus (<code>udm=50</code>) — mit dem Termin, dem Datum und den bereits bekannten Zahlen (Ist/Prognose/Vorherig) direkt im Prompt, damit die Antwort nicht selbst nach der Zahl suchen und sie dabei verwechseln muss.</p>
 <p>So sieht das in echt aus — Zeile anklicken, Detail öffnet mit Ist/Prognose/Originalquelle und Sparkline, „Nachlesen" ist als grüner Knopf kaum zu übersehen:</p>
@@ -579,6 +490,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <li><strong>🎓 Für Einsteiger</strong> — kurze Einordnung, was die Kennzahl überhaupt misst</li>
 </ol>
 <p>Immer dieselbe Reihenfolge, dieselben Überschriften, dieselben Emoji als Wiedererkennung — wer eine Kennzahl nicht kennt, muss nicht erst googeln, wie sie einzuordnen ist, der Klick liefert die Einordnung fertig mit.</p>
+</div><div class="chip-bild"><img src="/static/img/chips/ki-recherche.png" alt="KI-Recherche und Analyse"></div></div>
 <h2 id="modern-schnell-ohne-ballast">Modern, schnell, ohne Ballast</h2>
 <p>Die Seite selbst ist bewusst schlank gebaut: eine eigene, kleine Flask-Anwendung statt eines vollen CMS, live gefiltert ohne Neuladen, mit Excel-artigen Spaltenfiltern in der Kopfzeile, hell und dunkel passend zum System-Theme des Browsers. Keine Werbung, kein Tracking über das technisch Nötige hinaus, keine Cookie-Banner-Orgie.</p>
 <h2 id="zusammengefasst">Zusammengefasst</h2>
