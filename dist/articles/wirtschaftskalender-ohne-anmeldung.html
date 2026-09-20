@@ -373,63 +373,50 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <p><em>Ein Wirtschaftskalender, für den man sich nirgends anmelden muss — nicht für die Ansicht, nicht für die API, nicht für den Download. Zahlen, die ohnehin öffentlich sind, gehören niemandem.</em></p>
     <style>
     .highlight-stempel {
-      display: flex; flex-wrap: wrap; gap: 1.1rem 1.4rem; margin: 2rem 0 2.2rem;
+      display: flex; flex-wrap: wrap; gap: 1.3rem 1.5rem; margin: 2rem 0 2.2rem;
       justify-content: flex-start;
     }
-    .highlight-stempel .stempel {
+    .chip {
       position: relative;
-      display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
-      width: 128px; height: 128px; border-radius: 50%;
-      border: 3px solid var(--stempel-farbe); box-shadow: 0 0 0 5px transparent, inset 0 0 0 2px var(--stempel-farbe);
-      outline: 1px solid var(--stempel-farbe); outline-offset: -8px;
-      color: var(--stempel-farbe);
-      font-family: "SFMono-Regular", Consolas, Menlo, monospace;
-      font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em;
-      text-align: center; line-height: 1.15; font-size: 0.72rem;
-      padding: 0.5rem; opacity: 0.88; mix-blend-mode: multiply;
+      width: 118px; height: 118px; border-radius: 50%;
+      background: repeating-conic-gradient(
+        var(--chip-farbe) 0deg 18deg, #ffffff 18deg 27deg
+      );
+      padding: 9px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.28);
+      transition: transform 0.15s ease;
     }
-    @media (prefers-color-scheme: dark) {
-      .highlight-stempel .stempel { mix-blend-mode: normal; }
+    .chip:hover { transform: translateY(-3px) scale(1.03); }
+    .chip-innen {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: var(--chip-farbe);
+      border: 3px dashed rgba(255,255,255,0.85);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+      text-align: center; line-height: 1.2;
     }
-    .highlight-stempel .stempel.rect { border-radius: 6px; width: auto; min-width: 150px; height: 74px; padding: 0.5rem 1rem; }
-    .highlight-stempel .stempel:nth-child(1) { transform: rotate(-6deg); }
-    .highlight-stempel .stempel:nth-child(2) { transform: rotate(4deg); }
-    .highlight-stempel .stempel:nth-child(3) { transform: rotate(-3deg); }
-    .highlight-stempel .stempel:nth-child(4) { transform: rotate(7deg); }
-    .highlight-stempel .stempel:nth-child(5) { transform: rotate(-5deg); }
-    .highlight-stempel .stempel:nth-child(6) { transform: rotate(3deg); }
-    .highlight-stempel .stempel .stempel-klein { font-size: 0.6rem; font-weight: 700; margin-top: 0.15rem; letter-spacing: 0.15em; }
-    .highlight-stempel .stempel .stempel-gross { font-size: 0.95rem; font-weight: 900; }
+    .chip-innen .chip-zahl { font-size: 1.5rem; font-weight: 900; }
+    .chip-innen .chip-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.15rem; padding: 0 0.4rem; }
     </style>
     <div class="highlight-stempel">
-      <span class="stempel" style="--stempel-farbe:#c0392b">
-        <span class="stempel-klein">★ 16 JAHRE ★</span>
-        <span class="stempel-gross">HISTORIE</span>
-        <span class="stempel-klein">SEIT 2010</span>
-      </span>
-      <span class="stempel" style="--stempel-farbe:#1e5aa8">
-        <span class="stempel-klein">10 WÄHRUNGEN</span>
-        <span class="stempel-gross">19</span>
-        <span class="stempel-klein">LÄNDER</span>
-      </span>
-      <span class="stempel rect" style="--stempel-farbe:#1a7a3c">
-        <span class="stempel-gross">FREI</span>
-        <span class="stempel-klein">KOSTENLOSE API</span>
-      </span>
-      <span class="stempel" style="--stempel-farbe:#6a3fa0">
-        <span class="stempel-klein">★ SECHS ★</span>
-        <span class="stempel-gross">FORMATE</span>
-        <span class="stempel-klein">CSV · XLSX · ICS …</span>
-      </span>
-      <span class="stempel rect" style="--stempel-farbe:#4a4a4a">
-        <span class="stempel-gross">ORIGINAL</span>
-        <span class="stempel-klein">AMTLICHE QUELLEN</span>
-      </span>
-      <span class="stempel" style="--stempel-farbe:#c77a1e">
-        <span class="stempel-klein">★ NEU ★</span>
-        <span class="stempel-gross">KI-MODUS</span>
-        <span class="stempel-klein">RECHERCHE</span>
-      </span>
+      <div class="chip" style="--chip-farbe:#b8291f">
+        <div class="chip-innen"><span class="chip-zahl">16</span><span class="chip-label">Jahre Historie</span></div>
+      </div>
+      <div class="chip" style="--chip-farbe:#1558b0">
+        <div class="chip-innen"><span class="chip-zahl">19</span><span class="chip-label">Länder, 10 Währungen</span></div>
+      </div>
+      <div class="chip" style="--chip-farbe:#1a8a44">
+        <div class="chip-innen"><span class="chip-zahl">FREI</span><span class="chip-label">Kostenlose API</span></div>
+      </div>
+      <div class="chip" style="--chip-farbe:#6a3fa0">
+        <div class="chip-innen"><span class="chip-zahl">6</span><span class="chip-label">Downloadformate</span></div>
+      </div>
+      <div class="chip" style="--chip-farbe:#2b2b2b">
+        <div class="chip-innen"><span class="chip-zahl">98%</span><span class="chip-label">Originalquellen</span></div>
+      </div>
+      <div class="chip" style="--chip-farbe:#d1860f">
+        <div class="chip-innen"><span class="chip-zahl">KI</span><span class="chip-label">Recherche per Klick</span></div>
+      </div>
     </div>
 <h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der Anmeldepflicht für öffentliche Zahlen</h2>
 <p>Konjunkturdaten — wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen — sind öffentliche Zahlen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
