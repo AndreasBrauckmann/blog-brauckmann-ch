@@ -54,6 +54,59 @@ def parse_article(path: Path) -> dict:
     return meta
 
 
+_JSONLD = re.compile(
+    r'<script type="application/ld\+json">\s*(\{.*?\})\s*</script>', re.S
+)
+_TAG = re.compile(r"<[^>]+>")
+_ARTICLE_BEREICH = re.compile(r"<article\b[^>]*>(.*?)</article>", re.S)
+_P_INHALT = re.compile(r"<p\b[^>]*>(.*?)</p>", re.S)
+
+
+def parse_html_article(path: Path) -> dict:
+    """Metadaten + Lesetext eines eigenstaendigen HTML-Artikels -- ein
+    Artikel, der bewusst NICHT ueber diese Markdown-Pipeline gebaut wird
+    (siehe articles/wirtschaftskalender-ohne-anmeldung.html), sondern direkt
+    als fertige HTML-Datei gepflegt und schon in dist/ liegt. Quelle der
+    Metadaten ist der JSON-LD-Block im <head>, den jeder Artikel fuers SEO
+    ohnehin traegt -- genug, damit summarize_all() denselben Weg wie bei
+    einem Markdown-Artikel nehmen kann."""
+    raw = path.read_text(encoding="utf-8")
+    m = _JSONLD.search(raw)
+    if not m:
+        raise ValueError(f"{path}: kein JSON-LD-Block gefunden")
+    ld = json.loads(m.group(1))
+
+    bereich = _ARTICLE_BEREICH.search(raw)
+    absaetze = []
+    if bereich:
+        for p in _P_INHALT.finditer(bereich.group(1)):
+            text = html.unescape(_TAG.sub("", p.group(1))).strip()
+            if text:
+                absaetze.append(text)
+
+    return {
+        "title": ld["headline"],
+        "slug": path.stem,
+        "date": ld.get("datePublished", ""),
+        "description": ld.get("description", ""),
+        "body_md": "\n\n".join(absaetze),
+        "source": path,
+        "is_html": True,
+    }
+
+
+def load_meta(cfg: dict, slug: str) -> dict:
+    """Metadaten zu einem Slug lesen -- Markdown-Quelle bevorzugt, sonst der
+    eigenstaendige HTML-Artikel mit demselben Slug (siehe parse_html_article).
+    Gemeinsam von der Verwaltungsseite (admin/app.py) und publish.py genutzt,
+    damit beide denselben Slug gleich aufloesen."""
+    articles_dir = ROOT / cfg["paths"]["articles_dir"]
+    md_pfad = articles_dir / f"{slug}.md"
+    if md_pfad.exists():
+        return parse_article(md_pfad)
+    return parse_html_article(articles_dir / f"{slug}.html")
+
+
 def render_markdown(body_md: str) -> str:
     md = markdown.Markdown(
         extensions=["tables", "fenced_code", "codehilite", "footnotes", "toc", "attr_list"],

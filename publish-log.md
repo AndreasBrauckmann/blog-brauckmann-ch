@@ -26,3 +26,8 @@
 
 - sieben-monate-elf-umbrueche: mastodon: https://mastodon.social/@brauckmannblog/117229237044143149 (bearbeitet: Slogan zuerst, dann Titel, dann Beschreibung)
 - sieben-monate-elf-umbrueche: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3muwnrzteds2z (Text jetzt aus dem neuen slogan-Feld statt Ad-hoc-Text; alter Post 3muwkz4xa572l geloescht)
+## 2026-09-20 16:42 UTC
+
+- wirtschaftskalender-ohne-anmeldung: mastodon: https://mastodon.social/@brauckmannblog/117304364405760024
+- wirtschaftskalender-ohne-anmeldung: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3mvxnd2cr452y
+

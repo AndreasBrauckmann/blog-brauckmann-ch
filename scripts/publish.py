@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build import ROOT, load_config, parse_article  # noqa: E402
+from build import ROOT, load_config, load_meta  # noqa: E402
 from envutil import load_dotenv  # noqa: E402
 from social import bluesky, linkedin, mastodon  # noqa: E402
 from summarize import summarize_all  # noqa: E402
@@ -114,49 +114,59 @@ def main() -> int:
     cfg = load_config()
     load_dotenv(ROOT / ".env")
 
-    path = ROOT / cfg["paths"]["articles_dir"] / f"{args.slug}.md"
-    if not path.exists():
-        print(f"FEHLER: {path} nicht gefunden", file=sys.stderr)
+    try:
+        meta = load_meta(cfg, args.slug)
+    except (FileNotFoundError, OSError):
+        print(f"FEHLER: kein Artikel mit Slug '{args.slug}' gefunden "
+              f"(weder .md noch .html)", file=sys.stderr)
         return 1
-    meta = parse_article(path)
 
     requested_channels = set(args.channels.split(",")) if args.channels else None
 
-    print(f"1) Baue Seite für '{meta['title']}' ...")
-    build_result = run([sys.executable, str(ROOT / "scripts" / "build.py")])
-    if build_result.returncode != 0:
-        return 1
-
-    print("2) Zeige Diff ...")
-    run(["git", "add", "-A"])
-    diff_stat = run(["git", "diff", "--cached", "--stat"], capture_output=True)
-    print(diff_stat.stdout)
-
-    problems = check_diff_for_secrets(cfg)
-    if problems:
-        print("ABBRUCH - verdächtiger Inhalt im Diff:", file=sys.stderr)
-        for p in problems:
-            print(f"  - {p}", file=sys.stderr)
-        run(["git", "reset"])
-        return 1
-
-    if not diff_stat.stdout.strip():
-        print("Keine Änderungen, nichts zu committen.")
-    elif not confirm("3) Committen und pushen?", args.yes):
-        print("Abgebrochen.")
-        run(["git", "reset"])
-        return 1
-    elif args.dry_run:
-        print("(--dry-run: kein Commit, kein Push)")
-        run(["git", "reset"])
+    if meta.get("is_html"):
+        # Eigenstaendiger HTML-Artikel (siehe build.parse_html_article):
+        # nicht Teil dieser Pipeline, liegt schon fertig in dist/ und wird
+        # von Hand synchron gehalten. Bauen/Committen/Pushen wuerde dist/
+        # per build.py-rmtree zerstoeren, ohne die Datei neu anzulegen --
+        # hier also direkt zu den Zusammenfassungen/Postings springen.
+        print(f"1) '{meta['title']}' ist ein eigenstaendiger HTML-Artikel -- "
+              "schon veroeffentlicht, kein Build/Commit/Push noetig.")
     else:
-        run(["git", "commit", "-m", f"Artikel: {meta['title']}"])
-        push = run(["git", "push"])
-        if push.returncode != 0:
+        print(f"1) Baue Seite für '{meta['title']}' ...")
+        build_result = run([sys.executable, str(ROOT / "scripts" / "build.py")])
+        if build_result.returncode != 0:
             return 1
-        sha = run(["git", "rev-parse", "HEAD"], capture_output=True).stdout.strip()
-        print("4) Warte auf GitHub-Pages-Deploy ...")
-        wait_for_pages_deploy(sha)
+
+        print("2) Zeige Diff ...")
+        run(["git", "add", "-A"])
+        diff_stat = run(["git", "diff", "--cached", "--stat"], capture_output=True)
+        print(diff_stat.stdout)
+
+        problems = check_diff_for_secrets(cfg)
+        if problems:
+            print("ABBRUCH - verdächtiger Inhalt im Diff:", file=sys.stderr)
+            for p in problems:
+                print(f"  - {p}", file=sys.stderr)
+            run(["git", "reset"])
+            return 1
+
+        if not diff_stat.stdout.strip():
+            print("Keine Änderungen, nichts zu committen.")
+        elif not confirm("3) Committen und pushen?", args.yes):
+            print("Abgebrochen.")
+            run(["git", "reset"])
+            return 1
+        elif args.dry_run:
+            print("(--dry-run: kein Commit, kein Push)")
+            run(["git", "reset"])
+        else:
+            run(["git", "commit", "-m", f"Artikel: {meta['title']}"])
+            push = run(["git", "push"])
+            if push.returncode != 0:
+                return 1
+            sha = run(["git", "rev-parse", "HEAD"], capture_output=True).stdout.strip()
+            print("4) Warte auf GitHub-Pages-Deploy ...")
+            wait_for_pages_deploy(sha)
 
     print("5) Erzeuge Zusammenfassungen ...")
     summaries = summarize_all(meta, cfg)

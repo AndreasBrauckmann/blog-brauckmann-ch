@@ -24,7 +24,7 @@ import urllib.parse
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from build import ROOT, load_config, parse_article  # noqa: E402
+from build import ROOT, load_config, load_meta, parse_article, parse_html_article  # noqa: E402
 from envutil import load_dotenv  # noqa: E402
 from social import bluesky, linkedin, mastodon  # noqa: E402
 from summarize import headline, summarize_all  # noqa: E402
@@ -166,6 +166,9 @@ def list_articles(cfg: dict) -> list[dict]:
         if meta.get("draft", False):
             continue
         items.append({"slug": meta["slug"], "title": meta["title"], "date": str(meta["date"])})
+    for path in sorted(articles_dir.glob("*.html")):
+        meta = parse_html_article(path)
+        items.append({"slug": meta["slug"], "title": meta["title"], "date": str(meta["date"])})
     items.sort(key=lambda m: m["date"], reverse=True)
     return items
 
@@ -196,8 +199,7 @@ def dashboard():
         return render_template_string(BASE_HTML, body="<h1>Blog-Verwaltung</h1><p>Keine Artikel gefunden.</p>")
 
     slug = request.args.get("slug", articles[0]["slug"])
-    path = ROOT / cfg["paths"]["articles_dir"] / f"{slug}.md"
-    meta = parse_article(path)
+    meta = load_meta(cfg, slug)
     canonical_url = f"{cfg['site']['base_url']}/artikel/{slug}/"
     summaries = summarize_all(meta, cfg)
 
