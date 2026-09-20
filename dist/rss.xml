@@ -4,6 +4,20 @@
   <link>https://blog.brauckmann.ch</link>
   <description>IT, KI und Automatisierung für Fachpublikum</description>
   <item>
+    <title>Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server</title>
+    <link>https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/</link>
+    <guid>https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/</guid>
+    <description>Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.</description>
+    <pubDate>Sun, 20 Sep 2026 00:00:00 +0000</pubDate>
+  </item>
+  <item>
+    <title>Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und ohne Kosten</title>
+    <link>https://blog.brauckmann.ch/artikel/wirtschaftskalender-ohne-anmeldung/</link>
+    <guid>https://blog.brauckmann.ch/artikel/wirtschaftskalender-ohne-anmeldung/</guid>
+    <description>Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle.</description>
+    <pubDate>Sun, 20 Sep 2026 00:00:00 +0000</pubDate>
+  </item>
+  <item>
     <title>KI-Tempo, Nov.25 – Sep.26: Elf Monate, zwei Wellen — warum jetzt andere Regeln gelten</title>
     <link>https://blog.brauckmann.ch/artikel/sieben-monate-elf-umbrueche/</link>
     <guid>https://blog.brauckmann.ch/artikel/sieben-monate-elf-umbrueche/</guid>

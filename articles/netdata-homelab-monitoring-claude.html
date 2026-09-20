@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server · Brauckmann Blog</title>
+<meta name="description" content="Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.">
+<link rel="canonical" href="https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server">
+<meta property="og:description" content="Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.">
+<meta property="og:url" content="https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/">
+<meta property="og:image" content="https://blog.brauckmann.ch/static/img/netdata-dashboard-uebersicht.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server">
+<meta name="twitter:description" content="Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.">
+<meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/netdata-dashboard-uebersicht.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server",
+  "description": "Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.",
+  "datePublished": "2026-09-20",
+  "dateModified": "2026-09-20",
+  "author": {
+    "@type": "Person",
+    "name": "Andreas Brauckmann"
+  },
+  "url": "https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/",
+  "image": "https://blog.brauckmann.ch/static/img/netdata-dashboard-uebersicht.png"
+}
+</script>
+
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --fg-muted: #555555;
+  --link: #0a58ca;
+  --link-visited: #5b3fa8;
+  --border: #dddddd;
+  --code-bg: #f5f5f5;
+  --tag-bg: #eef1f5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --fg: #e6e6e6;
+    --fg-muted: #a6a6a6;
+    --link: #7db2ff;
+    --link-visited: #c3a6ff;
+    --border: #333333;
+    --code-bg: #1e1e1e;
+    --tag-bg: #1f2733;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+footer.site-footer {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+main {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 3rem;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.25;
+}
+
+h1 { font-size: 1.9rem; margin-top: 0; }
+h2 { font-size: 1.4rem; margin-top: 2rem; }
+h3 { font-size: 1.15rem; }
+
+a { color: var(--link); }
+a:visited { color: var(--link-visited); }
+
+time.article-date {
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+.tags { margin: 0.5rem 0 1.5rem; }
+.tag {
+  display: inline-block;
+  background: var(--tag-bg);
+  color: var(--fg-muted);
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.8rem;
+  margin-right: 0.4rem;
+}
+
+a.tag { text-decoration: none; }
+a.tag:visited { color: var(--fg-muted); }
+
+.list-heading { margin-bottom: 0.5rem; }
+.list-heading a { text-decoration: none; color: var(--fg-muted); font-size: 0.9rem; }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.pagination a { text-decoration: none; }
+.pagination .disabled { color: var(--fg-muted); }
+
+img { max-width: 100%; height: auto; }
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+table { border-collapse: collapse; width: 100%; }
+th, td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); text-align: left; }
+th { background: var(--tag-bg); }
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+code { font-family: "SFMono-Regular", Consolas, Menlo, monospace; font-size: 0.9em; }
+p code, li code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; }
+
+article > p, article > ul, article > ol { max-width: 70ch; }
+
+.article-list-item {
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
+}
+
+.article-list-item h2 { margin-top: 0; }
+.article-list-item h2 a { text-decoration: none; }
+
+.teaser { color: var(--fg-muted); }
+
+.footnote-backref { text-decoration: none; }
+
+/* ---------- Bild-Lightbox: Klick zum Vergrössern ---------- */
+article img {
+  cursor: zoom-in;
+}
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  cursor: zoom-out;
+}
+.lightbox-overlay.is-open {
+  display: flex;
+}
+.lightbox-overlay img {
+  max-width: 96vw;
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  cursor: zoom-out;
+}
+
+/* ---------- Fünf-Techniken-Liste: Symbol als Aufzählungszeichen, Einzug für Zeilenumbruch ---------- */
+.funf-techniken-liste {
+  list-style: none;
+  margin: 18px 0 24px;
+  padding: 0;
+}
+.funf-techniken-liste li {
+  position: relative;
+  padding-left: 2.3em;
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+.funf-techniken-liste li:last-child {
+  margin-bottom: 0;
+}
+.funf-techniken-liste .fte {
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  font-size: 1.1em;
+}
+
+/* ---------- Zusammenfassung: Button + Akkordeon ---------- */
+.article-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1.5rem;
+}
+.article-meta-row .tags {
+  margin: 0;
+}
+.summary-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 999px;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.summary-toggle:hover {
+  background: var(--tag-bg);
+}
+.summary-toggle-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.summary-toggle[aria-expanded="true"] .summary-toggle-icon {
+  transform: rotate(180deg);
+}
+.summary-box {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  max-width: 70ch;
+}
+.summary-box.is-open {
+  max-height: 700px;
+}
+.summary-box-inner {
+  border-left: 3px solid var(--border);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+}
+.summary-box-inner p:first-child {
+  margin-top: 0.8rem;
+}
+.summary-box-inner p:last-child {
+  margin-bottom: 0.8rem;
+}
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f8f8f8; }
+.codehilite .c { color: #3D7B7B; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #9C6500 } /* Comment.Preproc */
+.codehilite .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #E40000 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #008400 } /* Generic.Inserted */
+.codehilite .go { color: #717171 } /* Generic.Output */
+.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #B00040 } /* Keyword.Type */
+.codehilite .m { color: #666 } /* Literal.Number */
+.codehilite .s { color: #BA2121 } /* Literal.String */
+.codehilite .na { color: #687822 } /* Name.Attribute */
+.codehilite .nb { color: #008000 } /* Name.Builtin */
+.codehilite .nc { color: #00F; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #800 } /* Name.Constant */
+.codehilite .nd { color: #A2F } /* Name.Decorator */
+.codehilite .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.codehilite .nf { color: #00F } /* Name.Function */
+.codehilite .nl { color: #767600 } /* Name.Label */
+.codehilite .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #19177C } /* Name.Variable */
+.codehilite .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #666 } /* Literal.Number.Bin */
+.codehilite .mf { color: #666 } /* Literal.Number.Float */
+.codehilite .mh { color: #666 } /* Literal.Number.Hex */
+.codehilite .mi { color: #666 } /* Literal.Number.Integer */
+.codehilite .mo { color: #666 } /* Literal.Number.Oct */
+.codehilite .sa { color: #BA2121 } /* Literal.String.Affix */
+.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+.codehilite .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+.codehilite .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.codehilite .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.codehilite .sx { color: #008000 } /* Literal.String.Other */
+.codehilite .sr { color: #A45A77 } /* Literal.String.Regex */
+.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #00F } /* Name.Function.Magic */
+.codehilite .vc { color: #19177C } /* Name.Variable.Class */
+.codehilite .vg { color: #19177C } /* Name.Variable.Global */
+.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+.codehilite .vm { color: #19177C } /* Name.Variable.Magic */
+.codehilite .il { color: #666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body>
+<main>
+  <article>
+    <header>
+      <h1>Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server</h1>
+      <time class="article-date" datetime="2026-09-20">2026-09-20</time>
+      <div class="article-meta-row">
+        <div class="tags"><a class="tag" href="/tag/monitoring/">Monitoring</a><a class="tag" href="/tag/netdata/">Netdata</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/homelab/">Homelab</a><a class="tag" href="/tag/mcp/">MCP</a></div>
+        <button type="button" class="summary-toggle" id="summary-toggle" aria-expanded="true" aria-controls="summary-box">
+          Zusammenfassung <span class="summary-toggle-icon" aria-hidden="true">&#9662;</span>
+        </button>
+      </div>
+    </header>
+    <div class="summary-box is-open" id="summary-box">
+      <div class="summary-box-inner">
+        <p>Netdata bringt seit Version 2.6 einen eigenen MCP-Server mit — ganz ohne Zusatzinstallation. Wer ein Homelab oder eine kleine Umgebung mit ein paar Nodes betreibt, hat in gut 15 Minuten ein vollständiges Monitoring mit Hunderten Metriken pro Sekunde, plus einen KI-Assistenten, der die Daten tatsächlich versteht: Claude fragt "Warum ist der Server langsam?" nicht mehr rhetorisch, sondern zieht sich die echten Zahlen. Installation, erste Ansicht, MCP-Anbindung, eine Beispielfrage — und ein Hinweis, worauf zu achten ist, sobald man das Ganze von außerhalb des eigenen Netzes erreichbar machen will.</p>
+      </div>
+    </div>
+    <p><em>Netdata installieren, das Dashboard einmal ansehen, Claude als MCP-Client anschließen — fertig. Kein Cloud-Konto nötig, keine Konfigurationsdatei, die erst verstanden werden muss.</em></p>
+<p><img alt="Netdata-Dashboard mit CPU-, RAM- und Netzwerk-Kacheln" src="/static/img/netdata-dashboard-uebersicht.png" /></p>
+<p>Für die meisten Homelabs und kleinen Setups — ein Server, ein NAS, ein paar Raspberry Pis, vielleicht ein Handvoll Container — ist professionelles Monitoring bisher an zwei Dingen gescheitert: entweder es brauchte eine eigene Prometheus/Grafana-Installation mit Zeit, die man an einem Wochenende nicht wirklich übrig hat, oder es war eine der leichteren Lösungen, die dann doch nur eine Handvoll Kennzahlen zeigen. Netdata liegt dazwischen — und bringt seit Kurzem etwas mit, das den Unterschied macht: einen eingebauten MCP-Server, über den ein KI-Assistent wie Claude direkt auf die Live-Metriken zugreifen kann.</p>
+<h2 id="installation-ein-befehl">Installation: ein Befehl</h2>
+<p>Netdata hat ein offizielles Installationsskript, das auf so gut wie jeder gängigen Linux-Distribution funktioniert (Debian, Ubuntu, Raspberry Pi OS, Fedora, Arch — auch auf ARM, also problemlos auf einem Raspberry Pi):</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-Ss<span class="w"> </span>https://get.netdata.cloud/kickstart.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</code></pre></div>
+
+<p>Das Skript erkennt die Distribution selbst, installiert die passenden Pakete und startet den Netdata-Dienst direkt im Anschluss. Nach ein bis zwei Minuten ist das Dashboard erreichbar:</p>
+<div class="codehilite"><pre><span></span><code>http://&lt;deine-server-ip&gt;:19999
+</code></pre></div>
+
+<p>Kein Login, kein Cloud-Konto nötig — das Dashboard funktioniert vollständig lokal und zeigt sofort an, was gerade passiert: CPU pro Kern, Arbeitsspeicher, Netzwerkdurchsatz, Festplatten-I/O, laufende Prozesse, und bei den meisten Distributionen automatisch erkannt auch Docker-Container, laufende Datenbanken oder Webserver, falls welche installiert sind.</p>
+<h2 id="die-erste-ansicht">Die erste Ansicht</h2>
+<p>Das Dashboard sammelt ab der ersten Sekunde und aktualisiert sich laufend — pro Sekunde, nicht alle fünf Minuten wie bei den meisten klassischen Lösungen. Das merkt man sofort, wenn ein kurzer CPU-Spike auftaucht: er ist als einzelner Zacken sichtbar, nicht als geglättete Linie, die den eigentlichen Moment verschluckt.</p>
+<p><img alt="Alerts-Ansicht mit einem ausgelösten Alarm" src="/static/img/netdata-alerts-ansicht.png" /></p>
+<p>Netdata bringt außerdem von Haus aus rund 300 vordefinierte Alarme mit — Festplatte fast voll, Swap-Nutzung zu hoch, ein Dienst nicht erreichbar, und so weiter. Die muss man nicht selbst konfigurieren; sie laufen von Anfang an mit und tauchen im Reiter „Alerts" auf, sobald einer davon anschlägt.</p>
+<h2 id="claude-als-mcp-client-anschlieen">Claude als MCP-Client anschließen</h2>
+<p>Das ist der Teil, der den Unterschied macht. Ab Netdata Agent Version 2.6.0 läuft automatisch ein MCP-Server mit — ohne jede Zusatzinstallation, ohne eigenen Prozess, ohne Konfigurationsdatei. Erreichbar ist er unter:</p>
+<div class="codehilite"><pre><span></span><code>http://&lt;deine-server-ip&gt;:19999/mcp
+</code></pre></div>
+
+<p>In Claude Desktop (oder Claude Code) trägt man diesen Endpunkt als benutzerdefinierten Connector ein:</p>
+<ul>
+<li><strong>Einstellungen → Connectors → Benutzerdefinierten Connector hinzufügen</strong></li>
+<li>URL: <code>http://&lt;deine-server-ip&gt;:19999/mcp</code></li>
+<li>Authentifizierung: <strong>Keine Anmeldung</strong> — solange Claude im selben Netz läuft wie der Server, ist kein zusätzliches Passwort nötig</li>
+</ul>
+<p>Nach dem Verbinden stehen Claude gut ein Dutzend Werkzeuge zur Verfügung: Metriken durchsuchen, Anomalien der letzten Stunden finden, Alarme auflisten, Knoten-Details abrufen, laufende Prozesse einsehen. Alles live, alles echte Daten vom eigenen Server.</p>
+<h2 id="eine-beispielfrage">Eine Beispielfrage</h2>
+<p>Statt selbst durchs Dashboard zu klicken, kann man jetzt einfach fragen:</p>
+<blockquote>
+<p>„Warum war mein Server heute Nachmittag zwischen 14 und 16 Uhr langsam?"</p>
+</blockquote>
+<p>Claude sucht sich über die MCP-Werkzeuge selbstständig zusammen, welche Metriken in diesem Zeitraum ungewöhnlich waren, ob es einen CPU- oder Speicher-Ausreißer gab, und ob ein Alarm ausgelöst wurde — und antwortet mit der tatsächlichen Ursache statt mit einer allgemeinen Vermutung. Das Dashboard bleibt trotzdem da — für den Blick aufs große Bild ist die grafische Ansicht weiterhin die bessere Wahl, für die gezielte Nachfrage danach ist der MCP-Server der schnellere Weg.</p>
+<h2 id="wenns-uber-das-eigene-netz-hinausgehen-soll">Wenn's über das eigene Netz hinausgehen soll</h2>
+<p>Für ein Homelab mit Claude auf demselben Rechner oder im selben WLAN reicht das oben Beschriebene komplett aus. Sobald der MCP-Server aber von claude.ai oder der Claude-Desktop-App aus erreichbar sein soll, während man selbst unterwegs ist, ändert sich eine Sache grundlegend: Der Verbindungsversuch kommt dann nicht mehr vom eigenen Gerät, sondern aus der Cloud-Infrastruktur von Anthropic — eine Adresse, die nur im eigenen (V)LAN oder nur im eigenen VPN erreichbar ist, funktioniert von dort aus nicht, egal wie korrekt sie sonst konfiguriert ist. Für diesen Fall braucht es einen öffentlich erreichbaren HTTPS-Endpunkt und einen echten Zugriffsschutz (Token oder OAuth) davor — das sprengt für unter fünf Nodes den Rahmen dieses Artikels, ist aber der Punkt, an dem man aufpassen muss, bevor man sich wundert, warum die Verbindung „einfach nicht geht", obwohl lokal alles funktioniert.</p>
+<h2 id="zusammengefasst">Zusammengefasst</h2>
+<p>Ein Installationsbefehl, zwei Minuten Wartezeit, ein Connector-Eintrag in Claude — und ein Homelab mit weniger als fünf Nodes hat ein vollständiges, sekundengenaues Monitoring samt KI-Assistent, der die eigenen Metriken tatsächlich versteht. Kein Grafana-Stack, kein Yaml, kein Cloud-Zwang.</p>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p>Andreas Brauckmann — <a href="https://blog.brauckmann.ch/rss.xml">RSS</a></p>
+</footer>
+
+<div class="lightbox-overlay" id="lightbox-overlay">
+  <img id="lightbox-img" src="" alt="">
+</div>
+<script>
+(function () {
+  var overlay = document.getElementById('lightbox-overlay');
+  var overlayImg = document.getElementById('lightbox-img');
+
+  function openLightbox(src, alt) {
+    overlayImg.src = src;
+    overlayImg.alt = alt || '';
+    overlay.classList.add('is-open');
+  }
+  function closeLightbox() {
+    overlay.classList.remove('is-open');
+    overlayImg.src = '';
+  }
+
+  document.querySelectorAll('article img').forEach(function (el) {
+    el.addEventListener('click', function () {
+      openLightbox(el.getAttribute('src'), el.getAttribute('alt'));
+    });
+  });
+
+  overlay.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  var summaryBtn = document.getElementById('summary-toggle');
+  var summaryBox = document.getElementById('summary-box');
+  if (summaryBtn && summaryBox) {
+    summaryBtn.addEventListener('click', function () {
+      var isOpen = summaryBox.classList.toggle('is-open');
+      summaryBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+</body>
+</html>
