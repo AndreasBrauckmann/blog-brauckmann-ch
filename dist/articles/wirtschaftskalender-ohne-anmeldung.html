@@ -376,47 +376,112 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       display: flex; flex-wrap: wrap; gap: 1.3rem 1.5rem; margin: 2rem 0 2.2rem;
       justify-content: flex-start;
     }
-    .chip {
-      position: relative;
-      width: 118px; height: 118px; border-radius: 50%;
-      background: repeating-conic-gradient(
-        var(--chip-farbe) 0deg 18deg, #ffffff 18deg 27deg
-      );
-      padding: 9px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.28);
-      transition: transform 0.15s ease;
-    }
+    .chip { display: block; transition: transform 0.15s ease; cursor: default; }
     .chip:hover { transform: translateY(-3px) scale(1.03); }
-    .chip-innen {
-      width: 100%; height: 100%; border-radius: 50%;
-      background: var(--chip-farbe);
-      border: 3px dashed rgba(255,255,255,0.85);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: #fff; font-family: "SFMono-Regular", Consolas, Menlo, monospace;
-      text-align: center; line-height: 1.2;
-    }
-    .chip-innen .chip-zahl { font-size: 1.5rem; font-weight: 900; }
-    .chip-innen .chip-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.15rem; padding: 0 0.4rem; }
     </style>
     <div class="highlight-stempel">
-      <div class="chip" style="--chip-farbe:#b8291f">
-        <div class="chip-innen"><span class="chip-zahl">16</span><span class="chip-label">Jahre Historie</span></div>
-      </div>
-      <div class="chip" style="--chip-farbe:#1558b0">
-        <div class="chip-innen"><span class="chip-zahl">19</span><span class="chip-label">Länder, 10 Währungen</span></div>
-      </div>
-      <div class="chip" style="--chip-farbe:#1a8a44">
-        <div class="chip-innen"><span class="chip-zahl">FREI</span><span class="chip-label">Kostenlose API</span></div>
-      </div>
-      <div class="chip" style="--chip-farbe:#6a3fa0">
-        <div class="chip-innen"><span class="chip-zahl">6</span><span class="chip-label">Downloadformate</span></div>
-      </div>
-      <div class="chip" style="--chip-farbe:#2b2b2b">
-        <div class="chip-innen"><span class="chip-zahl">98%</span><span class="chip-label">Originalquellen</span></div>
-      </div>
-      <div class="chip" style="--chip-farbe:#d1860f">
-        <div class="chip-innen"><span class="chip-zahl">KI</span><span class="chip-label">Recherche per Klick</span></div>
-      </div>
+      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="16 Jahre Historie">
+        <defs>
+          <filter id="schatten0" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="4" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.38"/>
+          </filter>
+          <path id="bogen0" d="M 22,76 A 40,40 0 0 1 98,76" fill="none"/>
+        </defs>
+        <g filter="url(#schatten0)">
+          <circle cx="60" cy="60" r="58" fill="#b8291f"/>
+          <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="9 9"/>
+          <circle cx="60" cy="60" r="44" fill="#b8291f" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 4"/>
+          <text x="60" y="66" text-anchor="middle" font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="900" font-size="26" fill="#fff">16</text>
+          <text font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="700" font-size="7.2" letter-spacing="0.5" fill="#fff">
+            <textPath href="#bogen0" startOffset="50%" text-anchor="middle">JAHRE HISTORIE</textPath>
+          </text>
+        </g>
+      </svg>
+      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="19 Länder, 10 Währungen">
+        <defs>
+          <filter id="schatten1" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="4" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.38"/>
+          </filter>
+          <path id="bogen1" d="M 22,76 A 40,40 0 0 1 98,76" fill="none"/>
+        </defs>
+        <g filter="url(#schatten1)">
+          <circle cx="60" cy="60" r="58" fill="#1558b0"/>
+          <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="9 9"/>
+          <circle cx="60" cy="60" r="44" fill="#1558b0" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 4"/>
+          <text x="60" y="66" text-anchor="middle" font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="900" font-size="26" fill="#fff">19</text>
+          <text font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="700" font-size="7.2" letter-spacing="0.5" fill="#fff">
+            <textPath href="#bogen1" startOffset="50%" text-anchor="middle">LÄNDER · 10 WÄHRUNGEN</textPath>
+          </text>
+        </g>
+      </svg>
+      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="Kostenlose API">
+        <defs>
+          <filter id="schatten2" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="4" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.38"/>
+          </filter>
+          <path id="bogen2" d="M 22,76 A 40,40 0 0 1 98,76" fill="none"/>
+        </defs>
+        <g filter="url(#schatten2)">
+          <circle cx="60" cy="60" r="58" fill="#1a8a44"/>
+          <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="9 9"/>
+          <circle cx="60" cy="60" r="44" fill="#1a8a44" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 4"/>
+          <text x="60" y="65" text-anchor="middle" font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="900" font-size="18" fill="#fff">FREI</text>
+          <text font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="700" font-size="7.2" letter-spacing="0.5" fill="#fff">
+            <textPath href="#bogen2" startOffset="50%" text-anchor="middle">KOSTENLOSE API</textPath>
+          </text>
+        </g>
+      </svg>
+      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="6 Downloadformate">
+        <defs>
+          <filter id="schatten3" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="4" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.38"/>
+          </filter>
+          <path id="bogen3" d="M 22,76 A 40,40 0 0 1 98,76" fill="none"/>
+        </defs>
+        <g filter="url(#schatten3)">
+          <circle cx="60" cy="60" r="58" fill="#6a3fa0"/>
+          <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="9 9"/>
+          <circle cx="60" cy="60" r="44" fill="#6a3fa0" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 4"/>
+          <text x="60" y="66" text-anchor="middle" font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="900" font-size="26" fill="#fff">6</text>
+          <text font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="700" font-size="7.2" letter-spacing="0.5" fill="#fff">
+            <textPath href="#bogen3" startOffset="50%" text-anchor="middle">DOWNLOADFORMATE</textPath>
+          </text>
+        </g>
+      </svg>
+      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="98 Prozent Originalquellen">
+        <defs>
+          <filter id="schatten4" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="4" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.38"/>
+          </filter>
+          <path id="bogen4" d="M 22,76 A 40,40 0 0 1 98,76" fill="none"/>
+        </defs>
+        <g filter="url(#schatten4)">
+          <circle cx="60" cy="60" r="58" fill="#2b2b2b"/>
+          <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="9 9"/>
+          <circle cx="60" cy="60" r="44" fill="#2b2b2b" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 4"/>
+          <text x="60" y="65" text-anchor="middle" font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="900" font-size="20" fill="#fff">98%</text>
+          <text font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="700" font-size="7.2" letter-spacing="0.5" fill="#fff">
+            <textPath href="#bogen4" startOffset="50%" text-anchor="middle">ORIGINALQUELLEN</textPath>
+          </text>
+        </g>
+      </svg>
+      <svg class="chip" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="KI-Recherche per Klick">
+        <defs>
+          <filter id="schatten5" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="4" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.38"/>
+          </filter>
+          <path id="bogen5" d="M 22,76 A 40,40 0 0 1 98,76" fill="none"/>
+        </defs>
+        <g filter="url(#schatten5)">
+          <circle cx="60" cy="60" r="58" fill="#d1860f"/>
+          <circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="9 9"/>
+          <circle cx="60" cy="60" r="44" fill="#d1860f" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 4"/>
+          <text x="60" y="66" text-anchor="middle" font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="900" font-size="24" fill="#fff">KI</text>
+          <text font-family="'SFMono-Regular',Consolas,Menlo,monospace" font-weight="700" font-size="7.2" letter-spacing="0.5" fill="#fff">
+            <textPath href="#bogen5" startOffset="50%" text-anchor="middle">RECHERCHE PER KLICK</textPath>
+          </text>
+        </g>
+      </svg>
     </div>
 <h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der Anmeldepflicht für öffentliche Zahlen</h2>
 <p>Konjunkturdaten — wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen — sind öffentliche Zahlen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
