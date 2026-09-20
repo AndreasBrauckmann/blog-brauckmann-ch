@@ -255,13 +255,38 @@ article img {
   margin-bottom: 0.8rem;
 }
 
+.article-list-item.featured {
+  border: none;
+  background: linear-gradient(135deg, #0a58ca 0%, #073b8a 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+}
+.article-list-item.featured .featured-badge {
+  display: inline-block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em;
+  background: #fff; color: #0a58ca; padding: 0.2rem 0.6rem; border-radius: 999px;
+  margin-bottom: 0.6rem;
+}
+.article-list-item.featured h2 { margin-top: 0; }
+.article-list-item.featured h2 a { color: #fff; font-size: 1.35rem; }
+.article-list-item.featured .article-date { color: #cfe0ff; }
+.article-list-item.featured .tags .tag { background: rgba(255,255,255,0.18); color: #fff; }
+.article-list-item.featured .teaser { color: #e6eeff; }
 </style>
 </head>
 <body>
 <main>
-  
+
+  <div class="article-list-item featured">
+    <span class="featured-badge">NEU</span>
+    <h2><a href="/articles/wirtschaftskalender-ohne-anmeldung.html">Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: 84.488 Termine — modern, schnell, ohne Ballast und ohne Kosten</a></h2>
+    <time class="article-date" datetime="2026-09-20">2026-09-20</time>
+    <div class="tags"><span class="tag">Kontor</span><span class="tag">Wirtschaftsdaten</span><span class="tag">Open Data</span><span class="tag">API</span></div>
+    <p class="teaser">84.488 Konjunkturtermine seit 2010, ohne Login, ohne Bezahlschranke: kostenlose API, sechs Downloadformate, Sparkline-Verlauf, KI-Recherche per Klick und für 98 Prozent aller Kennzahlen die amtliche Originalquelle verlinkt.</p>
+  </div>
   <div class="article-list-item"><h2><a href="/artikel/sieben-monate-elf-umbrueche/">KI-Tempo, Nov.25 – Sep.26: Elf Monate, zwei Wellen — warum jetzt andere Regeln gelten</a></h2><time class="article-date" datetime="2026-09-07">2026-09-07</time><div class="tags"><a class="tag" href="/tag/ki/">KI</a><a class="tag" href="/tag/automatisierung/">Automatisierung</a><a class="tag" href="/tag/skills/">Skills</a></div><p class="teaser">Elf Monate, zwei Wellen, ein Ebenenwechsel: Bei monatlichen Modellsprüngen ist die Fähigkeit, Kontext sauber zu übergeben, wertvoller als die Beherrschung eines bestimmten Modells. Fünf Techniken dagegen.</p></div>
-  
+
 </main>
 
 <footer class="site-footer">
