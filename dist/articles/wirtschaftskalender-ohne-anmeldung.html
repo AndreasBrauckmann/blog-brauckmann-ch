@@ -372,27 +372,64 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
     <p><em>Ein Wirtschaftskalender, für den man sich nirgends anmelden muss — nicht für die Ansicht, nicht für die API, nicht für den Download. Zahlen, die ohnehin öffentlich sind, gehören niemandem.</em></p>
     <style>
-    .highlight-stempel { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.5rem 0 2rem; }
+    .highlight-stempel {
+      display: flex; flex-wrap: wrap; gap: 1.1rem 1.4rem; margin: 2rem 0 2.2rem;
+      justify-content: flex-start;
+    }
     .highlight-stempel .stempel {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.4rem 0.9rem; border-radius: 999px;
-      border: 1.5px solid var(--link); font-size: 0.85rem; font-weight: 600;
-      background: var(--tag-bg); color: var(--fg);
-      transform: rotate(-1.2deg);
+      position: relative;
+      display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 128px; height: 128px; border-radius: 50%;
+      border: 3px solid var(--stempel-farbe); box-shadow: 0 0 0 5px transparent, inset 0 0 0 2px var(--stempel-farbe);
+      outline: 1px solid var(--stempel-farbe); outline-offset: -8px;
+      color: var(--stempel-farbe);
+      font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+      font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em;
+      text-align: center; line-height: 1.15; font-size: 0.72rem;
+      padding: 0.5rem; opacity: 0.88; mix-blend-mode: multiply;
     }
-    .highlight-stempel .stempel:nth-child(2n) { transform: rotate(1.2deg); }
-    .highlight-stempel .stempel .badge {
-      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.03em;
-      padding: 0.05rem 0.4rem; border-radius: 999px; background: var(--link); color: #fff;
+    @media (prefers-color-scheme: dark) {
+      .highlight-stempel .stempel { mix-blend-mode: normal; }
     }
+    .highlight-stempel .stempel.rect { border-radius: 6px; width: auto; min-width: 150px; height: 74px; padding: 0.5rem 1rem; }
+    .highlight-stempel .stempel:nth-child(1) { transform: rotate(-6deg); }
+    .highlight-stempel .stempel:nth-child(2) { transform: rotate(4deg); }
+    .highlight-stempel .stempel:nth-child(3) { transform: rotate(-3deg); }
+    .highlight-stempel .stempel:nth-child(4) { transform: rotate(7deg); }
+    .highlight-stempel .stempel:nth-child(5) { transform: rotate(-5deg); }
+    .highlight-stempel .stempel:nth-child(6) { transform: rotate(3deg); }
+    .highlight-stempel .stempel .stempel-klein { font-size: 0.6rem; font-weight: 700; margin-top: 0.15rem; letter-spacing: 0.15em; }
+    .highlight-stempel .stempel .stempel-gross { font-size: 0.95rem; font-weight: 900; }
     </style>
     <div class="highlight-stempel">
-      <span class="stempel">🗓️ 16 Jahre Konjunkturtermine</span>
-      <span class="stempel">🌍 10 Währungsräume, 19 Länder</span>
-      <span class="stempel">🔓 Kostenlose API <span class="badge">FREI</span></span>
-      <span class="stempel">💾 6 Downloadformate</span>
-      <span class="stempel">🏛️ Alle amtlichen Originalquellen</span>
-      <span class="stempel">🤖 Recherche in Googles KI-Modus <span class="badge">NEU</span></span>
+      <span class="stempel" style="--stempel-farbe:#c0392b">
+        <span class="stempel-klein">★ 16 JAHRE ★</span>
+        <span class="stempel-gross">HISTORIE</span>
+        <span class="stempel-klein">SEIT 2010</span>
+      </span>
+      <span class="stempel" style="--stempel-farbe:#1e5aa8">
+        <span class="stempel-klein">10 WÄHRUNGEN</span>
+        <span class="stempel-gross">19</span>
+        <span class="stempel-klein">LÄNDER</span>
+      </span>
+      <span class="stempel rect" style="--stempel-farbe:#1a7a3c">
+        <span class="stempel-gross">FREI</span>
+        <span class="stempel-klein">KOSTENLOSE API</span>
+      </span>
+      <span class="stempel" style="--stempel-farbe:#6a3fa0">
+        <span class="stempel-klein">★ SECHS ★</span>
+        <span class="stempel-gross">FORMATE</span>
+        <span class="stempel-klein">CSV · XLSX · ICS …</span>
+      </span>
+      <span class="stempel rect" style="--stempel-farbe:#4a4a4a">
+        <span class="stempel-gross">ORIGINAL</span>
+        <span class="stempel-klein">AMTLICHE QUELLEN</span>
+      </span>
+      <span class="stempel" style="--stempel-farbe:#c77a1e">
+        <span class="stempel-klein">★ NEU ★</span>
+        <span class="stempel-gross">KI-MODUS</span>
+        <span class="stempel-klein">RECHERCHE</span>
+      </span>
     </div>
 <h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der Anmeldepflicht für öffentliche Zahlen</h2>
 <p>Konjunkturdaten — wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen — sind öffentliche Zahlen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
