@@ -2,3 +2,8 @@
 .env
 __pycache__/
 *.pyc
+.secrets/
+seo-log/*.json
+seo-log/verlauf.jsonl
+seo-log/.venv/
+logs/
