@@ -388,7 +388,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .mcp-diagramm .returnrow { max-width:640px; min-width:540px; margin:0 auto; display:block; }
 @keyframes mcp-dashmove { to { stroke-dashoffset:-16; } }
 .mcp-diagramm .returnpath { stroke-dasharray:4 4; animation:mcp-dashmove 1.2s linear infinite; }
-.mcp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:0.75rem; }
+.mcp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:0.75rem;
+  background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:0.7rem 1rem; }
 @media (prefers-reduced-motion: reduce) {
   .mcp-diagramm .wavebar, .mcp-diagramm .returnpath { animation: none; }
 }
