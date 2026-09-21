@@ -238,3 +238,12 @@ article img {
 .summary-box-inner p:last-child {
   margin-bottom: 0.8rem;
 }
+
+/* Bildpaare (hell/dunkel) -- reines CSS, kein JS. Zwei <img>, jeweils
+   mit ".bild-hell"/".bild-dunkel", nur eins sichtbar je nach System-
+   Theme. Gleiches Prinzip wie im Kontor-Admin-Handbuch. */
+.bild-dunkel { display: none; }
+@media (prefers-color-scheme: dark) {
+  .bild-hell { display: none; }
+  .bild-dunkel { display: block; }
+}
