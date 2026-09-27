@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://blog.brauckmann.ch/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/arbeitsplatz/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/automatisierung/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/zero-trust/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/macos/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/windows/</loc></url>
   <url><loc>https://blog.brauckmann.ch/tag/monitoring/</loc></url>
   <url><loc>https://blog.brauckmann.ch/tag/netdata/</loc></url>
   <url><loc>https://blog.brauckmann.ch/tag/claude/</loc></url>
   <url><loc>https://blog.brauckmann.ch/tag/homelab/</loc></url>
   <url><loc>https://blog.brauckmann.ch/tag/mcp/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/kontor/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/wirtschaftsdaten/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/open-data/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/tag/api/</loc></url>
   <url><loc>https://blog.brauckmann.ch/tag/ki/</loc></url>
-  <url><loc>https://blog.brauckmann.ch/tag/automatisierung/</loc></url>
   <url><loc>https://blog.brauckmann.ch/tag/skills/</loc></url>
+  <url><loc>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</loc></url>
   <url><loc>https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/</loc></url>
   <url><loc>https://blog.brauckmann.ch/artikel/wirtschaftskalender-ohne-anmeldung/</loc></url>
   <url><loc>https://blog.brauckmann.ch/artikel/sieben-monate-elf-umbrueche/</loc></url>
-  <url><loc>https://blog.brauckmann.ch/tag/arbeitsplatz/</loc></url>
-  <url><loc>https://blog.brauckmann.ch/tag/zero-trust/</loc></url>
-  <url><loc>https://blog.brauckmann.ch/tag/macos/</loc></url>
-  <url><loc>https://blog.brauckmann.ch/tag/windows/</loc></url>
-  <url><loc>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</loc></url>
 </urlset>

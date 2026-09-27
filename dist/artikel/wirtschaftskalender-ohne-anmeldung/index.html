@@ -275,6 +275,15 @@ article img {
   margin-bottom: 0.8rem;
 }
 
+/* Bildpaare (hell/dunkel) -- reines CSS, kein JS. Zwei <img>, jeweils
+   mit ".bild-hell"/".bild-dunkel", nur eins sichtbar je nach System-
+   Theme. Gleiches Prinzip wie im Kontor-Admin-Handbuch. */
+.bild-dunkel { display: none; }
+@media (prefers-color-scheme: dark) {
+  .bild-hell { display: none; }
+  .bild-dunkel { display: block; }
+}
+
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -371,8 +380,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       </div>
     </div>
     <p><em>Ein Wirtschaftskalender, für den man sich nirgends anmelden muss — nicht für die Ansicht, nicht für die API, nicht für den Download. Zahlen, die ohnehin öffentlich sind, gehören niemandem.</em></p>
-    <style>
-.chip-abschnitt::after { content: ""; display: table; clear: both; }
+<div class="codehilite"><pre><span></span><code>&lt;style&gt;
+</code></pre></div>
+
+<p>.chip-abschnitt::after { content: ""; display: table; clear: both; }
 .chip-abschnitt img.chip-bild {
   width: 190px; max-width: 42%; height: auto;
   margin-bottom: 0.4rem;
@@ -392,7 +403,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 @media (max-width: 520px) {
   .chip-abschnitt img.chip-bild { float: none; display: block; margin: 0 auto 1rem; max-width: 55%; }
 }
-</style>
+</style></p>
 <h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der <span class="durchgestrichen">Anmeldepflicht</span> für öffentliche Zahlen</h2>
 <p>Konjunkturdaten — wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen — sind öffentliche Zahlen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
 <p><em>Das ist der Teil, der sich nicht rechtfertigen lässt — und genau den räumt dieser Kalender weg. Alles, was ohnehin öffentlich ist, bleibt hier öffentlich: keine Paywall vor der Ansicht, keine Anmeldung vor der API, kein Konto vor dem Download.</em></p>
@@ -473,7 +484,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <td>als Kalenderabo in Outlook, Apple Kalender oder Google Kalender einbinden — Termine erscheinen direkt im eigenen Kalender</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></div>
 </div>
 <div class="chip-abschnitt chip-rechts"><h2 id="originalquellen-bei-98-direkt-zur-amtlichen-stelle">Originalquellen: bei 98 % direkt zur amtlichen Stelle</h2>
 <img class="chip-bild" src="/static/img/chips/amtliche-quellen.png" alt="98 Prozent amtliche Quellen">

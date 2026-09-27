@@ -255,12 +255,21 @@ article img {
   margin-bottom: 0.8rem;
 }
 
+/* Bildpaare (hell/dunkel) -- reines CSS, kein JS. Zwei <img>, jeweils
+   mit ".bild-hell"/".bild-dunkel", nur eins sichtbar je nach System-
+   Theme. Gleiches Prinzip wie im Kontor-Admin-Handbuch. */
+.bild-dunkel { display: none; }
+@media (prefers-color-scheme: dark) {
+  .bild-hell { display: none; }
+  .bild-dunkel { display: block; }
+}
+
 </style>
 </head>
 <body>
 <main>
   <h1 class="list-heading">Tag: Netdata <a href="/">&larr; alle Artikel</a></h1>
-  <div class="article-list-item"><h2><a href="/artikel/netdata-homelab-monitoring-claude/">Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server</a></h2><time class="article-date" datetime="2026-09-20">2026-09-20</time><div class="tags"><a class="tag" href="/tag/monitoring/">Monitoring</a><a class="tag" href="/tag/netdata/">Netdata</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/homelab/">Homelab</a><a class="tag" href="/tag/mcp/">MCP</a></div><p class="teaser">Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.</p></div>
+  <div class="article-list-item"><h2><a href="/artikel/netdata-homelab-monitoring-claude/">Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; write*)</a></h2><time class="article-date" datetime="2026-09-20">2026-09-20</time><div class="tags"><a class="tag" href="/tag/monitoring/">Monitoring</a><a class="tag" href="/tag/netdata/">Netdata</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/homelab/">Homelab</a><a class="tag" href="/tag/mcp/">MCP</a></div><p class="teaser">Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.</p></div>
   
 </main>
 

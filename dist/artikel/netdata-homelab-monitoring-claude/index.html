@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read & write*) · Brauckmann Blog</title>
+<title>Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; write*) · Brauckmann Blog</title>
 <meta name="description" content="Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.">
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/">
 
 <meta property="og:type" content="article">
-<meta property="og:title" content="Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read & write*)">
+<meta property="og:title" content="Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; write*)">
 <meta property="og:description" content="Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/">
 <meta property="og:image" content="https://blog.brauckmann.ch/static/img/netdata-dashboard-uebersicht.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read & write*)">
+<meta name="twitter:title" content="Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; write*)">
 <meta name="twitter:description" content="Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für ein Homelab oder eine Umgebung mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.">
 <meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/netdata-dashboard-uebersicht.png">
 
@@ -276,6 +276,15 @@ article img {
   margin-bottom: 0.8rem;
 }
 
+/* Bildpaare (hell/dunkel) -- reines CSS, kein JS. Zwei <img>, jeweils
+   mit ".bild-hell"/".bild-dunkel", nur eins sichtbar je nach System-
+   Theme. Gleiches Prinzip wie im Kontor-Admin-Handbuch. */
+.bild-dunkel { display: none; }
+@media (prefers-color-scheme: dark) {
+  .bild-hell { display: none; }
+  .bild-dunkel { display: block; }
+}
+
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -351,57 +360,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .codehilite .vi { color: #19177C } /* Name.Variable.Instance */
 .codehilite .vm { color: #19177C } /* Name.Variable.Magic */
 .codehilite .il { color: #666 } /* Literal.Number.Integer.Long */
-
-/* ── Diagramm "Vom Handy zum Hypervisor" ──────────────────────────────
-   Uebernommen aus einer eigenstaendigen HTML-Vorlage, an das Blog-eigene
-   Token-System angepasst (--bg/--fg/--fg-muted/--border statt eigener
-   --bg-accent etc.) statt als iframe eingebettet, damit Schrift/Farben
-   im Hell-/Dunkelmodus des Blogs mitlaufen. */
-.mcp-diagramm {
-  margin: 2rem 0; padding: 1.5rem 0.75rem 1.25rem; border: 1px solid var(--border);
-  border-radius: 10px; overflow-x: auto;
-  --md-accent-bg:#EEEDFE; --md-accent-fg:#3C3489;
-  --md-success-bg:#EAF3DE; --md-success-fg:#27500A;
-  --md-warning-bg:#FAEEDA; --md-warning-fg:#633806;
-  --md-coral-bg:#FAECE7; --md-coral-fg:#712B13;
-}
-@media (prefers-color-scheme: dark) {
-  .mcp-diagramm {
-    --md-accent-bg:#2a2650; --md-accent-fg:#b9b1ff;
-    --md-success-bg:#22331a; --md-success-fg:#a9d98b;
-    --md-warning-bg:#3a2a12; --md-warning-fg:#f0c98a;
-    --md-coral-bg:#3a231c; --md-coral-fg:#f2b09b;
-  }
-}
-.mcp-diagramm .chain { display:flex; align-items:center; justify-content:space-between; gap:6px; flex-wrap:nowrap; max-width:640px; min-width:540px; margin:0 auto; }
-.mcp-diagramm .node { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; min-width:0; }
-.mcp-diagramm .circ { width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; }
-.mcp-diagramm .lbl { font-size:0.8rem; font-weight:600; color:var(--fg); text-align:center; }
-.mcp-diagramm .sub { font-size:0.68rem; color:var(--fg-muted); text-align:center; }
-.mcp-diagramm .link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; flex:0 0 auto; color:var(--fg-muted); }
-.mcp-diagramm .link .top-label { font-size:0.62rem; font-weight:600; }
-.mcp-diagramm .link .bottom-label { font-size:0.58rem; text-align:center; line-height:1.3; }
-@keyframes mcp-wavepulse { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
-.mcp-diagramm .wavebar { width:2px; background:var(--fg-muted); transform-origin:center; animation:mcp-wavepulse 1s ease-in-out infinite; }
-.mcp-diagramm .voicewrap { flex:0 0 46px; height:40px; margin-top:-16px; }
-.mcp-diagramm .voicewrap .wavebars { display:flex; align-items:center; justify-content:center; gap:3px; height:20px; }
-.mcp-diagramm .returnrow { max-width:640px; min-width:540px; margin:0 auto; display:block; }
-@keyframes mcp-dashmove { to { stroke-dashoffset:-16; } }
-.mcp-diagramm .returnpath { stroke-dasharray:4 4; animation:mcp-dashmove 1.2s linear infinite; }
-.mcp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:0.75rem;
-  background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:0.7rem 1rem; }
-@media (prefers-reduced-motion: reduce) {
-  .mcp-diagramm .wavebar, .mcp-diagramm .returnpath { animation: none; }
-}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
 </head>
 <body>
 <main>
   <article>
     <header>
-      <h1>Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; <span style="color:var(--fg-muted)">write</span>*)</h1>
-      <p style="font-size:0.85rem;color:var(--fg-muted);margin-top:-0.6rem;">* Write ist nicht Netdatas eingebauter MCP-Server, sondern braucht einen eigenen, zusaetzlichen MCP-Server &mdash; <a href="#vom-lesen-zum-handeln-ein-eigener-mcp-server-mit-schreibzugriff">siehe unten</a>.</p>
+      <h1>Monitoring fürs Homelab in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; write*)</h1>
       <time class="article-date" datetime="2026-09-20">2026-09-20</time>
       <div class="article-meta-row">
         <div class="tags"><a class="tag" href="/tag/monitoring/">Monitoring</a><a class="tag" href="/tag/netdata/">Netdata</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/homelab/">Homelab</a><a class="tag" href="/tag/mcp/">MCP</a></div>

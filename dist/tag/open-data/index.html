@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Open Data · Brauckmann Blog</title>
-<meta name="description" content="Artikel zum Thema Netdata auf Brauckmann Blog">
+<meta name="description" content="Artikel zum Thema Open Data auf Brauckmann Blog">
 <link rel="canonical" href="https://blog.brauckmann.ch/tag/open-data/">
 <link rel="alternate" type="application/rss+xml" title="Brauckmann Blog" href="https://blog.brauckmann.ch/rss.xml">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Netdata · Brauckmann Blog">
-<meta property="og:description" content="Artikel zum Thema Netdata auf Brauckmann Blog">
+<meta property="og:title" content="Open Data · Brauckmann Blog">
+<meta property="og:description" content="Artikel zum Thema Open Data auf Brauckmann Blog">
 <meta property="og:url" content="https://blog.brauckmann.ch/tag/open-data/">
 
 <style>
@@ -255,14 +255,22 @@ article img {
   margin-bottom: 0.8rem;
 }
 
+/* Bildpaare (hell/dunkel) -- reines CSS, kein JS. Zwei <img>, jeweils
+   mit ".bild-hell"/".bild-dunkel", nur eins sichtbar je nach System-
+   Theme. Gleiches Prinzip wie im Kontor-Admin-Handbuch. */
+.bild-dunkel { display: none; }
+@media (prefers-color-scheme: dark) {
+  .bild-hell { display: none; }
+  .bild-dunkel { display: block; }
+}
+
 </style>
 </head>
 <body>
 <main>
   <h1 class="list-heading">Tag: Open Data <a href="/">&larr; alle Artikel</a></h1>
-<div class="article-list-item"><h2><a href="/artikel/wirtschaftskalender-ohne-anmeldung/">Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und ohne Kosten</a></h2><time class="article-date" datetime="2026-09-20">2026-09-20</time><div class="tags"><a class="tag" href="/tag/wirtschaftskalender/">Wirtschaftskalender</a></div><p class="teaser">Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle.</p></div>
-
-    
+  <div class="article-list-item"><h2><a href="/artikel/wirtschaftskalender-ohne-anmeldung/">Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und ohne Kosten</a></h2><time class="article-date" datetime="2026-09-20">2026-09-20</time><div class="tags"><a class="tag" href="/tag/kontor/">Kontor</a><a class="tag" href="/tag/wirtschaftsdaten/">Wirtschaftsdaten</a><a class="tag" href="/tag/open-data/">Open Data</a><a class="tag" href="/tag/api/">API</a></div><p class="teaser">Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle. Was er kann, warum er anders lizenziert ist als der Rest der Branche.</p></div>
+  
 </main>
 
 <footer class="site-footer">
