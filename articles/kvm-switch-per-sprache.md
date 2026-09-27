@@ -14,7 +14,7 @@ draft: false
 
 *Videoschnitt auf dem Mac, PowerShell und Azure auf Windows – und dazwischen ein einziger Satz: „Hey Siri, Windows.“ Der Monitor schaltet um, Maus und Tastatur wandern mit, die Zwischenablage auch. Kein Knopf, keine Kabel umstecken.*
 
-<p style="text-align:center"><video src="/static/img/kvm-per-sprache-animation.mp4" poster="/static/img/kvm-per-sprache-animation-poster.jpg" autoplay muted loop playsinline controls style="max-width:100%;border-radius:12px" aria-label="Animation: Hey Siri, Mac – Hey Siri, Windows – Hey Siri, shutdown – Hey Siri, wake up"></video></p>
+<p style="text-align:center"><video src="/static/img/kvm-per-sprache-animation.mp4" poster="/static/img/kvm-per-sprache-animation-poster.jpg" autoplay muted playsinline controls style="max-width:100%;border-radius:12px" aria-label="Animation: Hey Siri, Mac – Hey Siri, Windows – Hey Siri, shutdown – Hey Siri, wake up"></video></p>
 
 ## Das Ergebnis in einem Satz
 
