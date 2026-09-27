@@ -386,6 +386,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <h2 id="das-ergebnis-in-einem-satz">Das Ergebnis in einem Satz</h2>
 <p><strong>„Hey Siri, Windows.“</strong> – und in wenigen Sekunden zeigt der Monitor das Windows-Notebook. Maus und Tastatur werden gleich mit umgeschaltet – <strong>und sogar der Ton</strong>: Die Boxen hängen am Monitor und spielen automatisch das Notebook, das gerade zu sehen ist.</p>
 <p><strong>„Hey Siri, Mac.“</strong> – und alles ist wieder beim Mac.</p>
+<p><strong>Der eigentliche Wow-Effekt:</strong> Ich fahre mit der Maus vom Bildschirm des MacBook Pro links über den grossen Monitor bis auf das Windows-Notebook rechts – <strong>in einem einzigen Zug</strong>, als wären alle Bildschirme eine einzige Oberfläche. Kein Umstecken, kein Knopf, kein Sprachbefehl nötig: Die Maus kennt keine Gerätegrenzen mehr.</p>
 <p>Als Bonus wandert die Zwischenablage mit: Was ich auf dem Mac kopiere, füge ich unter Windows ein. Und es ist egal, ob gerade der Mac, das iPhone oder die Apple Watch zuhört.</p>
 <p><img alt="Der Arbeitsplatz als Skizze: MacBook Pro links, 34-Zoll-Monitor in der Mitte, HP EliteBook rechts – eine Tastatur, eine Maus" src="/static/img/kvm-per-sprache-skizze.png" /></p>
 <p><em>Links das MacBook Pro für den Videoschnitt, in der Mitte der 34-Zoll-Monitor, rechts das HP EliteBook. Eine Tastatur, eine Maus – für beide Notebooks.</em></p>
@@ -472,7 +473,7 @@ section: options
 end
 </code></pre></div>
 
-<p>Damit gibt es drei Wege zum Umschalten: die Maus einfach über den rechten Bildschirmrand schieben, <strong>ctrl + opt + cmd + W / M</strong> drücken – oder Siri fragen.</p>
+<p>So entsteht die durchgehende Oberfläche: Der Mauszeiger läuft über die Bildschirmkante einfach weiter auf das andere Notebook. Damit gibt es drei Wege zum Umschalten: die Maus einfach über den rechten Bildschirmrand schieben, <strong>ctrl + opt + cmd + W / M</strong> drücken – oder Siri fragen.</p>
 <h3 id="3-siri-verbindet-beides-ein-kurzbefehl-per-ssh">3. Siri verbindet beides: ein Kurzbefehl per SSH</h3>
 <p>Ein Apple-Kurzbefehl „Windows“ enthält genau <strong>eine</strong> Aktion: <em>Skript über SSH ausführen</em> – auf dem Mac selbst. Das hat einen Grund: Sagt man „Hey Siri“, hört oft das iPhone oder die Watch zu, und dort können keine Mac-Skripte laufen. Über SSH landet der Befehl trotzdem immer auf dem Mac.</p>
 <p>Das Skript schaltet den Monitor um und stösst dann Deskflow an. Das war der kniffligste Teil – dazu gleich mehr.</p>

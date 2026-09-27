@@ -22,6 +22,8 @@ draft: false
 
 **„Hey Siri, Mac.“** – und alles ist wieder beim Mac.
 
+**Der eigentliche Wow-Effekt:** Ich fahre mit der Maus vom Bildschirm des MacBook Pro links über den grossen Monitor bis auf das Windows-Notebook rechts – **in einem einzigen Zug**, als wären alle Bildschirme eine einzige Oberfläche. Kein Umstecken, kein Knopf, kein Sprachbefehl nötig: Die Maus kennt keine Gerätegrenzen mehr.
+
 Als Bonus wandert die Zwischenablage mit: Was ich auf dem Mac kopiere, füge ich unter Windows ein. Und es ist egal, ob gerade der Mac, das iPhone oder die Apple Watch zuhört.
 
 ![Der Arbeitsplatz als Skizze: MacBook Pro links, 34-Zoll-Monitor in der Mitte, HP EliteBook rechts – eine Tastatur, eine Maus](/static/img/kvm-per-sprache-skizze.png)
@@ -106,7 +108,7 @@ section: options
 end
 ```
 
-Damit gibt es drei Wege zum Umschalten: die Maus einfach über den rechten Bildschirmrand schieben, **ctrl + opt + cmd + W / M** drücken – oder Siri fragen.
+So entsteht die durchgehende Oberfläche: Der Mauszeiger läuft über die Bildschirmkante einfach weiter auf das andere Notebook. Damit gibt es drei Wege zum Umschalten: die Maus einfach über den rechten Bildschirmrand schieben, **ctrl + opt + cmd + W / M** drücken – oder Siri fragen.
 
 ### 3. Siri verbindet beides: ein Kurzbefehl per SSH
 
