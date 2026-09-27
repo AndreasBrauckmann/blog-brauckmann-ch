@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kontor · Brauckmann Blog</title>
+<meta name="description" content="Artikel zum Thema Netdata auf Brauckmann Blog">
+<link rel="canonical" href="https://blog.brauckmann.ch/tag/kontor/">
+<link rel="alternate" type="application/rss+xml" title="Brauckmann Blog" href="https://blog.brauckmann.ch/rss.xml">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Netdata · Brauckmann Blog">
+<meta property="og:description" content="Artikel zum Thema Netdata auf Brauckmann Blog">
+<meta property="og:url" content="https://blog.brauckmann.ch/tag/kontor/">
+
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --fg-muted: #555555;
+  --link: #0a58ca;
+  --link-visited: #5b3fa8;
+  --border: #dddddd;
+  --code-bg: #f5f5f5;
+  --tag-bg: #eef1f5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --fg: #e6e6e6;
+    --fg-muted: #a6a6a6;
+    --link: #7db2ff;
+    --link-visited: #c3a6ff;
+    --border: #333333;
+    --code-bg: #1e1e1e;
+    --tag-bg: #1f2733;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+footer.site-footer {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+main {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 3rem;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.25;
+}
+
+h1 { font-size: 1.9rem; margin-top: 0; }
+h2 { font-size: 1.4rem; margin-top: 2rem; }
+h3 { font-size: 1.15rem; }
+
+a { color: var(--link); }
+a:visited { color: var(--link-visited); }
+
+time.article-date {
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+.tags { margin: 0.5rem 0 1.5rem; }
+.tag {
+  display: inline-block;
+  background: var(--tag-bg);
+  color: var(--fg-muted);
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.8rem;
+  margin-right: 0.4rem;
+}
+
+a.tag { text-decoration: none; }
+a.tag:visited { color: var(--fg-muted); }
+
+.list-heading { margin-bottom: 0.5rem; }
+.list-heading a { text-decoration: none; color: var(--fg-muted); font-size: 0.9rem; }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.pagination a { text-decoration: none; }
+.pagination .disabled { color: var(--fg-muted); }
+
+img { max-width: 100%; height: auto; }
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+table { border-collapse: collapse; width: 100%; }
+th, td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); text-align: left; }
+th { background: var(--tag-bg); }
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+code { font-family: "SFMono-Regular", Consolas, Menlo, monospace; font-size: 0.9em; }
+p code, li code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; }
+
+article > p, article > ul, article > ol { max-width: 70ch; }
+
+.article-list-item {
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
+}
+
+.article-list-item h2 { margin-top: 0; }
+.article-list-item h2 a { text-decoration: none; }
+
+.teaser { color: var(--fg-muted); }
+
+.footnote-backref { text-decoration: none; }
+
+/* ---------- Bild-Lightbox: Klick zum Vergrössern ---------- */
+article img {
+  cursor: zoom-in;
+}
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  cursor: zoom-out;
+}
+.lightbox-overlay.is-open {
+  display: flex;
+}
+.lightbox-overlay img {
+  max-width: 96vw;
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  cursor: zoom-out;
+}
+
+/* ---------- Fünf-Techniken-Liste: Symbol als Aufzählungszeichen, Einzug für Zeilenumbruch ---------- */
+.funf-techniken-liste {
+  list-style: none;
+  margin: 18px 0 24px;
+  padding: 0;
+}
+.funf-techniken-liste li {
+  position: relative;
+  padding-left: 2.3em;
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+.funf-techniken-liste li:last-child {
+  margin-bottom: 0;
+}
+.funf-techniken-liste .fte {
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  font-size: 1.1em;
+}
+
+/* ---------- Zusammenfassung: Button + Akkordeon ---------- */
+.article-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1.5rem;
+}
+.article-meta-row .tags {
+  margin: 0;
+}
+.summary-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 999px;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.summary-toggle:hover {
+  background: var(--tag-bg);
+}
+.summary-toggle-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.summary-toggle[aria-expanded="true"] .summary-toggle-icon {
+  transform: rotate(180deg);
+}
+.summary-box {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  max-width: 70ch;
+}
+.summary-box.is-open {
+  max-height: 700px;
+}
+.summary-box-inner {
+  border-left: 3px solid var(--border);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+}
+.summary-box-inner p:first-child {
+  margin-top: 0.8rem;
+}
+.summary-box-inner p:last-child {
+  margin-bottom: 0.8rem;
+}
+
+</style>
+</head>
+<body>
+<main>
+  <h1 class="list-heading">Tag: Kontor <a href="/">&larr; alle Artikel</a></h1>
+<div class="article-list-item"><h2><a href="/artikel/wirtschaftskalender-ohne-anmeldung/">Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und ohne Kosten</a></h2><time class="article-date" datetime="2026-09-20">2026-09-20</time><div class="tags"><a class="tag" href="/tag/wirtschaftskalender/">Wirtschaftskalender</a></div><p class="teaser">Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle.</p></div>
+
+    
+</main>
+
+<footer class="site-footer">
+  <p>Andreas Brauckmann — <a href="https://blog.brauckmann.ch/rss.xml">RSS</a></p>
+</footer>
+</body>
+</html>
