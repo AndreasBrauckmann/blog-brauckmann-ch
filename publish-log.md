@@ -31,3 +31,13 @@
 - wirtschaftskalender-ohne-anmeldung: mastodon: https://mastodon.social/@brauckmannblog/117304364405760024
 - wirtschaftskalender-ohne-anmeldung: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3mvxnd2cr452y
 
+## 2026-09-27 18:09 UTC
+
+- kvm-switch-per-sprache: mastodon: https://mastodon.social/@brauckmannblog/117344341139278955
+- kvm-switch-per-sprache: bluesky: https://bsky.app/profile/brauckmannblog.bsky.social/post/3mwjfgfpzlg27
+- kvm-switch-per-sprache: linkedin: manuell (siehe manual-posts.md)
+- kvm-switch-per-sprache: reddit: manuell (siehe manual-posts.md)
+- kvm-switch-per-sprache: facebook: manuell (siehe manual-posts.md)
+- kvm-switch-per-sprache: youtube_community: manuell (siehe manual-posts.md)
+- kvm-switch-per-sprache: microsoft_tech_community: manuell (siehe manual-posts.md)
+

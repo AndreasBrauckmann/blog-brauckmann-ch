@@ -14,7 +14,7 @@ draft: false
 
 *Videoschnitt auf dem Mac, PowerShell und Azure auf Windows – und dazwischen ein einziger Satz: „Hey Siri, Windows.“ Der Monitor schaltet um, Maus und Tastatur wandern mit, die Zwischenablage auch. Kein Knopf, keine Kabel umstecken.*
 
-<p style="text-align:center"><video src="/static/img/kvm-per-sprache-animation.mp4" poster="/static/img/kvm-per-sprache-animation-poster.jpg" autoplay muted playsinline controls style="max-width:100%;border-radius:12px" aria-label="Animation: Hey Siri, Mac – Hey Siri, Windows – Hey Siri, shutdown – Hey Siri, wake up"></video></p>
+<p style="text-align:center"><video src="/static/img/kvm-per-sprache-animation.mp4" poster="/static/img/kvm-per-sprache-animation-poster.jpg" playsinline controls style="max-width:100%;border-radius:12px" aria-label="Animation: Hey Siri, Mac – Hey Siri, Windows – Hey Siri, shutdown – Hey Siri, wake up"></video></p>
 
 ## Das Ergebnis in einem Satz
 
@@ -315,7 +315,7 @@ Der nächste Umbau betrifft nicht den Schreibtisch, sondern die Küche. Die Idee
 
 1. **Kühlschrank auf, Handy raus:** Fotos vom Kühlschrank, ein kurzes Video vom Vorratsregal.
 2. **Die App erkennt, was da ist** – und was fehlt. Sie weiss, was wir gerne essen.
-3. **Vorschläge für die nächste Woche:** asiatisch, polnisch, französisch, italienisch oder deutsche Küche – ganz egal, worauf wir Lust haben.
+3. **Vorschläge für die nächste Woche:** asiatisch, polnisch, französisch, italienisch oder schweizer Küche – ganz egal, worauf wir Lust haben.
 4. **Bestellen per Migros-App** – und die Sachen werden geliefert.
 
 So macht Einkaufen wieder Spass. Und eine Erfahrung, die uns überrascht hat: Wir haben den Eindruck, dass Obst und Gemüse aus der Lieferung **frischer sind und nicht angedatscht** – sie sind eben nicht schon durch tausend Grabbelfinger gegangen wie in der Auslage im Laden.
