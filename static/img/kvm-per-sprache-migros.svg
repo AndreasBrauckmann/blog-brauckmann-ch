@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="330" height="72" viewBox="0 0 330 72" role="img" aria-label="Per Sprache: Kühlschrank, Lebensmittel, Migros-Lieferung">
+  <g fill="none" stroke="#1d1d1f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Kopf im Profil, spricht -->
+    <path d="M22,58 V50 Q10,46 11,32 Q12,14 30,13 Q46,13 47,28 L51,36 L46,37 V44 Q46,49 40,49 H36 V58"/>
+    <path d="M55,28 q4,5 0,10" stroke="#0a84ff"/>
+    <path d="M60,23 q8,10 0,20" stroke="#5e5ce6"/>
+    <path d="M65,18 q12,15 0,30" stroke="#bf5af2"/>
+    <!-- Pfeil -->
+    <path d="M84,36 h18 M97,31 l5,5 l-5,5" stroke="#aeaeb2"/>
+    <!-- Kuehlschrank -->
+    <rect x="116" y="12" width="30" height="48" rx="4"/>
+    <path d="M116,28 h30 M122,19 v5 M122,34 v8"/>
+    <!-- Pfeil -->
+    <path d="M160,36 h18 M173,31 l5,5 l-5,5" stroke="#aeaeb2"/>
+    <!-- Lebensmittel: Apfel + Karotte -->
+    <path d="M204,26 q-12,-2 -12,12 q1,14 12,14 q11,0 12,-14 q0,-14 -12,-12 z"/>
+    <path d="M204,26 q1,-6 6,-8"/>
+    <path d="M220,30 l12,-4 l-6,28 z" stroke="#ff9f0a"/>
+    <path d="M232,26 l4,-6 M232,26 l6,-2" stroke="#30d158"/>
+    <!-- Pfeil -->
+    <path d="M248,36 h18 M261,31 l5,5 l-5,5" stroke="#aeaeb2"/>
+    <!-- Einkaufstasche -->
+    <path d="M282,26 h36 l-3,34 h-30 z" stroke="#ff6a00"/>
+    <path d="M292,26 v-4 q0,-8 8,-8 q8,0 8,8 v4" stroke="#ff6a00"/>
+  </g>
+</svg>
