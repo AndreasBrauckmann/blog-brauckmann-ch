@@ -6,7 +6,7 @@ date: 2026-09-27
 updated: 2026-09-27
 description: "Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut."
 summary: >-
-  Für ein Video zum Zero Trust Assessment arbeite ich parallel auf zwei Notebooks: Auf dem Mac schneide und rendere ich, auf dem Windows-Notebook laufen PowerShell-Skripte und die Verbindungen zu Azure und Microsoft Entra. Jeder Wechsel kostete drei Knöpfe – dutzende Male pro Stunde. Mit drei Gratis-Bausteinen geht das jetzt per Sprache: ddcctl schaltet den Eingang des Monitors, Deskflow reicht Maus, Tastatur und Zwischenablage über das Netzwerk an das Windows-Notebook weiter, und ein Apple-Kurzbefehl verbindet beides mit Siri. Der Artikel zeigt den Aufbau, die Komponenten, fünf Stolpersteine und wie man den SSH-Zugang dafür sauber absichert.
+  Für ein Video zum Zero Trust Assessment arbeite ich parallel auf zwei Notebooks: Auf dem Mac schneide und rendere ich, auf dem Windows-Notebook laufen PowerShell-Skripte und die Verbindungen zu Azure und Microsoft Entra. Jeder Wechsel kostete drei Knöpfe – dutzende Male pro Stunde. Mit vier Gratis-Bausteinen geht das jetzt per Sprache: ddcctl schaltet den Eingang des Monitors, Deskflow reicht Maus, Tastatur und Zwischenablage über das Netzwerk an das Windows-Notebook weiter, und ein Apple-Kurzbefehl verbindet beides mit Siri. Der Artikel zeigt den Aufbau, die Komponenten, sechs Stolpersteine und wie man den SSH-Zugang dafür sauber absichert.
 tags: [Arbeitsplatz, Automatisierung, Zero Trust, macOS, Windows]
 image: /static/img/kvm-per-sprache-eyecatcher.png
 draft: false
@@ -122,7 +122,7 @@ Das Skript schaltet den Monitor um und stösst dann Deskflow an. Das war der kni
 
 ### 4. Das Hilfsprogramm „DF-Umschalter“
 
-Deskflow reagiert nur auf **echte** Tastendrücke – ein per Skript gesendetes ctrl + opt + cmd + W ignoriert es (siehe Stolperstein 1). Was Deskflow aber zuverlässig erkennt: wenn die Maus über den Bildschirmrand fährt. Genau das macht **DF-Umschalter**: ein winziges, selbst gebautes Mac-Programm ohne Fenster, das den Mauszeiger kurz über den rechten Rand schiebt (→ Windows) oder nach links zurück (→ Mac).
+Deskflow reagiert nur auf **echte** Tastendrücke – ein per Skript gesendetes ctrl + opt + cmd + W ignoriert es (siehe Stolperstein 2). Was Deskflow aber zuverlässig erkennt: wenn die Maus über den Bildschirmrand fährt. Genau das macht **DF-Umschalter**: ein winziges, selbst gebautes Mac-Programm ohne Fenster, das den Mauszeiger kurz über den rechten Rand schiebt (→ Windows) oder nach links zurück (→ Mac).
 
 Der ganze Code, rund 30 Zeilen Swift:
 
@@ -213,23 +213,38 @@ Ein kurzer Druck, und die Tastatur tippt direkt auf dem anderen Notebook. Die kl
 Zwei Tipps dazu:
 
 - **Tastenbelegung pro Kanal:** Die MX Keys merkt sich für jeden Kanal das Betriebssystem. Einmal **fn + O** (3 Sekunden) auf Kanal 1 stellt auf Mac um – dann liegen ⌘ und ⌥ dort, wo sie hingehören. **fn + P** ist Windows.
-- **Nicht mischen:** Wer Deskflow nutzt, lässt die Tastatur auf Kanal 1 am Mac. Drückt man Taste 2, verbindet sie sich direkt mit Windows – und Deskflow verliert sie (siehe Stolperstein 4). Die Easy-Switch-Tasten sind dann für die Momente da, in denen ich direkt am Windows-Notebook tippen will.
+- **Nicht mischen:** Wer Deskflow nutzt, lässt die Tastatur auf Kanal 1 am Mac. Drückt man Taste 2, verbindet sie sich direkt mit Windows – und Deskflow verliert sie (siehe Stolperstein 5). Die Easy-Switch-Tasten sind dann für die Momente da, in denen ich direkt am Windows-Notebook tippen will.
 
-## Die fünf Stolpersteine (und wie ich sie gelöst habe)
+## Die sechs Stolpersteine (und wie ich sie gelöst habe)
 
-**1. Deskflow reagiert nicht auf „künstliche“ Tastendrücke.**
+**1. Die Tastenbelegung – der grösste Stolperstein!**
+Für eingefleischte Mac-Nutzer ist eine fremde Tastatur ein Horror: Das Mac-Keyboard hat links unten **vier** Tasten – fn, control, option, command. Die Logitech MX Keys hat nur **drei**: ctrl, opt/start und cmd/alt. Steht sie im Windows-Modus, landet ⌘ auf der Taste „start“ – und cmd + C, cmd + V, cmd + X greifen ins Leere. Jeder Kopiervorgang wird zum Suchspiel.
+
+![Tastenvergleich: Apple Magic Keyboard mit vier Tasten, Logitech MX Keys mit drei – ⌘ gehört auf die Taste „cmd/alt“](/static/img/kvm-per-sprache-tasten.png)
+
+Die Lösung für alle, die auf beiden Plattformen arbeiten: Die MX Keys merkt sich pro Kanal das Betriebssystem. Einmal **fn + O** (3 Sekunden gedrückt halten) auf dem Mac-Kanal – dann liegt ⌘ auf „cmd/alt“, genau dort, wo der Daumen es vom Mac gewohnt ist. Damit unter Windows trotzdem alles wie beschriftet bleibt (Strg + C, Windows-Taste auf „start“, Alt auf „alt“), tauscht Deskflow für den Windows-Bildschirm Alt und Windows-Taste wieder zurück – zwei Zeilen in der Konfiguration:
+
+```text
+section: screens
+	windows:
+		alt = super
+		super = alt
+end
+```
+
+**2. Deskflow reagiert nicht auf „künstliche“ Tastendrücke.**
 Die naheliegende Idee – der Kurzbefehl drückt per AppleScript ctrl + opt + cmd + W – funktioniert nicht. Deskflow nimmt Hotkeys nur von echten Tasten an. Die Lösung: Das Hilfsprogramm **DF-Umschalter** (siehe oben) schiebt stattdessen den Mauszeiger kurz über den rechten Bildschirmrand. Das erkennt Deskflow zuverlässig und wechselt. Für den Rückweg schiebt es die Maus nach links.
 
-**2. macOS fragt nach Berechtigungen – und merkt sie sich nicht immer.**
+**3. macOS fragt nach Berechtigungen – und merkt sie sich nicht immer.**
 Programme, die Maus oder Tastatur steuern, brauchen die Freigabe unter *Datenschutz & Sicherheit → Bedienungshilfen*. Die Kurzbefehle-App selbst bekam sie bei mir trotz Häkchen nicht zuverlässig. Ein eigenes kleines Hilfsprogramm mit eigener Freigabe war die stabile Lösung. Tipp: Nach dem Freigeben das betroffene Programm neu starten.
 
-**3. Die Maus ruckelt? WLAN-Energiesparen unter Windows.**
+**4. Die Maus ruckelt? WLAN-Energiesparen unter Windows.**
 Die Verbindung zum Windows-Notebook hatte anfangs Aussetzer: im Schnitt 33 ms, Spitzen über 100 ms. Schuld war der Energiesparmodus der WLAN-Karte. Im Geräte-Manager abgeschaltet – danach 3,5 ms und eine flüssige Maus.
 
-**4. Tastatur und Maus nur an *einem* Notebook koppeln.**
-Wer die Maus zusätzlich per Bluetooth mit Windows koppelt, bekommt Chaos: Sie springt direkt zu Windows, und Deskflow verliert sie. Also: Tastatur und Maus nur am Mac, Deskflow übernimmt den Rest. Bonus: Die MX Keys hat pro Kanal einen Betriebssystem-Modus (*fn + O* = macOS). Stimmt der, liegt ⌘ auf der richtigen Taste – und in Deskflow lassen sich die Tasten für Windows so zurücktauschen, dass dort alles wie beschriftet bleibt.
+**5. Tastatur und Maus nur an *einem* Notebook koppeln.**
+Wer die Maus zusätzlich per Bluetooth mit Windows koppelt, bekommt Chaos: Sie springt direkt zu Windows, und Deskflow verliert sie. Also: Tastatur und Maus nur am Mac, Deskflow übernimmt den Rest.
 
-**5. Nach dem Ändern der Konfiguration: Server neu starten.**
+**6. Nach dem Ändern der Konfiguration: Server neu starten.**
 Klingt banal, hat mich aber eine halbe Stunde gekostet: Deskflow lief noch mit der alten, leeren Konfiguration. Kein Übergang, keine Hotkeys – bis zum Neustart.
 
 ## Sicherheit: SSH ja, aber mit angezogener Handbremse
