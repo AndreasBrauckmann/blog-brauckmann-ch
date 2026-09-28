@@ -141,21 +141,18 @@ p code, li code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-ra
 article > p, article > ul, article > ol { max-width: 70ch; }
 
 .article-list-item {
-  display: flex;
-  gap: 1.1rem;
-  align-items: flex-start;
   border-bottom: 1px solid var(--border);
   padding: 1.25rem 0;
 }
 
 .article-list-thumb {
-  flex: none;
   width: 132px;
   height: 132px;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--border);
   display: block;
+  margin: 0 0 1rem 0;
 }
 .article-list-thumb img {
   width: 100%;
@@ -164,13 +161,9 @@ article > p, article > ul, article > ol { max-width: 70ch; }
   display: block;
 }
 
-.article-list-body { min-width: 0; flex: 1; }
+.article-list-body { min-width: 0; }
 .article-list-item h2 { margin-top: 0; }
 .article-list-item h2 a { text-decoration: none; }
-
-@media (max-width: 30em) {
-  .article-list-thumb { width: 92px; height: 92px; }
-}
 
 .teaser { color: var(--fg-muted); }
 
