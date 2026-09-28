@@ -12,11 +12,11 @@
 <meta property="og:title" content="Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze">
 <meta property="og:description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
-<meta property="og:image" content="https://blog.brauckmann.ch/static/img/monitoring2-verbindungen-light.png">
+<meta property="og:image" content="https://blog.brauckmann.ch/static/img/monitoring2-eyecatcher-dark.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze">
 <meta name="twitter:description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
-<meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/monitoring2-verbindungen-light.png">
+<meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/monitoring2-eyecatcher-dark.png">
 
 <script type="application/ld+json">
 {
@@ -31,7 +31,7 @@
     "name": "Andreas Brauckmann"
   },
   "url": "https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/",
-  "image": "https://blog.brauckmann.ch/static/img/monitoring2-verbindungen-light.png"
+  "image": "https://blog.brauckmann.ch/static/img/monitoring2-eyecatcher-dark.png"
 }
 </script>
 
@@ -441,17 +441,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <h2 id="teil-2-das-dashboard">Das neue Dashboard: alles auf einen Blick</h2>
 
-<p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch -- auf ausdrücklichen Wunsch jetzt komplett Englisch, bis in die Menüs und die von der KI selbst zusammengebauten Statustexte hinein, damit auch ein internationales Publikum sofort versteht, was da steht. Alle sechs Seiten, als zwei durchlaufende Dreiergruppen:</p>
+<p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch -- auf ausdrücklichen Wunsch jetzt komplett Englisch, bis in die Menüs und die von der KI selbst zusammengebauten Statustexte hinein, damit auch ein internationales Publikum sofort versteht, was da steht. Alle sechs Seiten im Wechsel, dunkles Design, Ports/IP-Adresse/interne Subdomains anonymisiert:</p>
 
 <p>
-<img src="/static/img/monitoring2-dashboards-trio-a.gif" alt="Animation: Gatekeeper-, Ascent- und Backup-Dashboard im Wechsel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+<img src="/static/img/monitoring2-dashboards-all-six-dark.gif" alt="Animation: alle sechs Dashboards im Wechsel -- Gatekeeper, Ascent, Backup, System, Alerts, Connections" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
 </p>
 
-<p>
-<img src="/static/img/monitoring2-dashboards-trio-b.gif" alt="Animation: System-, Alerts- und Connections-Dashboard im Wechsel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
-</p>
-
-<p>Genau dieses Zusehen-können ist der Kern der "Connections"-Seite (im zweiten Loop oben). Sechs Gruppen, auf einen Blick:</p>
+<p>Genau dieses Zusehen-können ist der Kern der "Connections"-Seite (letzter Frame oben). Sechs Gruppen, auf einen Blick:</p>
 
 <ul>
 <li><strong>MCP-Server</strong> -- alle laufenden MCP-Prozesse dieses Ökosystems (Wirtschaftskalender, Produkte, Kontor-Status, dieser Server selbst), inklusive der Frage, ob der öffentliche Zugang über brauckmann.ch tatsächlich noch dort ankommt, wo er soll.</li>
@@ -466,13 +462,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <h2 id="teil-3-das-grosse-bild">Das große Bild: zwei Wege ins System, eine Kontrolle</h2>
 
-<p>Der spannendere Teil ist aber, was hinter diesen grünen Punkten steckt -- speziell bei Cloudflare, wo öffentlich erreichbare Dienste am meisten Angriffsfläche bieten.</p>
-
-<figure class="shot-pair">
-<img class="bild-hell" src="/static/img/monitoring2-torwaechter-light.png" alt="Gatekeeper-Dashboard: Verkehrsweg Internet -> Cloudflare Proxy -> Cloudflare Tunnel -> Internes Netzwerk, ende-zu-ende ausgehend, kein eingehender Port">
-<img class="bild-dunkel" src="/static/img/monitoring2-torwaechter-dark.png" alt="Gatekeeper-Dashboard: Verkehrsweg Internet -> Cloudflare Proxy -> Cloudflare Tunnel -> Internes Netzwerk, ende-zu-ende ausgehend, kein eingehender Port">
-<figcaption>Das "Gatekeeper"-Dashboard: über 9'000 Anfragen in 24 Stunden, 25 automatisch blockiert -- Ports und IP-Adresse im Bild anonymisiert.</figcaption>
-</figure>
+<p>Der spannendere Teil ist aber, was hinter diesen grünen Punkten steckt -- speziell bei Cloudflare, wo öffentlich erreichbare Dienste am meisten Angriffsfläche bieten. Der Blick dorthin ist der erste Frame der Animation ganz oben: über 9'000 Anfragen in 24 Stunden, 25 automatisch blockiert, Verkehrsweg Internet → Cloudflare Proxy → Cloudflare Tunnel → internes Netzwerk, Ende-zu-Ende ausgehend, kein eingehender Port.</p>
 
 <p>Die kurze Fassung des Sicherheitsbilds: Es gibt zwei völlig unabhängige, öffentlich erreichbare Wege in dieses System hinein -- und keiner davon öffnet direkt einen Port am Server.</p>
 

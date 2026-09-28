@@ -8,7 +8,7 @@ description: "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue D
 summary: >-
   Vor einer Woche war der erste eigene, schreibfähige MCP-Server noch ein "grober Fahrplan" am Ende eines Artikels. Was seither daraus geworden ist: sechs Live-Dashboards (Gatekeeper, Ascent, Backup, System, Alerts, Connections), die innerhalb von 48 Stunden nach dem ersten Commit bereits eine echte Entra-ID-Anmeldung, echte Cloudflare-Firewall-Daten und einen Fix für einen selbst verursachten Fehler hatten. Der Artikel zeigt das neue Verbindungen-Dashboard, das auf einen Blick zeigt, was heute alles überwacht wird -- MCP-Server, Broker, Cloudflare, Search Console, Wirtschaftskalender, LLM-Wrapper -- und zeichnet das große Sicherheitsbild: zwei komplett getrennte Zugangswege (Cloudflare-Tunnel für brauckmann.ch, Tailscale Funnel für die eigene ts.net-Adresse), die beide auf dieselbe, nach außen portlose Infrastruktur treffen.
 tags: [Monitoring, Cloudflare, Security, Homelab, Claude, MCP]
-image: /static/img/monitoring2-verbindungen-light.png
+image: /static/img/monitoring2-eyecatcher-dark.png
 draft: false
 ---
 
@@ -28,17 +28,13 @@ draft: false
 
 <h2 id="teil-2-das-dashboard">Das neue Dashboard: alles auf einen Blick</h2>
 
-<p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch -- auf ausdrücklichen Wunsch jetzt komplett Englisch, bis in die Menüs und die von der KI selbst zusammengebauten Statustexte hinein, damit auch ein internationales Publikum sofort versteht, was da steht. Alle sechs Seiten, als zwei durchlaufende Dreiergruppen:</p>
+<p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch -- auf ausdrücklichen Wunsch jetzt komplett Englisch, bis in die Menüs und die von der KI selbst zusammengebauten Statustexte hinein, damit auch ein internationales Publikum sofort versteht, was da steht. Alle sechs Seiten im Wechsel, dunkles Design, Ports/IP-Adresse/interne Subdomains anonymisiert:</p>
 
 <p>
-<img src="/static/img/monitoring2-dashboards-trio-a.gif" alt="Animation: Gatekeeper-, Ascent- und Backup-Dashboard im Wechsel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+<img src="/static/img/monitoring2-dashboards-all-six-dark.gif" alt="Animation: alle sechs Dashboards im Wechsel -- Gatekeeper, Ascent, Backup, System, Alerts, Connections" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
 </p>
 
-<p>
-<img src="/static/img/monitoring2-dashboards-trio-b.gif" alt="Animation: System-, Alerts- und Connections-Dashboard im Wechsel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
-</p>
-
-<p>Genau dieses Zusehen-können ist der Kern der "Connections"-Seite (im zweiten Loop oben). Sechs Gruppen, auf einen Blick:</p>
+<p>Genau dieses Zusehen-können ist der Kern der "Connections"-Seite (letzter Frame oben). Sechs Gruppen, auf einen Blick:</p>
 
 <ul>
 <li><strong>MCP-Server</strong> -- alle laufenden MCP-Prozesse dieses Ökosystems (Wirtschaftskalender, Produkte, Kontor-Status, dieser Server selbst), inklusive der Frage, ob der öffentliche Zugang über brauckmann.ch tatsächlich noch dort ankommt, wo er soll.</li>
@@ -53,13 +49,7 @@ draft: false
 
 <h2 id="teil-3-das-grosse-bild">Das große Bild: zwei Wege ins System, eine Kontrolle</h2>
 
-<p>Der spannendere Teil ist aber, was hinter diesen grünen Punkten steckt -- speziell bei Cloudflare, wo öffentlich erreichbare Dienste am meisten Angriffsfläche bieten.</p>
-
-<figure class="shot-pair">
-<img class="bild-hell" src="/static/img/monitoring2-torwaechter-light.png" alt="Gatekeeper-Dashboard: Verkehrsweg Internet -> Cloudflare Proxy -> Cloudflare Tunnel -> Internes Netzwerk, ende-zu-ende ausgehend, kein eingehender Port">
-<img class="bild-dunkel" src="/static/img/monitoring2-torwaechter-dark.png" alt="Gatekeeper-Dashboard: Verkehrsweg Internet -> Cloudflare Proxy -> Cloudflare Tunnel -> Internes Netzwerk, ende-zu-ende ausgehend, kein eingehender Port">
-<figcaption>Das "Gatekeeper"-Dashboard: über 9'000 Anfragen in 24 Stunden, 25 automatisch blockiert -- Ports und IP-Adresse im Bild anonymisiert.</figcaption>
-</figure>
+<p>Der spannendere Teil ist aber, was hinter diesen grünen Punkten steckt -- speziell bei Cloudflare, wo öffentlich erreichbare Dienste am meisten Angriffsfläche bieten. Der Blick dorthin ist der erste Frame der Animation ganz oben: über 9'000 Anfragen in 24 Stunden, 25 automatisch blockiert, Verkehrsweg Internet → Cloudflare Proxy → Cloudflare Tunnel → internes Netzwerk, Ende-zu-Ende ausgehend, kein eingehender Port.</p>
 
 <p>Die kurze Fassung des Sicherheitsbilds: Es gibt zwei völlig unabhängige, öffentlich erreichbare Wege in dieses System hinein -- und keiner davon öffnet direkt einen Port am Server.</p>
 
