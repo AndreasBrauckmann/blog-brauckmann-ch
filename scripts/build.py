@@ -151,6 +151,11 @@ def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_sty
     tags_html = tags_html_linked(tags)
     og_image = site["base_url"] + meta["image"] if meta.get("image") else ""
     summary_html = markdown.markdown(meta.get("summary", meta["description"]))
+    eyecatcher_html = (
+        f'<p class="eyecatcher"><img src="{html.escape(meta["image"])}" alt="{html.escape(meta["title"])}" '
+        f'style="max-width:100%;border-radius:12px;border:1px solid var(--border)"></p>'
+        if meta.get("image") else ""
+    )
 
     context = {
         "language": site["language"],
@@ -166,6 +171,7 @@ def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_sty
         "date_display": str(meta["date"]),
         "tags_html": tags_html,
         "summary_html": summary_html,
+        "eyecatcher_html": eyecatcher_html,
         "content": wrap_tables(content_html),
         "base_url": site["base_url"],
         "author": html.escape(site["author"]),
