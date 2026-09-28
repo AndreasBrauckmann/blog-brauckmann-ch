@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze · Brauckmann Blog</title>
+<title>Monitoring, Teil II: Cloudflare, Firewall und das große Ganze · Brauckmann Blog</title>
 <meta name="description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
 
 <meta property="og:type" content="article">
-<meta property="og:title" content="Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze">
+<meta property="og:title" content="Monitoring, Teil II: Cloudflare, Firewall und das große Ganze">
 <meta property="og:description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
 <meta property="og:image" content="https://blog.brauckmann.ch/static/img/monitoring2-eyecatcher-dark.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze">
+<meta name="twitter:title" content="Monitoring, Teil II: Cloudflare, Firewall und das große Ganze">
 <meta name="twitter:description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/monitoring2-eyecatcher-dark.png">
 
@@ -22,7 +22,7 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze",
+  "headline": "Monitoring, Teil II: Cloudflare, Firewall und das große Ganze",
   "description": "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.",
   "datePublished": "2026-09-28",
   "dateModified": "2026-09-28",
@@ -466,10 +466,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main>
   <article>
     <header>
-      <h1>Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze</h1>
+      <h1>Monitoring, Teil II: Cloudflare, Firewall und das große Ganze</h1>
       <time class="article-date" datetime="2026-09-28">2026-09-28</time>
       <div class="article-meta-row">
-        <div class="tags"><a class="tag" href="/tag/monitoring/">Monitoring</a><a class="tag" href="/tag/cloudflare/">Cloudflare</a><a class="tag" href="/tag/security/">Security</a><a class="tag" href="/tag/homelab/">Homelab</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/mcp/">MCP</a></div>
+        <div class="tags"><a class="tag" href="/tag/monitoring/">Monitoring</a><a class="tag" href="/tag/cloudflare/">Cloudflare</a><a class="tag" href="/tag/security/">Security</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/mcp/">MCP</a></div>
         <button type="button" class="summary-toggle" id="summary-toggle" aria-expanded="true" aria-controls="summary-box">
           Zusammenfassung <span class="summary-toggle-icon" aria-hidden="true">&#9662;</span>
         </button>
@@ -530,10 +530,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
-<p>
-<img src="/static/img/monitoring2-sicherheitsnetz-hero.svg" alt="Netzwerk aus Knoten und Verbindungen, rote Angriffslinien treffen auf einen leuchtenden Schild mit Haken, der sie abfängt" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
-</p>
-
 <figure class="netz-diagramm">
 <div class="risiken">
   <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-bug"></i></div><div class="lbl">Bug</div></div>
@@ -549,7 +545,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </figure>
 
 <div class="callout">
-<p>Der Nutzen davon hört nicht beim eigenen Homelab auf. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
+<p>Der Nutzen davon hört nicht beim eigenen System zuhause auf. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
 
 <p>Ein Punkt daraus ist mir besonders wichtig: Gerade wenn im Ernstfall die Frage im Raum steht, wo eine Ursache wirklich lag, entscheidet oft nicht die Sachlage, sondern wer die überzeugendere Geschichte erzählt -- und genau da hilft eine lückenlose, automatisiert mitschreibende Kontrollebene allen Beteiligten weiter. <strong>Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich eine Ursache objektiv nachvollziehen, statt sie bei Behauptung gegen Behauptung zu belassen.</strong> Das schafft Klarheit für alle Seiten, schützt gewachsene Kundenbeziehungen vor unnötigem Vertrauensverlust und macht am Ende auch die eigene Arbeit sichtbar.</p>
 

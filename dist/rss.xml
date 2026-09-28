@@ -4,7 +4,7 @@
   <link>https://blog.brauckmann.ch</link>
   <description>IT, KI und Automatisierung für Fachpublikum</description>
   <item>
-    <title>Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze</title>
+    <title>Monitoring, Teil II: Cloudflare, Firewall und das große Ganze</title>
     <link>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</link>
     <guid>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</guid>
     <description>Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.</description>
