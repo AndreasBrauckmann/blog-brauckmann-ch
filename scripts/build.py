@@ -204,12 +204,12 @@ def render_article_list_html(articles: list[dict]) -> str:
         items.append(
             f'<div class="article-list-item">'
             f"{thumb_html}"
-            f'<div class="article-list-body">'
+            f'<div class="article-list-head">'
             f'<h2><a href="{url}">{html.escape(meta["title"])}</a></h2>'
             f'<time class="article-date" datetime="{meta["date"]}">{meta["date"]}</time>'
             f'<div class="tags">{tags_html_linked(meta.get("tags", []))}</div>'
+            f'</div>'
             f'<p class="teaser">{html.escape(meta["description"])}</p>'
-            f"</div>"
             f"</div>"
         )
     return "\n".join(items)
