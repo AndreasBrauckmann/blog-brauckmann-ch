@@ -28,13 +28,17 @@ draft: false
 
 <h2 id="teil-2-das-dashboard">Das neue Dashboard: alles auf einen Blick</h2>
 
-<figure class="shot-pair">
-<img class="bild-hell" src="/static/img/monitoring2-verbindungen-light.png" alt="Verbindungen-Dashboard: MCP-Server, Broker, Cloudflare, Google/Search Console, Wirtschaftskalender und LLM-Wrapper, alle auf Grün">
-<img class="bild-dunkel" src="/static/img/monitoring2-verbindungen-dark.png" alt="Verbindungen-Dashboard: MCP-Server, Broker, Cloudflare, Google/Search Console, Wirtschaftskalender und LLM-Wrapper, alle auf Grün">
-<figcaption>Das "Connections"-Dashboard: sechs Gruppen, alle grün -- Stand nach den beiden Fixes von heute Nachmittag.</figcaption>
-</figure>
+<p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch -- auf ausdrücklichen Wunsch jetzt komplett Englisch, bis in die Menüs und die von der KI selbst zusammengebauten Statustexte hinein, damit auch ein internationales Publikum sofort versteht, was da steht. Alle sechs Seiten, als zwei durchlaufende Dreiergruppen:</p>
 
-<p>Genau dieses Zusehen-können ist der Kern der neuen "Connections"-Seite. Sechs Gruppen, auf einen Blick:</p>
+<p>
+<img src="/static/img/monitoring2-dashboards-trio-a.gif" alt="Animation: Gatekeeper-, Ascent- und Backup-Dashboard im Wechsel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+</p>
+
+<p>
+<img src="/static/img/monitoring2-dashboards-trio-b.gif" alt="Animation: System-, Alerts- und Connections-Dashboard im Wechsel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+</p>
+
+<p>Genau dieses Zusehen-können ist der Kern der "Connections"-Seite (im zweiten Loop oben). Sechs Gruppen, auf einen Blick:</p>
 
 <ul>
 <li><strong>MCP-Server</strong> -- alle laufenden MCP-Prozesse dieses Ökosystems (Wirtschaftskalender, Produkte, Kontor-Status, dieser Server selbst), inklusive der Frage, ob der öffentliche Zugang über brauckmann.ch tatsächlich noch dort ankommt, wo er soll.</li>
@@ -54,7 +58,7 @@ draft: false
 <figure class="shot-pair">
 <img class="bild-hell" src="/static/img/monitoring2-torwaechter-light.png" alt="Gatekeeper-Dashboard: Verkehrsweg Internet -> Cloudflare Proxy -> Cloudflare Tunnel -> Internes Netzwerk, ende-zu-ende ausgehend, kein eingehender Port">
 <img class="bild-dunkel" src="/static/img/monitoring2-torwaechter-dark.png" alt="Gatekeeper-Dashboard: Verkehrsweg Internet -> Cloudflare Proxy -> Cloudflare Tunnel -> Internes Netzwerk, ende-zu-ende ausgehend, kein eingehender Port">
-<figcaption>Das "Gatekeeper"-Dashboard: 8'256 Anfragen in 24 Stunden, 25 automatisch blockiert -- und der Weg, den jede einzelne davon nimmt.</figcaption>
+<figcaption>Das "Gatekeeper"-Dashboard: 8'935 Anfragen in 24 Stunden, 25 automatisch blockiert -- und der Weg, den jede einzelne davon nimmt.</figcaption>
 </figure>
 
 <p>Die kurze Fassung des Sicherheitsbilds: Es gibt zwei völlig unabhängige, öffentlich erreichbare Wege in dieses System hinein -- und keiner davon öffnet direkt einen Port am Server.</p>
