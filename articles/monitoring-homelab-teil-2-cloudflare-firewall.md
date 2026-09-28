@@ -86,4 +86,4 @@ draft: false
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 
-<p>Eine Woche, 35 Commits, sechs Dashboards, ein selbst gefundener und selbst behobener Fehler binnen 13 Minuten -- und ein Sicherheitsbild mit zwei unabhängigen, portlosen Zugangswegen zu derselben Infrastruktur. Der grösste Unterschied zur Homelab-Realität von vorher ist nicht die Zahl der Sensoren, sondern dass kleine Fehler nicht mehr liegen bleiben, bis jemand zufällig draufschaut.</p>
+<p>Eine Woche, 35 Commits, sechs Dashboards, ein selbst gefundener und selbst behobener Fehler binnen 13 Minuten -- und ein Sicherheitsbild mit zwei unabhängigen, portlosen Zugangswegen zu derselben Infrastruktur. Der grösste Unterschied zur Realität von vorher ist nicht die Zahl der Sensoren, <strong>sondern dass kleine Fehler nicht mehr liegen bleiben, bis jemand zufällig draufschaut.</strong></p>
