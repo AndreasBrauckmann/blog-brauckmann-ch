@@ -6,7 +6,7 @@
 <title>Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze · Brauckmann Blog</title>
 <meta name="description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze">
@@ -304,6 +304,43 @@ article img {
 .callout p:first-child { margin-top: 0; }
 .callout p:last-child { margin-bottom: 0; }
 
+/* Diagramm "Sicherheitsnetz" -- Risiken fallen von oben, das KI-Monitoring
+   faengt sie im Netz ab, bevor sie unten ankommen. Gleiches Muster/gleiche
+   Tokens wie .mcp-diagramm (netdata-homelab-monitoring-claude), eigener
+   Namensraum, damit nichts kollidiert. */
+.netz-diagramm {
+  margin: 2rem 0; padding: 1.5rem 0.75rem 1.25rem; border: 1px solid var(--border);
+  border-radius: 10px; overflow-x: auto;
+  --md-coral-bg:#FAECE7; --md-coral-fg:#712B13;
+  --md-warning-bg:#FAEEDA; --md-warning-fg:#633806;
+  --md-success-bg:#EAF3DE; --md-success-fg:#27500A;
+}
+@media (prefers-color-scheme: dark) {
+  .netz-diagramm {
+    --md-coral-bg:#3a231c; --md-coral-fg:#f2b09b;
+    --md-warning-bg:#3a2a12; --md-warning-fg:#f0c98a;
+    --md-success-bg:#22331a; --md-success-fg:#a9d98b;
+  }
+}
+.netz-diagramm .risiken { display:flex; justify-content:space-around; gap:10px; max-width:640px; min-width:480px; margin:0 auto; flex-wrap:nowrap; }
+.netz-diagramm .risiko, .netz-diagramm .ergebnis { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; min-width:0; }
+.netz-diagramm .circ { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.25rem; flex:none; }
+.netz-diagramm .lbl { font-size:0.72rem; font-weight:600; color:var(--fg); text-align:center; }
+.netz-diagramm .pfeile { text-align:center; color:var(--callout-border); font-size:1.1rem; letter-spacing:8px; margin:4px 0; }
+.netz-diagramm .netz {
+  position:relative; max-width:640px; min-width:480px; margin:0.5rem auto; height:52px;
+  background-image:
+    repeating-linear-gradient(45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px),
+    repeating-linear-gradient(-45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px);
+  opacity:0.55; border-top:2px solid var(--callout-border); border-bottom:2px solid var(--callout-border);
+  border-radius:6px; display:flex; align-items:center; justify-content:center;
+}
+.netz-diagramm .netz-label {
+  background:var(--callout-bg); color:var(--fg); font-size:0.78rem; font-weight:700;
+  padding:3px 12px; border-radius:999px; border:1px solid var(--callout-border); opacity:1;
+}
+.netz-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
+
 /* ── Diagramm "Vom Handy zum Hypervisor" (netdata-homelab-monitoring-claude) ──
    Uebernommen aus einer eigenstaendigen HTML-Vorlage, an das Blog-eigene
    Token-System angepasst (--bg/--fg/--fg-muted/--border statt eigener
@@ -493,12 +530,26 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
+<figure class="netz-diagramm">
+<div class="risiken">
+  <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-bug"></i></div><div class="lbl">Bug</div></div>
+  <div class="risiko"><div class="circ" style="background:var(--md-warning-bg);color:var(--md-warning-fg)"><i class="ti ti-alert-triangle"></i></div><div class="lbl">Fehlkonfiguration</div></div>
+  <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-lock-open"></i></div><div class="lbl">Sicherheitslücke</div></div>
+  <div class="risiko"><div class="circ" style="background:var(--md-warning-bg);color:var(--md-warning-fg)"><i class="ti ti-eye-off"></i></div><div class="lbl">Stille Abweichung</div></div>
+</div>
+<div class="pfeile">↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓</div>
+<div class="netz"><span class="netz-label">KI-gestütztes Monitoring · rund um die Uhr</span></div>
+<div class="pfeile">↓</div>
+<div class="ergebnis"><div class="circ" style="background:var(--md-success-bg);color:var(--md-success-fg)"><i class="ti ti-shield-check"></i></div><div class="lbl">Business bleibt geschützt</div></div>
+<figcaption>Kein Vorfall entsteht aus dem Nichts -- er beginnt als kleine Abweichung. Das Netz fängt sie ab, bevor sie unten ankommt.</figcaption>
+</figure>
+
 <div class="callout">
 <p>Der Nutzen davon hört nicht beim eigenen Homelab auf. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
 
-<p>Ein Punkt daraus verdient es, offen ausgesprochen zu werden: In der Praxis erleben wir immer wieder, dass eigenes Versagen vertuscht und stattdessen dem externen Dienstleister angelastet wird -- bis hin zum Verlust von Kundenbeziehungen, die eigentlich intakt gewesen wären. Das ist keine Fachfrage mehr, das ist eine Schande für die Branche. Eine lückenlose, automatisiert mitschreibende Kontrollebene macht genau das unmöglich: Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich im Streitfall objektiv klären, wo eine Ursache tatsächlich lag -- statt es bei Behauptung gegen Behauptung zu belassen.</p>
+<p>Ein Punkt daraus verdient es, offen ausgesprochen zu werden: In der Praxis erlebe ich immer wieder, dass eigenes Versagen vertuscht und stattdessen dem externen Dienstleister angelastet wird -- bis hin zum Verlust von Kundenbeziehungen, die eigentlich intakt gewesen wären. <strong>Das ist keine Fachfrage mehr, das ist eine Schande für die Branche.</strong> Eine lückenlose, automatisiert mitschreibende Kontrollebene macht genau das unmöglich: Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich im Streitfall objektiv klären, wo eine Ursache tatsächlich lag -- statt es bei Behauptung gegen Behauptung zu belassen.</p>
 
-<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Wir helfen gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
+<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Ich helfe gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
 </div>
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>

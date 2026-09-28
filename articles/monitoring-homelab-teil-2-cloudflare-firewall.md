@@ -62,12 +62,26 @@ draft: false
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
+<figure class="netz-diagramm">
+<div class="risiken">
+  <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-bug"></i></div><div class="lbl">Bug</div></div>
+  <div class="risiko"><div class="circ" style="background:var(--md-warning-bg);color:var(--md-warning-fg)"><i class="ti ti-alert-triangle"></i></div><div class="lbl">Fehlkonfiguration</div></div>
+  <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-lock-open"></i></div><div class="lbl">Sicherheitslücke</div></div>
+  <div class="risiko"><div class="circ" style="background:var(--md-warning-bg);color:var(--md-warning-fg)"><i class="ti ti-eye-off"></i></div><div class="lbl">Stille Abweichung</div></div>
+</div>
+<div class="pfeile">↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓</div>
+<div class="netz"><span class="netz-label">KI-gestütztes Monitoring · rund um die Uhr</span></div>
+<div class="pfeile">↓</div>
+<div class="ergebnis"><div class="circ" style="background:var(--md-success-bg);color:var(--md-success-fg)"><i class="ti ti-shield-check"></i></div><div class="lbl">Business bleibt geschützt</div></div>
+<figcaption>Kein Vorfall entsteht aus dem Nichts -- er beginnt als kleine Abweichung. Das Netz fängt sie ab, bevor sie unten ankommt.</figcaption>
+</figure>
+
 <div class="callout">
 <p>Der Nutzen davon hört nicht beim eigenen Homelab auf. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
 
-<p>Ein Punkt daraus verdient es, offen ausgesprochen zu werden: In der Praxis erleben wir immer wieder, dass eigenes Versagen vertuscht und stattdessen dem externen Dienstleister angelastet wird -- bis hin zum Verlust von Kundenbeziehungen, die eigentlich intakt gewesen wären. Das ist keine Fachfrage mehr, das ist eine Schande für die Branche. Eine lückenlose, automatisiert mitschreibende Kontrollebene macht genau das unmöglich: Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich im Streitfall objektiv klären, wo eine Ursache tatsächlich lag -- statt es bei Behauptung gegen Behauptung zu belassen.</p>
+<p>Ein Punkt daraus verdient es, offen ausgesprochen zu werden: In der Praxis erlebe ich immer wieder, dass eigenes Versagen vertuscht und stattdessen dem externen Dienstleister angelastet wird -- bis hin zum Verlust von Kundenbeziehungen, die eigentlich intakt gewesen wären. <strong>Das ist keine Fachfrage mehr, das ist eine Schande für die Branche.</strong> Eine lückenlose, automatisiert mitschreibende Kontrollebene macht genau das unmöglich: Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich im Streitfall objektiv klären, wo eine Ursache tatsächlich lag -- statt es bei Behauptung gegen Behauptung zu belassen.</p>
 
-<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Wir helfen gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
+<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Ich helfe gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
 </div>
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
