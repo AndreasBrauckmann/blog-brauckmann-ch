@@ -141,12 +141,36 @@ p code, li code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-ra
 article > p, article > ul, article > ol { max-width: 70ch; }
 
 .article-list-item {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
   border-bottom: 1px solid var(--border);
   padding: 1.25rem 0;
 }
 
+.article-list-thumb {
+  flex: none;
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: block;
+}
+.article-list-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.article-list-body { min-width: 0; flex: 1; }
 .article-list-item h2 { margin-top: 0; }
 .article-list-item h2 a { text-decoration: none; }
+
+@media (max-width: 30em) {
+  .article-list-thumb { width: 64px; height: 64px; }
+}
 
 .teaser { color: var(--fg-muted); }
 
@@ -411,7 +435,7 @@ article img {
 <body>
 <main>
   <h1 class="list-heading">Tag: Zero Trust <a href="/">&larr; alle Artikel</a></h1>
-  <div class="article-list-item"><h2><a href="/artikel/kvm-switch-per-sprache/">„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten – Mac- und Windows-Notebook</a></h2><time class="article-date" datetime="2026-09-27">2026-09-27</time><div class="tags"><a class="tag" href="/tag/arbeitsplatz/">Arbeitsplatz</a><a class="tag" href="/tag/automatisierung/">Automatisierung</a><a class="tag" href="/tag/zero-trust/">Zero Trust</a><a class="tag" href="/tag/macos/">macOS</a><a class="tag" href="/tag/windows/">Windows</a></div><p class="teaser">Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut.</p></div>
+  <div class="article-list-item"><a class="article-list-thumb" href="/artikel/kvm-switch-per-sprache/" tabindex="-1" aria-hidden="true"><img src="/static/img/thumbs/kvm-switch-per-sprache.jpg" alt="" loading="lazy"></a><div class="article-list-body"><h2><a href="/artikel/kvm-switch-per-sprache/">„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten – Mac- und Windows-Notebook</a></h2><time class="article-date" datetime="2026-09-27">2026-09-27</time><div class="tags"><a class="tag" href="/tag/arbeitsplatz/">Arbeitsplatz</a><a class="tag" href="/tag/automatisierung/">Automatisierung</a><a class="tag" href="/tag/zero-trust/">Zero Trust</a><a class="tag" href="/tag/macos/">macOS</a><a class="tag" href="/tag/windows/">Windows</a></div><p class="teaser">Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut.</p></div></div>
   
 </main>
 

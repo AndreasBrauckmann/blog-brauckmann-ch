@@ -141,12 +141,36 @@ p code, li code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-ra
 article > p, article > ul, article > ol { max-width: 70ch; }
 
 .article-list-item {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
   border-bottom: 1px solid var(--border);
   padding: 1.25rem 0;
 }
 
+.article-list-thumb {
+  flex: none;
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: block;
+}
+.article-list-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.article-list-body { min-width: 0; flex: 1; }
 .article-list-item h2 { margin-top: 0; }
 .article-list-item h2 a { text-decoration: none; }
+
+@media (max-width: 30em) {
+  .article-list-thumb { width: 64px; height: 64px; }
+}
 
 .teaser { color: var(--fg-muted); }
 
@@ -411,7 +435,7 @@ article img {
 <body>
 <main>
   <h1 class="list-heading">Tag: Wirtschaftsdaten <a href="/">&larr; alle Artikel</a></h1>
-  <div class="article-list-item"><h2><a href="/artikel/wirtschaftskalender-ohne-anmeldung/">Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und ohne Kosten</a></h2><time class="article-date" datetime="2026-09-20">2026-09-20</time><div class="tags"><a class="tag" href="/tag/kontor/">Kontor</a><a class="tag" href="/tag/wirtschaftsdaten/">Wirtschaftsdaten</a><a class="tag" href="/tag/open-data/">Open Data</a><a class="tag" href="/tag/api/">API</a></div><p class="teaser">Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle. Was er kann, warum er anders lizenziert ist als der Rest der Branche.</p></div>
+  <div class="article-list-item"><a class="article-list-thumb" href="/artikel/wirtschaftskalender-ohne-anmeldung/" tabindex="-1" aria-hidden="true"><img src="/static/img/thumbs/wirtschaftskalender-ohne-anmeldung.jpg" alt="" loading="lazy"></a><div class="article-list-body"><h2><a href="/artikel/wirtschaftskalender-ohne-anmeldung/">Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und ohne Kosten</a></h2><time class="article-date" datetime="2026-09-20">2026-09-20</time><div class="tags"><a class="tag" href="/tag/kontor/">Kontor</a><a class="tag" href="/tag/wirtschaftsdaten/">Wirtschaftsdaten</a><a class="tag" href="/tag/open-data/">Open Data</a><a class="tag" href="/tag/api/">API</a></div><p class="teaser">Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle. Was er kann, warum er anders lizenziert ist als der Rest der Branche.</p></div></div>
   
 </main>
 
