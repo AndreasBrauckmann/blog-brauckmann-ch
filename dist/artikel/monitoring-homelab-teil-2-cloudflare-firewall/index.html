@@ -45,6 +45,8 @@
   --border: #dddddd;
   --code-bg: #f5f5f5;
   --tag-bg: #eef1f5;
+  --callout-bg: #fff6e0;
+  --callout-border: #e0a415;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -57,6 +59,8 @@
     --border: #333333;
     --code-bg: #1e1e1e;
     --tag-bg: #1f2733;
+    --callout-bg: #2c2410;
+    --callout-border: #e0ab3a;
   }
 }
 
@@ -286,6 +290,20 @@ article img {
   .bild-dunkel { display: block; }
 }
 
+/* Hervorhebungs-Box fuer Absaetze, die im Fliesstext untergehen wuerden --
+   deutliche Kontur statt nur eingerueckter Blockquote, damit ein
+   scannender Leser nicht daran vorbeiliest. */
+.callout {
+  background: var(--callout-bg);
+  border-left: 4px solid var(--callout-border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0;
+}
+.callout p { margin: 0.75rem 0; font-size: 1.05rem; line-height: 1.6; }
+.callout p:first-child { margin-top: 0; }
+.callout p:last-child { margin-bottom: 0; }
+
 /* ── Diagramm "Vom Handy zum Hypervisor" (netdata-homelab-monitoring-claude) ──
    Uebernommen aus einer eigenstaendigen HTML-Vorlage, an das Blog-eigene
    Token-System angepasst (--bg/--fg/--fg-muted/--border statt eigener
@@ -475,13 +493,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">Was das für Unternehmen bedeutet</h2>
 
+<div class="callout">
 <p>Der Nutzen davon hört nicht beim eigenen Homelab auf. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
 
 <p>Ein Punkt daraus verdient es, offen ausgesprochen zu werden: In der Praxis erleben wir immer wieder, dass eigenes Versagen vertuscht und stattdessen dem externen Dienstleister angelastet wird -- bis hin zum Verlust von Kundenbeziehungen, die eigentlich intakt gewesen wären. Das ist keine Fachfrage mehr, das ist eine Schande für die Branche. Eine lückenlose, automatisiert mitschreibende Kontrollebene macht genau das unmöglich: Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich im Streitfall objektiv klären, wo eine Ursache tatsächlich lag -- statt es bei Behauptung gegen Behauptung zu belassen.</p>
 
-<blockquote>
-<p>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Wir helfen gerne dabei, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
-</blockquote>
+<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Wir helfen gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
+</div>
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 

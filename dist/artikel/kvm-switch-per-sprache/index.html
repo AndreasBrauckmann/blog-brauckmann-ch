@@ -45,6 +45,8 @@
   --border: #dddddd;
   --code-bg: #f5f5f5;
   --tag-bg: #eef1f5;
+  --callout-bg: #fff6e0;
+  --callout-border: #e0a415;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -57,6 +59,8 @@
     --border: #333333;
     --code-bg: #1e1e1e;
     --tag-bg: #1f2733;
+    --callout-bg: #2c2410;
+    --callout-border: #e0ab3a;
   }
 }
 
@@ -285,6 +289,20 @@ article img {
   .bild-hell { display: none; }
   .bild-dunkel { display: block; }
 }
+
+/* Hervorhebungs-Box fuer Absaetze, die im Fliesstext untergehen wuerden --
+   deutliche Kontur statt nur eingerueckter Blockquote, damit ein
+   scannender Leser nicht daran vorbeiliest. */
+.callout {
+  background: var(--callout-bg);
+  border-left: 4px solid var(--callout-border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0;
+}
+.callout p { margin: 0.75rem 0; font-size: 1.05rem; line-height: 1.6; }
+.callout p:first-child { margin-top: 0; }
+.callout p:last-child { margin-bottom: 0; }
 
 /* ── Diagramm "Vom Handy zum Hypervisor" (netdata-homelab-monitoring-claude) ──
    Uebernommen aus einer eigenstaendigen HTML-Vorlage, an das Blog-eigene

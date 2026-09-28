@@ -62,13 +62,13 @@ draft: false
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">Was das für Unternehmen bedeutet</h2>
 
+<div class="callout">
 <p>Der Nutzen davon hört nicht beim eigenen Homelab auf. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
 
 <p>Ein Punkt daraus verdient es, offen ausgesprochen zu werden: In der Praxis erleben wir immer wieder, dass eigenes Versagen vertuscht und stattdessen dem externen Dienstleister angelastet wird -- bis hin zum Verlust von Kundenbeziehungen, die eigentlich intakt gewesen wären. Das ist keine Fachfrage mehr, das ist eine Schande für die Branche. Eine lückenlose, automatisiert mitschreibende Kontrollebene macht genau das unmöglich: Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich im Streitfall objektiv klären, wo eine Ursache tatsächlich lag -- statt es bei Behauptung gegen Behauptung zu belassen.</p>
 
-<blockquote>
-<p>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Wir helfen gerne dabei, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
-</blockquote>
+<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Wir helfen gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
+</div>
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 
