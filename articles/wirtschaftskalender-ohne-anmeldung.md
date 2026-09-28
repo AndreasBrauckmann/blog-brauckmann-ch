@@ -1,6 +1,6 @@
 ---
 slogan: "Der Wirtschaftskalender unter brauckmann.ch/kalender/ zeigt über 84.000 Konjunkturtermine seit 2010, ohne Login, ohne Bezahlschranke: JSON-API, sechs Downloadformate (CSV, Excel, SQLite, NDJSON, ICS), Sparkline-Verlauf pro Kennzahl, ein Recherche-Link direkt in Googles KI-Modus und für 98 Prozent aller Kennzahlen die amtliche Originalquelle verlinkt."
-title: "Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und ohne Kosten"
+title: "Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und Kosten"
 slug: wirtschaftskalender-ohne-anmeldung
 date: 2026-09-20
 updated: 2026-09-20
