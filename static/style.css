@@ -136,7 +136,8 @@ article > p, article > ul, article > ol { max-width: 70ch; }
   grid-column: 1;
   grid-row: 1;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
+  min-height: 92px;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--border);
@@ -156,7 +157,7 @@ article > p, article > ul, article > ol { max-width: 70ch; }
 .article-list-item .teaser {
   grid-column: 1 / -1;
   grid-row: 2;
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 @media (max-width: 30em) {
