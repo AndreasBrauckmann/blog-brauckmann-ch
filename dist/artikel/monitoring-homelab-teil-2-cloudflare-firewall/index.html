@@ -6,6 +6,7 @@
 <title>Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze · Brauckmann Blog</title>
 <meta name="description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze">
@@ -283,6 +284,50 @@ article img {
 @media (prefers-color-scheme: dark) {
   .bild-hell { display: none; }
   .bild-dunkel { display: block; }
+}
+
+/* ── Diagramm "Vom Handy zum Hypervisor" (netdata-homelab-monitoring-claude) ──
+   Uebernommen aus einer eigenstaendigen HTML-Vorlage, an das Blog-eigene
+   Token-System angepasst (--bg/--fg/--fg-muted/--border statt eigener
+   --bg-accent etc.). War bis 28.9.26 nur im mittlerweile geloeschten
+   Standalone-HTML-Artikel eingebettet -- bei der Umwandlung in Markdown
+   (27.9.26, gleicher Anlass wie wirtschaftskalender-ohne-anmeldung.md)
+   ging der Head-Bereich samt diesem Block verloren, weil der Konverter nur
+   den Inhalt zwischen </header> und </article> uebernahm. Hier nachgetragen. */
+.mcp-diagramm {
+  margin: 2rem 0; padding: 1.5rem 0.75rem 1.25rem; border: 1px solid var(--border);
+  border-radius: 10px; overflow-x: auto;
+  --md-accent-bg:#EEEDFE; --md-accent-fg:#3C3489;
+  --md-success-bg:#EAF3DE; --md-success-fg:#27500A;
+  --md-warning-bg:#FAEEDA; --md-warning-fg:#633806;
+  --md-coral-bg:#FAECE7; --md-coral-fg:#712B13;
+}
+@media (prefers-color-scheme: dark) {
+  .mcp-diagramm {
+    --md-accent-bg:#2a2650; --md-accent-fg:#b9b1ff;
+    --md-success-bg:#22331a; --md-success-fg:#a9d98b;
+    --md-warning-bg:#3a2a12; --md-warning-fg:#f0c98a;
+    --md-coral-bg:#3a231c; --md-coral-fg:#f2b09b;
+  }
+}
+.mcp-diagramm .chain { display:flex; align-items:center; justify-content:space-between; gap:6px; flex-wrap:nowrap; max-width:640px; min-width:540px; margin:0 auto; }
+.mcp-diagramm .node { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; min-width:0; }
+.mcp-diagramm .circ { width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; }
+.mcp-diagramm .lbl { font-size:0.8rem; font-weight:600; color:var(--fg); text-align:center; }
+.mcp-diagramm .sub { font-size:0.68rem; color:var(--fg-muted); text-align:center; }
+.mcp-diagramm .link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; flex:0 0 auto; color:var(--fg-muted); }
+.mcp-diagramm .link .top-label { font-size:0.62rem; font-weight:600; }
+.mcp-diagramm .link .bottom-label { font-size:0.58rem; text-align:center; line-height:1.3; }
+@keyframes mcp-wavepulse { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
+.mcp-diagramm .wavebar { width:2px; background:var(--fg-muted); transform-origin:center; animation:mcp-wavepulse 1s ease-in-out infinite; }
+.mcp-diagramm .voicewrap { flex:0 0 46px; height:40px; margin-top:-16px; }
+.mcp-diagramm .voicewrap .wavebars { display:flex; align-items:center; justify-content:center; gap:3px; height:20px; }
+.mcp-diagramm .returnrow { max-width:640px; min-width:540px; margin:0 auto; display:block; }
+@keyframes mcp-dashmove { to { stroke-dashoffset:-16; } }
+.mcp-diagramm .returnpath { stroke-dasharray:4 4; animation:mcp-dashmove 1.2s linear infinite; }
+.mcp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:0.75rem; }
+@media (prefers-reduced-motion: reduce) {
+  .mcp-diagramm .wavebar, .mcp-diagramm .returnpath { animation: none; }
 }
 
 pre { line-height: 125%; }
