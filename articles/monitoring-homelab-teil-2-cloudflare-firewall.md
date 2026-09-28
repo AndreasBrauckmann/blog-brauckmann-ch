@@ -1,5 +1,5 @@
 ---
-slogan: "Eine Woche nach dem ersten eigenen MCP-Server steht fest: Die KI hat das System innerhalb von 48 Stunden selbst so eingestellt, dass kleine Fehler sofort auffallen und behoben werden."
+slogan: "Monitoring wird erst zum Sicherheitsnetz, wenn es niemals aufhört hinzusehen."
 title: "Monitoring, Teil II: Cloudflare, Firewall und das große Ganze"
 slug: monitoring-homelab-teil-2-cloudflare-firewall
 date: 2026-09-28
@@ -61,6 +61,8 @@ draft: false
 <p>Beide Wege laufen am Ende durch dieselbe lokale Infrastruktur auf demselben Server -- aber jeder Dienst dahinter hat seine eigene, unabhängige Zugriffskontrolle: die Trading-Oberfläche selbst mit einer dreistufigen Vertrauenslogik (lokales Netz / Tailnet / öffentlicher Funnel, mit Passwort und Einmalcode für die zwei strengeren Stufen), die Status- und Admin-Dashboards über echte Microsoft-Entra-ID-Anmeldung mit Multi-Faktor. Fällt einer der beiden äusseren Wege aus oder wird missbraucht, ist der andere davon komplett unberührt -- zwei unabhängige Frontends vor derselben, nach aussen portlosen Basis.</p>
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
+
+<p><em>Ein Dashboard zeigt, was gerade ist. Ein Sicherheitsnetz fängt ab, was schiefgeht, bevor es jemand bemerkt -- genau das macht aus Monitoring ein Sicherheitsnetz: dass es niemals aufhört hinzusehen.</em></p>
 
 <figure class="netz-diagramm">
 <div class="risiken">
