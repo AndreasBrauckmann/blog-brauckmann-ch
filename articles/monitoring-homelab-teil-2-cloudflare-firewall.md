@@ -62,6 +62,10 @@ draft: false
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
+<p>
+<img src="/static/img/monitoring2-sicherheitsnetz-hero.svg" alt="Netzwerk aus Knoten und Verbindungen, rote Angriffslinien treffen auf einen leuchtenden Schild mit Haken, der sie abfängt" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+</p>
+
 <figure class="netz-diagramm">
 <div class="risiken">
   <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-bug"></i></div><div class="lbl">Bug</div></div>
