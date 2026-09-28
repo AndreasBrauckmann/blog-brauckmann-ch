@@ -451,6 +451,70 @@ article img {
   .mcp-diagramm .wavebar, .mcp-diagramm .returnpath { animation: none; }
 }
 
+/* Diagramm "Big Picture" -- Cloudflare + Tailscale Funnel, Caddy-Edge als
+   Proxy-Container, Zugang zum internen Netz. Gleiches Bauprinzip wie
+   .netz-diagramm (Knoten -> Faellt-Punkte -> Sammelband -> Knoten),
+   diesmal zwei Eingaenge, die sich zu EINEM Edge buendeln, der sich
+   wieder zu mehreren internen Diensten auffaechert. */
+.bp-diagramm {
+  margin: 2rem 0; padding: 1.5rem 0.75rem 1.25rem; border: 1px solid var(--border);
+  border-radius: 10px; overflow-x: auto;
+  --md-accent-bg:#EEEDFE; --md-accent-fg:#3C3489;
+  --md-cf-bg:#FFE9DB; --md-cf-fg:#8A3B0A;
+  --md-ts-bg:#E3EEFF; --md-ts-fg:#1D4E8C;
+  --md-svc-bg:#EAF3DE; --md-svc-fg:#27500A;
+}
+@media (prefers-color-scheme: dark) {
+  .bp-diagramm {
+    --md-accent-bg:#2a2650; --md-accent-fg:#b9b1ff;
+    --md-cf-bg:#3a2712; --md-cf-fg:#f2a465;
+    --md-ts-bg:#182a42; --md-ts-fg:#8cb8f5;
+    --md-svc-bg:#22331a; --md-svc-fg:#a9d98b;
+  }
+}
+.bp-diagramm .bp-eingaenge { display:flex; justify-content:center; gap:14px; max-width:640px; min-width:480px; margin:0 auto; flex-wrap:nowrap; }
+.bp-diagramm .bp-box {
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:10px 16px; border-radius:10px; flex:1; min-width:0;
+}
+.bp-diagramm .bp-box i { font-size:1.15rem; }
+.bp-diagramm .bp-box .bp-lbl { font-size:0.78rem; font-weight:700; text-align:center; }
+.bp-diagramm .bp-box .bp-sub { font-size:0.65rem; text-align:center; opacity:0.85; }
+.bp-diagramm .bp-cf { background:var(--md-cf-bg); color:var(--md-cf-fg); }
+.bp-diagramm .bp-ts { background:var(--md-ts-bg); color:var(--md-ts-fg); }
+
+.bp-diagramm .bp-pfeile { display:flex; justify-content:center; gap:120px; max-width:640px; min-width:480px; margin:4px auto; height:22px; }
+.bp-diagramm .bp-pfeile .fallspur { position:relative; width:2px; height:100%; background:linear-gradient(var(--fg-muted), transparent); opacity:0.4; }
+
+.bp-diagramm .bp-edge {
+  position:relative; max-width:400px; margin:0.25rem auto; padding:10px 20px; overflow:hidden;
+  background-image:
+    repeating-linear-gradient(45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px),
+    repeating-linear-gradient(-45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px);
+  opacity:0.7; border-top:2px solid var(--callout-border); border-bottom:2px solid var(--callout-border);
+  border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center;
+}
+.bp-diagramm .bp-edge::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--callout-border) 65%, transparent) 50%, transparent 65%);
+  background-size:250% 100%;
+  animation: netz-schimmer 3.4s linear infinite;
+}
+.bp-diagramm .bp-edge-label {
+  position:relative; z-index:1;
+  background:var(--callout-bg); color:var(--fg); font-size:0.78rem; font-weight:700;
+  padding:4px 14px; border-radius:999px; border:1px solid var(--callout-border);
+}
+
+.bp-diagramm .bp-pfeil-solo { text-align:center; color:var(--callout-border); font-size:1.1rem; margin:4px 0; }
+
+.bp-diagramm .bp-intern { display:flex; justify-content:center; gap:10px; max-width:640px; min-width:480px; margin:0.25rem auto 0; flex-wrap:wrap; }
+.bp-diagramm .bp-svc {
+  background:var(--md-svc-bg); color:var(--md-svc-fg); font-size:0.72rem; font-weight:600;
+  padding:6px 12px; border-radius:999px; white-space:nowrap;
+}
+.bp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
+
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -620,6 +684,29 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p>Der spannendere Teil ist aber, was hinter diesen grünen Punkten steckt -- speziell bei Cloudflare, wo öffentlich erreichbare Dienste am meisten Angriffsfläche bieten. Der Blick dorthin ist der erste Frame der Animation ganz oben: über 9'000 Anfragen in 24 Stunden, 25 automatisch blockiert, Verkehrsweg Internet → Cloudflare Proxy → Cloudflare Tunnel → internes Netzwerk, Ende-zu-Ende ausgehend, kein eingehender Port.</p>
 
 <p>Die kurze Fassung des Sicherheitsbilds: Es gibt zwei völlig unabhängige, öffentlich erreichbare Wege in dieses System hinein -- und keiner davon öffnet direkt einen Port am Server.</p>
+
+<figure class="bp-diagramm">
+<div class="bp-eingaenge">
+  <div class="bp-box bp-cf"><i class="ti ti-cloud"></i><span class="bp-lbl">Cloudflare</span><span class="bp-sub">DNS · Proxy · WAF · brauckmann.ch</span></div>
+  <div class="bp-box bp-ts"><i class="ti ti-network"></i><span class="bp-lbl">Tailscale Funnel</span><span class="bp-sub">VPN-Mesh · ts.net-Adresse</span></div>
+</div>
+<div class="bp-pfeile">
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:0s"></span></div>
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:.6s"></span></div>
+</div>
+<div class="bp-edge"><span class="bp-edge-label">Cloudflare Tunnel -- ausgehend, kein eingehender Port</span></div>
+<div class="bp-pfeil-solo">↓</div>
+<div class="bp-edge" style="max-width:340px;"><span class="bp-edge-label">Caddy Edge -- Proxy-Container</span></div>
+<div class="bp-pfeil-solo">↓ Zugang zum internen Netz</div>
+<div class="bp-intern">
+  <span class="bp-svc">Kontor</span>
+  <span class="bp-svc">Status-MCP</span>
+  <span class="bp-svc">Kalender</span>
+  <span class="bp-svc">Website</span>
+  <span class="bp-svc">Blog</span>
+</div>
+<figcaption>Zwei unabhängige Eingänge, ein gemeinsamer Proxy-Container, dahinter das interne Netz -- kein Weg öffnet direkt einen Port am Server.</figcaption>
+</figure>
 
 <ul>
 <li><strong>Weg 1, brauckmann.ch und Geschwister:</strong> Cloudflare als DNS- und Proxy-Schicht mit WAF, Bot-Schutz und Firewall-Regeln davor, dahinter ein Cloudflare-Tunnel (<code>cloudflared</code>), der die Verbindung <strong>ausgehend</strong> vom Server aus aufbaut -- am Router ist dafür kein einziger Port geöffnet. Der Tunnel liefert an einen zentralen Caddy-Edge, der je nach Pfad an den richtigen internen Dienst weiterreicht. Die eine dokumentierte Ausnahme: zwei technische Subdomains für MCP-Anbindungen zeigen direkt auf einen lokalen Port statt über den gemeinsamen Caddy-Edge zu laufen -- ohne die gemeinsamen Security-Header, dafür mit einem eigenen Bearer-Token als Schutz. Bewusst offen dokumentiert, nicht versteckt.</li>

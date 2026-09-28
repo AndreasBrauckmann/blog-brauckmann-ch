@@ -86,6 +86,29 @@ draft: false
 
 <p>Die kurze Fassung des Sicherheitsbilds: Es gibt zwei völlig unabhängige, öffentlich erreichbare Wege in dieses System hinein -- und keiner davon öffnet direkt einen Port am Server.</p>
 
+<figure class="bp-diagramm">
+<div class="bp-eingaenge">
+  <div class="bp-box bp-cf"><i class="ti ti-cloud"></i><span class="bp-lbl">Cloudflare</span><span class="bp-sub">DNS · Proxy · WAF · brauckmann.ch</span></div>
+  <div class="bp-box bp-ts"><i class="ti ti-network"></i><span class="bp-lbl">Tailscale Funnel</span><span class="bp-sub">VPN-Mesh · ts.net-Adresse</span></div>
+</div>
+<div class="bp-pfeile">
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:0s"></span></div>
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:.6s"></span></div>
+</div>
+<div class="bp-edge"><span class="bp-edge-label">Cloudflare Tunnel -- ausgehend, kein eingehender Port</span></div>
+<div class="bp-pfeil-solo">↓</div>
+<div class="bp-edge" style="max-width:340px;"><span class="bp-edge-label">Caddy Edge -- Proxy-Container</span></div>
+<div class="bp-pfeil-solo">↓ Zugang zum internen Netz</div>
+<div class="bp-intern">
+  <span class="bp-svc">Kontor</span>
+  <span class="bp-svc">Status-MCP</span>
+  <span class="bp-svc">Kalender</span>
+  <span class="bp-svc">Website</span>
+  <span class="bp-svc">Blog</span>
+</div>
+<figcaption>Zwei unabhängige Eingänge, ein gemeinsamer Proxy-Container, dahinter das interne Netz -- kein Weg öffnet direkt einen Port am Server.</figcaption>
+</figure>
+
 <ul>
 <li><strong>Weg 1, brauckmann.ch und Geschwister:</strong> Cloudflare als DNS- und Proxy-Schicht mit WAF, Bot-Schutz und Firewall-Regeln davor, dahinter ein Cloudflare-Tunnel (<code>cloudflared</code>), der die Verbindung <strong>ausgehend</strong> vom Server aus aufbaut -- am Router ist dafür kein einziger Port geöffnet. Der Tunnel liefert an einen zentralen Caddy-Edge, der je nach Pfad an den richtigen internen Dienst weiterreicht. Die eine dokumentierte Ausnahme: zwei technische Subdomains für MCP-Anbindungen zeigen direkt auf einen lokalen Port statt über den gemeinsamen Caddy-Edge zu laufen -- ohne die gemeinsamen Security-Header, dafür mit einem eigenen Bearer-Token als Schutz. Bewusst offen dokumentiert, nicht versteckt.</li>
 <li><strong>Weg 2, die eigene ts.net-Adresse:</strong> Tailscale Funnel, also ein VPN-Mesh mit einer eigenen, öffentlich freigeschalteten Ausnahme -- komplett getrennt von Cloudflare, eigenes Zertifikat, eigener Pfad, landet aber am Ende beim selben internen Caddy-Edge.</li>
