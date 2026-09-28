@@ -4,6 +4,13 @@
   <link>https://blog.brauckmann.ch</link>
   <description>IT, KI und Automatisierung für Fachpublikum</description>
   <item>
+    <title>Monitoring fürs Homelab, Teil II: Cloudflare, Firewall und das große Ganze</title>
+    <link>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</link>
+    <guid>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</guid>
+    <description>Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.</description>
+    <pubDate>Mon, 28 Sep 2026 00:00:00 +0000</pubDate>
+  </item>
+  <item>
     <title>„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten – Mac- und Windows-Notebook</title>
     <link>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</link>
     <guid>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</guid>
