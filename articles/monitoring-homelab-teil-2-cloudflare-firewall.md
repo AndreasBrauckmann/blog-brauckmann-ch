@@ -16,7 +16,7 @@ draft: false
 
 <h2 id="teil-1-48-stunden">Eine Woche später: 48 Stunden bis zur Selbstjustierung</h2>
 
-<p>Der neue Server ging am 20.9. um 21:57 Uhr in Betrieb -- read-only, nur intern über das eigene Tailscale-Netz erreichbar. Was in den folgenden gut 31 Stunden passierte, lässt sich lückenlos im Git-Log nachvollziehen, weil jede Änderung ein eigener Commit ist:</p>
+<p>Das neue Monitoring ging am 20.9. um 21:57 Uhr in Betrieb -- read-only, nur intern über das eigene Tailscale-Netz erreichbar. Was in den folgenden gut 31 Stunden passierte, lässt sich lückenlos im Git-Log nachvollziehen, weil jede Änderung ein eigener Commit ist:</p>
 
 <ul>
 <li><strong>Innerhalb der ersten Stunde:</strong> aus einem geteilten Passwort wurde eine echte Microsoft-Entra-ID-Anmeldung mit Multi-Faktor -- inklusive der Kleinarbeit, die dazugehört (OAuth-Discovery-Dokument ergänzt, fehlender Standard-Scope nachgetragen, eigener App-Scope angelegt).</li>
