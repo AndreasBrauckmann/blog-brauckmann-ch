@@ -1,6 +1,6 @@
 ---
 slogan: "„Hey Siri, Windows.“ – der Samsung-Monitor mit eingebautem KVM-Switch schaltet um, Maus und Tastatur wandern mit. Per Sprache, mit Gratis-Software."
-title: "„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten – Mac- und Windows-Notebook"
+title: "„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten."
 slug: kvm-switch-per-sprache
 date: 2026-09-27
 updated: 2026-09-27
