@@ -323,22 +323,65 @@ article img {
 }
 .netz-diagramm .risiken { display:flex; justify-content:space-around; gap:10px; max-width:640px; min-width:480px; margin:0 auto; flex-wrap:nowrap; }
 .netz-diagramm .risiko, .netz-diagramm .ergebnis { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; min-width:0; }
-.netz-diagramm .circ { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.25rem; flex:none; }
+.netz-diagramm .circ {
+  width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:1.25rem; flex:none; background:var(--c-bg); color:var(--c-fg);
+  animation: netz-pulse 2.6s ease-in-out infinite;
+}
+.netz-diagramm .risiko:nth-child(1) .circ { animation-delay: 0s; }
+.netz-diagramm .risiko:nth-child(2) .circ { animation-delay: .3s; }
+.netz-diagramm .risiko:nth-child(3) .circ { animation-delay: .6s; }
+.netz-diagramm .risiko:nth-child(4) .circ { animation-delay: .9s; }
+.netz-diagramm .ergebnis-circ { animation: netz-pulse 2.2s ease-in-out infinite; }
+@keyframes netz-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-fg) 45%, transparent); }
+  50% { box-shadow: 0 0 16px 4px color-mix(in srgb, var(--c-fg) 45%, transparent); }
+}
 .netz-diagramm .lbl { font-size:0.72rem; font-weight:600; color:var(--fg); text-align:center; }
-.netz-diagramm .pfeile { text-align:center; color:var(--callout-border); font-size:1.1rem; letter-spacing:8px; margin:4px 0; }
+.netz-diagramm .fallweg { display:flex; justify-content:space-around; max-width:640px; min-width:480px; margin:4px auto; height:24px; }
+.netz-diagramm .fallweg-einzeln { justify-content:center; }
+.netz-diagramm .fallspur {
+  position:relative; width:2px; height:100%; flex:none;
+  background:linear-gradient(var(--fg-muted), transparent); opacity:0.4;
+}
+.netz-diagramm .fallpunkt {
+  position:absolute; left:50%; top:-4px; width:6px; height:6px; margin-left:-3px; border-radius:50%;
+  background:var(--callout-border); box-shadow:0 0 6px var(--callout-border);
+  animation: netz-fall 1.8s linear infinite;
+}
+@keyframes netz-fall {
+  0% { top:-4px; opacity:0; }
+  15% { opacity:1; }
+  85% { opacity:1; }
+  100% { top:100%; opacity:0; }
+}
 .netz-diagramm .netz {
-  position:relative; max-width:640px; min-width:480px; margin:0.5rem auto; height:52px;
+  position:relative; max-width:640px; min-width:480px; margin:0.5rem auto; height:52px; overflow:hidden;
   background-image:
     repeating-linear-gradient(45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px),
     repeating-linear-gradient(-45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px);
-  opacity:0.55; border-top:2px solid var(--callout-border); border-bottom:2px solid var(--callout-border);
+  opacity:0.7; border-top:2px solid var(--callout-border); border-bottom:2px solid var(--callout-border);
   border-radius:6px; display:flex; align-items:center; justify-content:center;
 }
+.netz-diagramm .netz::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--callout-border) 65%, transparent) 50%, transparent 65%);
+  background-size:250% 100%;
+  animation: netz-schimmer 3.4s linear infinite;
+}
+@keyframes netz-schimmer {
+  0% { background-position: 130% 0; }
+  100% { background-position: -130% 0; }
+}
 .netz-diagramm .netz-label {
+  position:relative; z-index:1;
   background:var(--callout-bg); color:var(--fg); font-size:0.78rem; font-weight:700;
-  padding:3px 12px; border-radius:999px; border:1px solid var(--callout-border); opacity:1;
+  padding:3px 12px; border-radius:999px; border:1px solid var(--callout-border);
 }
 .netz-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
+@media (prefers-reduced-motion: reduce) {
+  .netz-diagramm .circ, .netz-diagramm .fallpunkt, .netz-diagramm .netz::after { animation: none; }
+}
 
 /* ── Diagramm "Vom Handy zum Hypervisor" (netdata-homelab-monitoring-claude) ──
    Uebernommen aus einer eigenstaendigen HTML-Vorlage, an das Blog-eigene

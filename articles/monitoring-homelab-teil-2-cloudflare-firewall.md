@@ -64,15 +64,22 @@ draft: false
 
 <figure class="netz-diagramm">
 <div class="risiken">
-  <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-bug"></i></div><div class="lbl">Bug</div></div>
-  <div class="risiko"><div class="circ" style="background:var(--md-warning-bg);color:var(--md-warning-fg)"><i class="ti ti-alert-triangle"></i></div><div class="lbl">Fehlkonfiguration</div></div>
-  <div class="risiko"><div class="circ" style="background:var(--md-coral-bg);color:var(--md-coral-fg)"><i class="ti ti-lock-open"></i></div><div class="lbl">Sicherheitslücke</div></div>
-  <div class="risiko"><div class="circ" style="background:var(--md-warning-bg);color:var(--md-warning-fg)"><i class="ti ti-eye-off"></i></div><div class="lbl">Stille Abweichung</div></div>
+  <div class="risiko"><div class="circ" style="--c-bg:var(--md-coral-bg);--c-fg:var(--md-coral-fg)"><i class="ti ti-bug"></i></div><div class="lbl">Bug</div></div>
+  <div class="risiko"><div class="circ" style="--c-bg:var(--md-warning-bg);--c-fg:var(--md-warning-fg)"><i class="ti ti-alert-triangle"></i></div><div class="lbl">Fehlkonfiguration</div></div>
+  <div class="risiko"><div class="circ" style="--c-bg:var(--md-coral-bg);--c-fg:var(--md-coral-fg)"><i class="ti ti-lock-open"></i></div><div class="lbl">Sicherheitslücke</div></div>
+  <div class="risiko"><div class="circ" style="--c-bg:var(--md-warning-bg);--c-fg:var(--md-warning-fg)"><i class="ti ti-eye-off"></i></div><div class="lbl">Stille Abweichung</div></div>
 </div>
-<div class="pfeile">↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓&nbsp;&nbsp;↓</div>
+<div class="fallweg">
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:0s"></span></div>
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:.45s"></span></div>
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:.9s"></span></div>
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:1.35s"></span></div>
+</div>
 <div class="netz"><span class="netz-label">KI-gestütztes Monitoring · rund um die Uhr</span></div>
-<div class="pfeile">↓</div>
-<div class="ergebnis"><div class="circ" style="background:var(--md-success-bg);color:var(--md-success-fg)"><i class="ti ti-shield-check"></i></div><div class="lbl">Business bleibt geschützt</div></div>
+<div class="fallweg fallweg-einzeln">
+  <div class="fallspur"><span class="fallpunkt" style="animation-delay:.2s"></span></div>
+</div>
+<div class="ergebnis"><div class="circ ergebnis-circ" style="--c-bg:var(--md-success-bg);--c-fg:var(--md-success-fg)"><i class="ti ti-shield-check"></i></div><div class="lbl">Business bleibt geschützt</div></div>
 <figcaption>Kein Vorfall entsteht aus dem Nichts -- er beginnt als kleine Abweichung. Das Netz fängt sie ab, bevor sie unten ankommt.</figcaption>
 </figure>
 
