@@ -201,11 +201,12 @@ def render_article_list_html(articles: list[dict]) -> str:
             f'<img src="{html.escape(thumb)}" alt="" loading="lazy"></a>'
             if thumb else ""
         )
+        list_title = meta.get("short_title") or meta["title"]
         items.append(
             f'<div class="article-list-item">'
             f"{thumb_html}"
             f'<div class="article-list-head">'
-            f'<h2><a href="{url}">{html.escape(meta["title"])}</a></h2>'
+            f'<h2><a href="{url}">{html.escape(list_title)}</a></h2>'
             f'<time class="article-date" datetime="{meta["date"]}">{meta["date"]}</time>'
             f'<div class="tags">{tags_html_linked(meta.get("tags", []))}</div>'
             f'</div>'
