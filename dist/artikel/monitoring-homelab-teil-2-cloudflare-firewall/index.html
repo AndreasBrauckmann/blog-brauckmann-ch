@@ -635,7 +635,356 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       </div>
     </div>
     
-    <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
+    <!-- ===== Radar-Grafik: KI-Monitoring als Sicherheitsnetz (Anfang) ===== -->
+<p>Wie das in der Praxis aussieht, zeigt die folgende Szene: Das Radar dreht sich ohne Pause, jede Umdrehung bringt neue Bedrohungen -- Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate -- und jede einzelne wird erfasst, beschossen und ausgeschaltet, bevor sie die Mitte erreicht. Nicht jeder Schuss sitzt sofort, aber am Ende bleibt das Business geschützt. Genau das ist der Unterschied zwischen einem Dashboard, das zeigt, und einem Monitoring, das handelt.</p>
+
+<style>
+.kr-radar{position:relative;width:100%;aspect-ratio:1200/720;border-radius:16px;overflow:hidden;background:#03060c;margin:0}
+.kr-radar>svg,.kr-radar>canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.kr-radar>.ov{pointer-events:none}
+.kr-radar .blink{animation:kr-bl 1.6s steps(2) infinite}
+@keyframes kr-bl{50%{opacity:.1}}
+.kr-radar .flick{animation:kr-fl .32s steps(2) infinite}
+@keyframes kr-fl{50%{opacity:.05}}
+.kr-radar .pulse{animation:kr-pu 2.4s ease-in-out infinite}
+@keyframes kr-pu{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.kr-radar .blink,.kr-radar .flick,.kr-radar .pulse{animation:none}}
+</style>
+<figure class="kr-radar-figure">
+<div class="kr-radar" id="kr-stage">
+<!-- HINTERGRUND + RADAR-GEHÄUSE -->
+<svg viewBox="-200 -70 1200 720" aria-hidden="true">
+<defs>
+  <linearGradient id="kr-floor" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0e2136"/><stop offset="1" stop-color="#1a4266"/></linearGradient>
+  <linearGradient id="kr-ceil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05080f"/><stop offset="1" stop-color="#0c1d30"/></linearGradient>
+  <radialGradient id="kr-backglow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#67e8f9" stop-opacity=".55"/><stop offset="1" stop-color="#0891b2" stop-opacity="0"/></radialGradient>
+  <radialGradient id="kr-roomdim" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#02050b" stop-opacity=".15"/><stop offset="1" stop-color="#02050b" stop-opacity=".6"/></radialGradient>
+  <filter id="kr-soft"><feGaussianBlur stdDeviation=".5"/></filter>
+  <filter id="kr-lightblur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+
+  <linearGradient id="kr-metal" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#9aa3ad"/><stop offset=".25" stop-color="#e3e7eb"/><stop offset=".5" stop-color="#6b737c"/><stop offset=".75" stop-color="#c6ccd2"/><stop offset="1" stop-color="#3c4249"/></linearGradient>
+  <linearGradient id="kr-metalIn" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8e969f"/><stop offset=".5" stop-color="#2b3036"/><stop offset="1" stop-color="#5a6169"/></linearGradient>
+  <radialGradient id="kr-screen" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0c2a17"/><stop offset=".7" stop-color="#061a0e"/><stop offset="1" stop-color="#010603"/></radialGradient>
+  <radialGradient id="kr-screw"><stop offset="0" stop-color="#e5e7eb"/><stop offset=".7" stop-color="#6b7280"/><stop offset="1" stop-color="#1f2937"/></radialGradient>
+  <radialGradient id="kr-core"><stop offset="0" stop-color="#4ade80" stop-opacity=".35"/><stop offset="1" stop-color="#4ade80" stop-opacity="0"/></radialGradient>
+  <radialGradient id="kr-floorshadow"><stop offset="0" stop-color="#000" stop-opacity=".8"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  <filter id="kr-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="kr-bigglow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="kr-brushed"><feTurbulence type="fractalNoise" baseFrequency=".02 .9" numOctaves="2"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .18 0"/></filter>
+  <filter id="kr-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#000" flood-opacity=".75"/></filter>
+  <filter id="kr-engrave"><feOffset dy="1" in="SourceAlpha" result="o"/><feFlood flood-color="#fff" flood-opacity=".45"/><feComposite in2="o" operator="in" result="h"/><feMerge><feMergeNode in="h"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <clipPath id="kr-bez"><circle cx="400" cy="275" r="255"/></clipPath>
+  <path id="kr-bezelArc" d="M 400 275 m -228 0 a 228 228 0 1 1 456 0"/>
+</defs>
+
+<!-- Serverraum -->
+<g id="kr-room" opacity="1"></g>
+<rect x="-200" y="-70" width="1200" height="720" fill="url(#kr-roomdim)" opacity=".3"/>
+<ellipse cx="400" cy="560" rx="300" ry="40" fill="url(#kr-floorshadow)"/>
+
+<!-- Gehäuse -->
+<g filter="url(#kr-shadow)"><circle cx="400" cy="275" r="255" fill="url(#kr-metal)"/></g>
+<rect x="140" y="15" width="520" height="520" filter="url(#kr-brushed)" clip-path="url(#kr-bez)" opacity=".9"/>
+<circle cx="400" cy="275" r="253" fill="none" stroke="#fff" stroke-opacity=".35"/>
+<circle cx="400" cy="275" r="218" fill="url(#kr-metalIn)"/>
+<circle cx="400" cy="275" r="211" fill="#020604"/>
+<text font-size="12.5" font-weight="700" letter-spacing="3" fill="#2a2f35" filter="url(#kr-engrave)" font-family="ui-monospace,Menlo,monospace"><textPath href="#kr-bezelArc" startOffset="50%" text-anchor="middle">KI-GESTÜTZTES MONITORING · RUND UM DIE UHR</textPath></text>
+<g id="kr-screws"></g>
+
+<!-- Schirm-Basis -->
+<circle cx="400" cy="275" r="205" fill="url(#kr-screen)"/>
+<circle cx="400" cy="275" r="80" fill="url(#kr-core)"/>
+<g fill="none" stroke="#4ade80" stroke-opacity=".28" filter="url(#kr-glow)">
+  <circle cx="400" cy="275" r="190"/><circle cx="400" cy="275" r="140"/><circle cx="400" cy="275" r="90"/>
+  <line x1="195" y1="275" x2="605" y2="275"/><line x1="400" y1="70" x2="400" y2="480"/>
+  <line x1="255" y1="130" x2="545" y2="420" stroke-opacity=".12"/><line x1="545" y1="130" x2="255" y2="420" stroke-opacity=".12"/>
+</g>
+<g id="kr-ticks" stroke="#4ade80" stroke-opacity=".45"></g>
+<circle cx="400" cy="275" r="52" fill="#052e16" fill-opacity=".85" stroke="#4ade80" stroke-width="2" filter="url(#kr-bigglow)"/>
+<text x="400" y="271" text-anchor="middle" fill="#bbf7d0" font-size="15" font-weight="700" font-family="ui-monospace,Menlo,monospace" filter="url(#kr-glow)">BUSINESS</text>
+<text x="400" y="290" text-anchor="middle" fill="#86efac" font-size="11" font-family="ui-monospace,Menlo,monospace" filter="url(#kr-glow)">GESCHÜTZT ✓</text>
+<circle cx="560" cy="485" r="5" fill="#22c55e" filter="url(#kr-bigglow)"><animate attributeName="opacity" values="1;.35;1" dur="2s" repeatCount="indefinite"/></circle>
+</svg>
+
+<!-- DYNAMIK: Sweep, Bedrohungen, Labels, Buddy, Laser -->
+<canvas id="kr-cv"></canvas>
+
+<!-- GLAS / SCANLINES ÜBER DEM SCHIRM -->
+<svg class="ov" viewBox="-200 -70 1200 720" aria-hidden="true">
+<defs>
+  <pattern id="kr-scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1.3" fill="#000" opacity=".35"/></pattern>
+  <radialGradient id="kr-vign" cx="50%" cy="50%" r="50%"><stop offset=".65" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+  <linearGradient id="kr-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <filter id="kr-noise"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .6  0 0 0 0 1  0 0 0 0 .7  0 0 0 .35 0"/></filter>
+  <clipPath id="kr-scr"><circle cx="400" cy="275" r="205"/></clipPath>
+</defs>
+<g clip-path="url(#kr-scr)">
+  <rect x="195" y="70" width="410" height="410" fill="url(#kr-scan)"/>
+  <rect x="195" y="70" width="410" height="410" filter="url(#kr-noise)" opacity=".16"/>
+  <circle cx="400" cy="275" r="205" fill="url(#kr-vign)"/>
+  <ellipse cx="350" cy="165" rx="170" ry="95" fill="url(#kr-glass)" transform="rotate(-18 350 165)"/>
+  <path d="M235 330 A175 175 0 0 0 330 440" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="6" stroke-linecap="round"/>
+</g>
+<circle cx="400" cy="275" r="205" fill="none" stroke="#000" stroke-width="4" stroke-opacity=".7"/>
+</svg>
+</div>
+
+<figcaption>Rund um die Uhr im Einsatz: KI-gestütztes Monitoring erkennt Abweichungen, bevor sie zum Vorfall werden -- und räumt sie aus dem Weg.</figcaption>
+</figure>
+<script>
+(function(){
+const NS="http://www.w3.org/2000/svg",CX=400,CY=275,SR=205,P=6000;
+const VB={x:-200,y:-70,w:1200,h:720};
+const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+const rnd=(a,b)=>a+Math.random()*(b-a);
+
+/* ---------- Serverraum (Zentralperspektive) ---------- */
+(function(){
+  const g=document.getElementById("kr-room"),V={x:400,y:250};
+  const xL=z=>V.x+(VB.x-V.x)/z, xR=z=>V.x+(VB.x+VB.w-V.x)/z;
+  const top=z=>V.y+(-35-V.y)/z, bot=z=>V.y+(610-V.y)/z, ceil=z=>V.y+(VB.y-V.y)/z, flo=z=>V.y+(VB.y+VB.h-V.y)/z;
+  const ZF=11;
+  el("polygon",{points:`${VB.x},${VB.y} ${VB.x+VB.w},${VB.y} ${xR(ZF)},${ceil(ZF)} ${xL(ZF)},${ceil(ZF)}`,fill:"url(#kr-ceil)"},g);
+  el("polygon",{points:`${VB.x},${VB.y+VB.h} ${VB.x+VB.w},${VB.y+VB.h} ${xR(ZF)},${flo(ZF)} ${xL(ZF)},${flo(ZF)}`,fill:"url(#kr-floor)"},g);
+  el("rect",{x:xL(ZF),y:ceil(ZF),width:xR(ZF)-xL(ZF),height:flo(ZF)-ceil(ZF),fill:"#0b2536"},g);
+  el("ellipse",{cx:V.x,cy:V.y,rx:120,ry:70,fill:"url(#kr-backglow)"},g);
+  // Bodenfugen
+  for(let i=-6;i<=6;i++){const xb=V.x+i*170;el("line",{x1:xb,y1:VB.y+VB.h,x2:V.x+(xb-V.x)/ZF,y2:flo(ZF),stroke:"#3b82f6","stroke-opacity":.35},g)}
+  // Deckenlichter + Spiegelung am Boden
+  const lg=el("g",{filter:"url(#kr-lightblur)"},g);
+  for(let d=0;d<30;d+=1.6){const z1=1+d*.35,z2=1+(d+.9)*.35;if(z2>ZF)break;
+    el("polygon",{points:`${V.x-80/z1},${ceil(z1)} ${V.x+80/z1},${ceil(z1)} ${V.x+80/z2},${ceil(z2)} ${V.x-80/z2},${ceil(z2)}`,fill:"#cffafe","fill-opacity":.95},lg);
+    el("polygon",{points:`${V.x-60/z1},${flo(z1)} ${V.x+60/z1},${flo(z1)} ${V.x+60/z2},${flo(z2)} ${V.x-60/z2},${flo(z2)}`,fill:"#22d3ee","fill-opacity":.32},lg);}
+  // Racks links und rechts
+  const racks=el("g",{filter:"url(#kr-soft)"},g);
+  const LED=["#22d3ee","#38bdf8","#34d399","#60a5fa","#22d3ee","#a5f3fc"];
+  [xL,xR].forEach(X=>{
+    for(let d=0;d<30;d+=1.35){
+      const z1=1+d*.35,z2=1+(d+1.2)*.35;if(z2>ZF)break;
+      const face=(v1,v2,fill,extra)=>el("polygon",Object.assign({points:`${X(z1)},${top(z1)+(bot(z1)-top(z1))*v1} ${X(z2)},${top(z2)+(bot(z2)-top(z2))*v1} ${X(z2)},${top(z2)+(bot(z2)-top(z2))*v2} ${X(z1)},${top(z1)+(bot(z1)-top(z1))*v2}`,fill},extra||{}),racks);
+      face(0,1,"#0c1a2c",{stroke:"#3b82f6","stroke-opacity":.6,"stroke-width":Math.max(.5,2.2/z1)});
+      el("line",{x1:X(z1),y1:top(z1),x2:X(z1),y2:bot(z1),stroke:"#93c5fd","stroke-opacity":.4,"stroke-width":Math.max(.6,3/z1)},racks);
+      // 20 Höheneinheiten: abwechselnd Server (heller) und Lüfterblende
+      for(let j=0;j<20;j++){const v1=.04+j*.046,v2=v1+.038,isSrv=j%3!==2;
+        face(v1,v2,isSrv?"#17304f":"#0a1424",{stroke:"#1e3a8a","stroke-opacity":.6,"stroke-width":Math.max(.3,.9/z1)});
+        if(!isSrv)continue;
+        // LED-Leiste pro Server: Power (grün), Aktivität (flackert), Netz (2x flackernd), gelegentlich Fehler (rot)
+        const leds=[["#22c55e","pulse"],["#22d3ee","flick"],["#38bdf8","flick"],["#38bdf8","blink"],[Math.random()<.07?"#f87171":"#60a5fa",Math.random()<.5?"blink":""]];
+        leds.forEach(([c,cls],k)=>{const u=.1+k*.17,z=z1+(z2-z1)*u,x=X(z),y=top(z)+(bot(z)-top(z))*(v1+.012);
+          el("rect",{x:x-4.5/z,y:y,width:9/z,height:4/z,fill:c,class:cls,style:`animation-delay:-${rnd(0,3).toFixed(2)}s;animation-duration:${cls==="flick"?rnd(.12,.5).toFixed(2):cls==="blink"?rnd(.8,2.2).toFixed(2):rnd(1.8,3.2).toFixed(2)}s`,filter:"url(#kr-glow)"},racks);});
+        // kleines Display auf jedem 4. Server
+        if(j%4===1){const z=z1+(z2-z1)*.85,x=X(z),y=top(z)+(bot(z)-top(z))*(v1+.006);
+          el("rect",{x:x-9/z,y:y,width:18/z,height:22/z,fill:"#0ea5e9","fill-opacity":.55,class:"pulse",style:`animation-delay:-${rnd(0,2).toFixed(2)}s`},racks);}
+      }
+    }});
+})();
+
+/* ---------- Schrauben, Gradskala ---------- */
+const sc=document.getElementById("kr-screws");
+[0,45,135,180].forEach(a=>{const r=237,x=CX+r*Math.cos(a*Math.PI/180),y=CY+r*Math.sin(a*Math.PI/180);
+ el("circle",{cx:x,cy:y,r:7,fill:"url(#kr-screw)",stroke:"#1f2937","stroke-width":.8},sc);
+ el("line",{x1:x-4.5,y1:y,x2:x+4.5,y2:y,stroke:"#374151","stroke-width":1.6,transform:`rotate(${a+20} ${x} ${y})`},sc);});
+const tk=document.getElementById("kr-ticks");
+for(let d=0;d<360;d+=5){const a=d*Math.PI/180,l=d%30?5:11;
+ el("line",{x1:CX+(SR-l)*Math.cos(a),y1:CY+(SR-l)*Math.sin(a),x2:CX+(SR-2)*Math.cos(a),y2:CY+(SR-2)*Math.sin(a)},tk);}
+
+/* ---------- Bedrohungen: 4 Sätze à 4 ---------- */
+const C="crit",W="warn";
+const SETS=[
+ [["Bug","NullRef · backup-job",C],["Fehlkonfiguration","Rule 443 → any",W],["Sicherheitslücke","CVE · exposed service",C],["Stille Abweichung","Disk I/O +3 %/Tag",W]],
+ [["Speicher voll","/var 94 % belegt",W],["Zertifikat läuft ab","TLS · noch 3 Tage",W],["Brute-Force","SSH · 1200 Versuche",C],["Dienst hängt","Container-Restart-Loop",C]],
+ [["Backup fehlgeschlagen","Nightly · Exit 1",C],["Memory Leak","RAM +40 MB/h",W],["Offener Port","8080 öffentlich",C],["Latenz-Spike","p95 > 900 ms",W]],
+ [["Prompt-Injection","LLM-Input manipuliert",C],["Veraltetes Paket","openssl · bekannte CVE",W],["DNS-Fehler","NXDOMAIN-Welle",W],["Überhitzung","CPU 88 °C",W]]
+];
+// Positionen in Uhrzeit (12 = oben)
+const POS=[[12,3,6,9],[10.5,2,4.5,8],[1,5,7,11],[11,3.5,5.5,8.5]];
+const COL={crit:"#f87171",warn:"#fbbf24"};
+const norm=x=>((x%360)+360)%360;
+const rounds={};let lastPos=-1;
+function round(r){
+  if(rounds[r])return rounds[r];
+  let p;do{p=(Math.random()*POS.length)|0}while(p===lastPos);lastPos=p;
+  const set=SETS[((r%4)+4)%4];
+  const th=set.map(([n,d,s],i)=>{
+    const a=POS[p][i]*30-90+rnd(-7,7),hit=r*P+norm(a+90)/360*P;
+    const ns=2+((Math.random()*3)|0),fires=[];for(let k=0;k<ns;k++)fires.push(hit+420+k*260);
+    return {n,d,s,a,r:rnd(105,178),hit,fires,shot:0,arrive:fires[ns-1]+270,boom:false};
+  });
+  delete rounds[r-3];
+  return rounds[r]=th;
+}
+
+/* ---------- Canvas ---------- */
+const cv=document.getElementById("kr-cv"),ctx=cv.getContext("2d"),stage=document.getElementById("kr-stage");
+function resize(){const d=Math.min(devicePixelRatio||1,2),w=stage.clientWidth,h=stage.clientHeight;
+  cv.width=w*d;cv.height=h*d;const s=w/VB.w*d;ctx.setTransform(s,0,0,s,-VB.x*s,-VB.y*s);}
+addEventListener("resize",resize);resize();
+
+const MONO="ui-monospace,SFMono-Regular,Menlo,monospace";
+const pos=t=>{const a=t.a*Math.PI/180;return[CX+t.r*Math.cos(a),CY+t.r*Math.sin(a)]};
+const lerp=(a,b,p)=>a+(b-a)*p;
+
+function invader(x,y,col,s,frame){
+  ctx.save();ctx.shadowColor=col;ctx.shadowBlur=14;ctx.fillStyle=col;
+  ctx.beginPath();ctx.roundRect?ctx.roundRect(x-13*s,y-11*s,26*s,20*s,4*s):ctx.rect(x-13*s,y-11*s,26*s,20*s);ctx.fill();
+  const b=frame?5:9;ctx.fillRect(x-(b+2)*s,y+8*s,4*s,4*s);ctx.fillRect(x+(b-2)*s,y+8*s,4*s,4*s);
+  ctx.shadowBlur=0;ctx.fillStyle="#12140f";
+  ctx.beginPath();ctx.arc(x-5*s,y-1*s,2.2*s,0,7);ctx.fill();ctx.beginPath();ctx.arc(x+5*s,y-1*s,2.2*s,0,7);ctx.fill();
+  ctx.restore();
+}
+// Buddy – Zeichnung 1:1 aus der Kontor-Seite (zeichneBuddy)
+function buddyDraw(x,y,w,s){
+  const b=1.1*s;ctx.save();ctx.shadowColor="rgba(0,0,0,.6)";ctx.shadowBlur=8*s;ctx.fillStyle="#fff";
+  ctx.fillRect(x-9*s-b,y-12*s-b,18*s+2*b,20*s+2*b);ctx.fillRect(x-13*s-b,y-4*s-b,4*s+2*b,8*s+2*b);ctx.fillRect(x+9*s-b,y-4*s-b,4*s+2*b,8*s+2*b);
+  ctx.fillRect(x-9*s+w*s-b,y+8*s-b,4*s+2*b,6*s+2*b);ctx.fillRect(x-2*s-b,y+8*s-b,4*s+2*b,6*s+2*b);ctx.fillRect(x+5*s-w*s-b,y+8*s-b,4*s+2*b,6*s+2*b);
+  ctx.restore();
+  ctx.fillStyle="#c9765a";ctx.fillRect(x-9*s,y-12*s,18*s,20*s);ctx.fillRect(x-13*s,y-4*s,4*s,8*s);ctx.fillRect(x+9*s,y-4*s,4*s,8*s);
+  ctx.fillStyle="#181818";ctx.fillRect(x-6*s,y-4*s,3*s,3*s);ctx.fillRect(x+3*s,y-4*s,3*s,3*s);
+  ctx.fillStyle="#c9765a";ctx.fillRect(x-9*s+w*s,y+8*s,4*s,6*s);ctx.fillRect(x-2*s,y+8*s,4*s,6*s);ctx.fillRect(x+5*s-w*s,y+8*s,4*s,6*s);
+}
+function explosion(x,y,col){const o=[];for(let i=0;i<22;i++){const w=Math.PI*2*i/22+Math.random()*.3,v=1.4+Math.random()*2.6;
+  o.push({x,y,vx:Math.cos(w)*v,vy:Math.sin(w)*v,l:1,c:Math.random()<.5?"#f2ffb8":col})}return o}
+
+const BS=2,BY=590,BSPEED=12,WP=[CX-270,CX,CX+270,CX];let bx=CX,wp=1,parts=[],shots=[];
+const t0=performance.now();
+
+const FX=["blast","flyL","flyR","flyU","flyD","implode","shatter","warp","spin"];
+function labelGeom(t){
+  const [x,y]=pos(t),a=t.a*Math.PI/180,R=264,px=CX+R*Math.cos(a),py=CY+R*Math.sin(a);
+  const dir=Math.cos(a)>=0?1:-1,ex=CX+dir*300,ey=py,tx=ex+dir*8;
+  return {x,y,px,py,ex,ey,tx,dir,anchor:dir>0?"left":"right",lines:[ey-6,ey+14,ey+32]};
+}
+// Buchstaben mit Einzelpositionen (für die Effekte)
+function letters(text,font,x0,y,anchor){
+  ctx.font=font;const w=ctx.measureText(text).width;let x=anchor==="left"?x0:x0-w;const out=[];
+  for(const ch of text){const cw=ctx.measureText(ch).width;out.push({ch,x:x+cw/2,y,font});x+=cw}return out;
+}
+function seedFx(t,g){
+  t.fx=FX[(Math.random()*FX.length)|0];
+  const L=[...letters(t.n.toUpperCase(),`800 20px ${MONO}`,g.tx,g.lines[0],g.anchor).map(l=>(l.col=COL[t.s],l)),
+           ...letters(t.d,`500 14px ${MONO}`,g.tx,g.lines[1],g.anchor).map(l=>(l.col="#bbf7d0",l))];
+  const cx=L.reduce((s,l)=>s+l.x,0)/L.length,cy=L.reduce((s,l)=>s+l.y,0)/L.length;
+  L.forEach(l=>{const dx=l.x-cx,dy=l.y-cy,d=Math.hypot(dx,dy)||1;
+    l.rot=rnd(-4,4);l.vx=0;l.vy=0;l.sc=1;
+    switch(t.fx){
+      case "blast":l.vx=dx/d*rnd(3,7);l.vy=dy/d*rnd(3,7)-2;l.rot=rnd(-9,9);break;
+      case "flyL":l.vx=-rnd(9,14);l.vy=rnd(-.6,.6);break;
+      case "flyR":l.vx=rnd(9,14);l.vy=rnd(-.6,.6);break;
+      case "flyU":l.vy=-rnd(8,13);l.vx=rnd(-.8,.8);break;
+      case "flyD":l.vy=rnd(8,13);l.vx=rnd(-.8,.8);break;
+      case "implode":l.vx=-dx/28;l.vy=-dy/28;l.rot=rnd(-12,12);break;
+      case "shatter":l.vx=rnd(-1.5,1.5);l.vy=rnd(-3,0);l.rot=rnd(-6,6);break;
+      case "warp":l.vx=g.dir*rnd(1,2);break;
+      case "spin":l.vx=0;l.vy=0;l.rot=rnd(10,16)*(Math.random()<.5?-1:1);break;
+    }});
+  t.L=L;t.lcx=cx;t.lcy=cy;
+  if(t.fx==="blast"||t.fx==="shatter")parts.push(...explosion(cx,cy,COL[t.s]));
+}
+function drawFx(t,now){
+  const p=Math.min(1,(now-t.arrive)/1100);if(p>=1)return;
+  const k=(now-t.arrive)/16;
+  t.L.forEach(l=>{
+    let x=l.x+l.vx*k,y=l.y+l.vy*k,rot=l.rot*k*Math.PI/180,sx=1,sy=1,al=1-p;
+    if(t.fx==="shatter"){y+=.18*k*k}
+    if(t.fx==="blast"){y+=.08*k*k}
+    if(t.fx==="implode"){const q=Math.min(1,k/28);x=l.x+(t.lcx-l.x)*q;y=l.y+(t.lcy-l.y)*q;sx=sy=1-q*.9;al=1-q*.7;if(q>=1&&!t.imploded){t.imploded=true;parts.push(...explosion(t.lcx,t.lcy,"#f2ffb8"),...explosion(t.lcx,t.lcy,COL[t.s]))}}
+    if(t.fx==="warp"){sx=1+p*14;al=1-p*p;x=l.x+(l.x-t.lcx)*p*3+l.vx*k}
+    if(t.fx==="spin"){sx=sy=1+p*1.4;rot=l.rot*k*Math.PI/180;al=1-p}
+    ctx.save();ctx.globalAlpha=Math.max(0,al);ctx.translate(x,y);ctx.rotate(rot);ctx.scale(sx,sy);
+    ctx.font=l.font;ctx.textAlign="center";ctx.textBaseline="alphabetic";ctx.shadowColor=l.col;ctx.shadowBlur=12;ctx.fillStyle=l.col;ctx.fillText(l.ch,0,0);ctx.restore();
+  });
+  // Stempel
+  if(p>.35){const q=Math.min(1,(p-.35)/.25);ctx.save();ctx.globalAlpha=Math.min(1,q*1.5)*(1-Math.max(0,(p-.8)/.2));
+    ctx.translate(t.lcx,t.lcy);ctx.scale(2-q,2-q);ctx.rotate(-.08);ctx.font=`900 16px ${MONO}`;ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.shadowColor="#22c55e";ctx.shadowBlur=16;ctx.fillStyle="#4ade80";ctx.fillText("✓ ABGEFANGEN",0,0);ctx.restore();}
+}
+function label(t,now){
+  const g=labelGeom(t);
+  if(now>=t.arrive){if(!t.L)seedFx(t,g);drawFx(t,now);return;}
+  const {x,y,px,py,ex,ey,tx,anchor,lines}=g;
+  const age=now-t.hit,al=Math.min(1,age/180);
+  ctx.save();ctx.globalAlpha=al;
+  ctx.strokeStyle="rgba(134,239,172,.6)";ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(px,py);ctx.lineTo(ex,ey);ctx.stroke();
+  ctx.textAlign=anchor;ctx.textBaseline="alphabetic";
+  ctx.font=`800 20px ${MONO}`;const w1=ctx.measureText(t.n.toUpperCase()).width;ctx.font=`500 14px ${MONO}`;const w2=ctx.measureText(t.d).width;
+  const bw=Math.max(w1,w2,150)+20,bx0=anchor==="left"?tx-10:tx-bw+10;
+  ctx.fillStyle="rgba(2,6,12,.72)";ctx.beginPath();ctx.roundRect?ctx.roundRect(bx0,lines[0]-24,bw,64,6):ctx.rect(bx0,lines[0]-24,bw,64);ctx.fill();
+  const col=COL[t.s];ctx.shadowColor=col;ctx.shadowBlur=10;ctx.fillStyle=col;
+  ctx.font=`800 20px ${MONO}`;ctx.fillText(t.n.toUpperCase(),tx,lines[0]);
+  ctx.shadowBlur=6;ctx.shadowColor="#22c55e";ctx.fillStyle="#bbf7d0";ctx.font=`500 14px ${MONO}`;ctx.fillText(t.d,tx,lines[1]);
+  ctx.font=`700 13px ${MONO}`;ctx.fillStyle="#fbbf24";ctx.shadowColor=ctx.fillStyle;
+  const blink=Math.floor(now/220)%2?"▲":"△";ctx.fillText(blink+(t.s===C?" KRITISCH · UNTER BESCHUSS":" UNTER BESCHUSS"),tx,lines[2]);
+  ctx.restore();
+}
+
+function frame(nowAbs){
+  const now=nowAbs-t0,r=Math.floor(now/P);
+  ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.restore();
+  const live=[...round(r-1),...round(r)].filter(t=>now>=t.hit&&now<t.arrive+1200);
+  round(r+1);
+
+  // Schirm (geclippt): Sweep + Invader
+  ctx.save();ctx.beginPath();ctx.arc(CX,CY,SR,0,7);ctx.clip();
+  const th=(now%P)/P*Math.PI*2-Math.PI/2;
+  if(ctx.createConicGradient){const g=ctx.createConicGradient(th,CX,CY);
+    g.addColorStop(0,"rgba(74,222,128,0)");g.addColorStop(.62,"rgba(74,222,128,0)");g.addColorStop(.85,"rgba(74,222,128,.10)");
+    g.addColorStop(.97,"rgba(74,222,128,.35)");g.addColorStop(1,"rgba(134,239,172,.85)");ctx.fillStyle=g;ctx.fillRect(CX-SR,CY-SR,2*SR,2*SR);}
+  ctx.strokeStyle="rgba(187,247,208,.9)";ctx.lineWidth=2;ctx.shadowColor="#4ade80";ctx.shadowBlur=10;
+  ctx.beginPath();ctx.moveTo(CX,CY);ctx.lineTo(CX+SR*Math.cos(th),CY+SR*Math.sin(th));ctx.stroke();ctx.shadowBlur=0;
+  live.forEach(t=>{const [x,y]=pos(t);
+    if(now<t.arrive){const pulse=1+.25*Math.sin(now/90);
+      ctx.strokeStyle=COL[t.s];ctx.globalAlpha=.6;ctx.lineWidth=1.2;ctx.setLineDash([6,5]);
+      ctx.strokeRect(x-20*pulse,y-20*pulse,40*pulse,40*pulse);ctx.setLineDash([]);ctx.globalAlpha=1;
+      invader(x,y,COL[t.s],1,Math.floor(now/380)%2);}
+    else if(now<t.arrive+700){const p=(now-t.arrive)/700;ctx.strokeStyle=`rgba(74,222,128,${1-p})`;ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(x,y,8+p*26,0,7);ctx.stroke();}
+  });
+  ctx.restore();
+
+  // Labels
+  live.forEach(t=>label(t,now));
+
+  // Buddy flitzt wie das Space-Invaders-Kanonchen: links → Mitte → rechts → Mitte → links …
+  const d=WP[wp]-bx;
+  if(Math.abs(d)<=BSPEED){bx=WP[wp];wp=(wp+1)%WP.length;}else bx+=Math.sign(d)*BSPEED;
+  live.forEach(t=>{
+    while(t.shot<t.fires.length&&now>=t.fires[t.shot]){
+      const last=t.shot===t.fires.length-1,[x,y]=pos(t),x0=bx,y0=BY-12*BS-4;
+      let x1=x,y1=y;
+      if(!last){const side=Math.random()<.5?-1:1,off=rnd(28,55);const dx=x-x0,dy=y-y0,L=Math.hypot(dx,dy);
+        x1=x+dx/L*90-dy/L*side*off;y1=y+dy/L*90+dx/L*side*off;}
+      shots.push({x0,y0,x1,y1,t0:now,t1:last?t.arrive:now+300,hit:last});t.shot++;}
+    if(!t.boom&&now>=t.arrive){t.boom=true;const [x,y]=pos(t);parts.push(...explosion(x,y,COL[t.s]))}
+  });
+
+  // Laser
+  shots=shots.filter(s=>now<s.t1+120);
+  shots.forEach(s=>{const p=Math.min(1,(now-s.t0)/(s.t1-s.t0)),dx=s.x1-s.x0,dy=s.y1-s.y0,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L;
+    const hx=lerp(s.x0,s.x1,p),hy=lerp(s.y0,s.y1,p);
+    ctx.save();ctx.lineCap="round";
+    ctx.strokeStyle="rgba(200,226,58,.18)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(s.x0,s.y0);ctx.lineTo(hx,hy);ctx.stroke();
+    ctx.shadowColor="#c8e23a";ctx.shadowBlur=14;ctx.strokeStyle="#f2ffb8";ctx.lineWidth=3.5;
+    ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(hx-ux*22,hy-uy*22);ctx.stroke();
+    if(now-s.t0<90){ctx.fillStyle="#f2ffb8";ctx.beginPath();ctx.arc(s.x0,s.y0,6,0,7);ctx.fill();}
+    if(!s.hit&&p>=1){const q=(now-s.t1)/120;ctx.globalAlpha=1-q;ctx.strokeStyle="#c8e23a";ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(s.x1,s.y1,4+q*10,0,7);ctx.stroke();ctx.globalAlpha=1;}
+    ctx.restore();});
+
+  // Explosionen
+  parts.forEach(q=>{q.x+=q.vx;q.y+=q.vy;q.vy+=.03;q.l-=.022});parts=parts.filter(q=>q.l>0);
+  parts.forEach(q=>{ctx.globalAlpha=q.l;ctx.fillStyle=q.c;ctx.beginPath();ctx.arc(q.x,q.y,2.6,0,7);ctx.fill()});ctx.globalAlpha=1;
+
+  // Buddy
+  buddyDraw(bx,BY+Math.sin(now/260)*2,Math.sin(now/140)*2.4,BS);
+
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+<!-- ===== Radar-Grafik (Ende) ===== -->
+
+<h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
 <p><em>Ein Dashboard zeigt, was gerade ist. Ein Sicherheitsnetz fängt ab, was schiefgeht, bevor es jemand bemerkt -- genau das macht aus Monitoring ein Sicherheitsnetz: dass es niemals aufhört hinzusehen.</em></p>
 
