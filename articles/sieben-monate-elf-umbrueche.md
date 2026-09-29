@@ -15,8 +15,6 @@ draft: false
 
 *Von November 2025 bis September 2026 hat sich nicht nur das Tempo erhöht — die Ebene hat gewechselt: vom Modell zum Werkzeug drumherum. Wer weiter nach dem einen besten Modell sucht, spielt das falsche Spiel.*
 
-![Fünf Techniken, damit Wissen den Modellwechsel überlebt](/static/img/00-eyecatcher-fuenf-techniken.png)
-
  **Fünf Techniken in fünf Sätzen**
 
 <ul class="funf-techniken-liste">
