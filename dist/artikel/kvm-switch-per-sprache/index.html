@@ -12,11 +12,11 @@
 <meta property="og:title" content="„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.">
 <meta property="og:description" content="Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/">
-<meta property="og:image" content="https://blog.brauckmann.ch/static/img/kvm-per-sprache-eyecatcher.png">
+<meta property="og:image" content="">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.">
 <meta name="twitter:description" content="Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut.">
-<meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/kvm-per-sprache-eyecatcher.png">
+<meta name="twitter:image" content="">
 
 <script type="application/ld+json">
 {
@@ -30,8 +30,7 @@
     "@type": "Person",
     "name": "Andreas Brauckmann"
   },
-  "url": "https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/",
-  "image": "https://blog.brauckmann.ch/static/img/kvm-per-sprache-eyecatcher.png"
+  "url": "https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/"
 }
 </script>
 
@@ -635,8 +634,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
         <p>Für ein Video zum Zero Trust Assessment arbeite ich parallel auf zwei Notebooks: Auf dem Mac schneide und rendere ich, auf dem Windows-Notebook laufen PowerShell-Skripte und die Verbindungen zu Azure und Microsoft Entra. Jeder Wechsel kostete drei Knöpfe – dutzende Male pro Stunde. Mit vier Gratis-Bausteinen geht das jetzt per Sprache: ddcctl schaltet den Eingang des Monitors, Deskflow reicht Maus, Tastatur und Zwischenablage über das Netzwerk an das Windows-Notebook weiter, und ein Apple-Kurzbefehl verbindet beides mit Siri. Der Artikel zeigt den Aufbau, die Komponenten, sechs Stolpersteine und wie man den SSH-Zugang dafür sauber absichert.</p>
       </div>
     </div>
-    <p class="eyecatcher"><img src="/static/img/kvm-per-sprache-eyecatcher.png" alt="„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten." style="max-width:100%;border-radius:12px;border:1px solid var(--border)"></p>
-    <p><em>Videoschnitt auf dem Mac, PowerShell und Azure auf Windows – und dazwischen ein einziger Satz: „Hey Siri, Windows.“ Der Monitor schaltet um, Maus und Tastatur wandern mit, die Zwischenablage auch. Kein Knopf, keine Kabel umstecken.</em></p>
+    
+    <h2 id="kvm-switch-per-sprachbefehl-umschalten">KVM-Switch per Sprachbefehl umschalten</h2>
+<p><em>Videoschnitt auf dem Mac, PowerShell und Azure auf Windows – der KVM-Switch im Monitor steuert beide Notebooks. Ein Satz genügt: „Hey Siri, Windows.“ oder „Hey Siri, Mac.“ – Bild, Ton, Tastatur und Maus wechseln mit, die Zwischenablage auch. Kein Knopf, keine Kabel umstecken.</em></p>
 <p style="text-align:center"><video src="/static/img/kvm-per-sprache-animation.mp4" poster="/static/img/kvm-per-sprache-animation-poster.jpg" playsinline controls style="max-width:100%;border-radius:12px" aria-label="Animation: Hey Siri, Mac – Hey Siri, Windows – Hey Siri, shutdown – Hey Siri, wake up"></video></p>
 
 <h2 id="das-ergebnis-in-einem-satz">Das Ergebnis in einem Satz</h2>
@@ -921,7 +921,7 @@ Klingt banal, hat mich aber eine halbe Stunde gekostet: Deskflow lief noch mit d
 <p>Wer mehr als einmal im Monat für unter CHF 200 bestellt, fährt mit dem Jahrespass günstiger: Schon zwei Lieferungen à CHF 7.90 kosten mehr als die CHF 9.90 pro Monat.</p>
 <p>Mehr dazu, wenn es läuft – hier im Blog.</p>
     <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-09-28">2026-09-28</time> — Titel gekürzt, quadratisches Vorschaubild für die Startseite ergänzt.</li>
-<li><time datetime="2026-09-27">2026-09-27</time> — Artikel veröffentlicht; Video im Lauf des Tages verbessert (Ton statt Autoplay-stumm, ohne Endlosschleife, Maus-über-alle-Screens-Ausschnitt), Tastenbelegung als Stolperstein-Hinweis ergänzt.</li></ul></section>
+<li><time datetime="2026-09-27">2026-09-27</time> — Artikel veröffentlicht: Video mit Ton statt Autoplay-stumm, ohne Endlosschleife, Maus-über-alle-Screens-Ausschnitt; Tastenbelegung als Stolperstein-Hinweis ergänzt.</li></ul></section>
   </article>
 </main>
 

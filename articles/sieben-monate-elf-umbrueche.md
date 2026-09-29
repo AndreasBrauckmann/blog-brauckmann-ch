@@ -15,7 +15,7 @@ changelog:
   - datum: 2026-09-29
     text: "Doppelt angezeigte Grafik behoben, Eyecatcher ohne weissen Rand, quadratisches Vorschaubild für die Startseite."
   - datum: 2026-09-07
-    text: "Artikel veröffentlicht, im Lauf des Tages erweitert (fünf statt vier Techniken, Autokauf-Prompt-Beispiel, drei Infografiken, Zusammenfassungs-Akkordeon, Bild-Lightbox)."
+    text: "Artikel veröffentlicht: fünf Techniken (statt vier), Autokauf-Prompt-Beispiel, drei Infografiken, Zusammenfassungs-Akkordeon, Bild-Lightbox."
 ---
 
 *Von November 2025 bis September 2026 hat sich nicht nur das Tempo erhöht — die Ebene hat gewechselt: vom Modell zum Werkzeug drumherum. Wer weiter nach dem einen besten Modell sucht, spielt das falsche Spiel.*

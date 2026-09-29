@@ -8,17 +8,18 @@ description: "Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für m
 summary: >-
   Für ein Video zum Zero Trust Assessment arbeite ich parallel auf zwei Notebooks: Auf dem Mac schneide und rendere ich, auf dem Windows-Notebook laufen PowerShell-Skripte und die Verbindungen zu Azure und Microsoft Entra. Jeder Wechsel kostete drei Knöpfe – dutzende Male pro Stunde. Mit vier Gratis-Bausteinen geht das jetzt per Sprache: ddcctl schaltet den Eingang des Monitors, Deskflow reicht Maus, Tastatur und Zwischenablage über das Netzwerk an das Windows-Notebook weiter, und ein Apple-Kurzbefehl verbindet beides mit Siri. Der Artikel zeigt den Aufbau, die Komponenten, sechs Stolpersteine und wie man den SSH-Zugang dafür sauber absichert.
 tags: [Arbeitsplatz, Automatisierung, Zero Trust, macOS, Windows]
-image: /static/img/kvm-per-sprache-eyecatcher.png
 thumb: /static/img/thumbs/kvm-switch-per-sprache.jpg
 draft: false
 changelog:
   - datum: 2026-09-28
     text: "Titel gekürzt, quadratisches Vorschaubild für die Startseite ergänzt."
   - datum: 2026-09-27
-    text: "Artikel veröffentlicht; Video im Lauf des Tages verbessert (Ton statt Autoplay-stumm, ohne Endlosschleife, Maus-über-alle-Screens-Ausschnitt), Tastenbelegung als Stolperstein-Hinweis ergänzt."
+    text: "Artikel veröffentlicht: Video mit Ton statt Autoplay-stumm, ohne Endlosschleife, Maus-über-alle-Screens-Ausschnitt; Tastenbelegung als Stolperstein-Hinweis ergänzt."
 ---
 
-*Videoschnitt auf dem Mac, PowerShell und Azure auf Windows – und dazwischen ein einziger Satz: „Hey Siri, Windows.“ Der Monitor schaltet um, Maus und Tastatur wandern mit, die Zwischenablage auch. Kein Knopf, keine Kabel umstecken.*
+## KVM-Switch per Sprachbefehl umschalten
+
+*Videoschnitt auf dem Mac, PowerShell und Azure auf Windows – der KVM-Switch im Monitor steuert beide Notebooks. Ein Satz genügt: „Hey Siri, Windows.“ oder „Hey Siri, Mac.“ – Bild, Ton, Tastatur und Maus wechseln mit, die Zwischenablage auch. Kein Knopf, keine Kabel umstecken.*
 
 <p style="text-align:center"><video src="/static/img/kvm-per-sprache-animation.mp4" poster="/static/img/kvm-per-sprache-animation-poster.jpg" playsinline controls style="max-width:100%;border-radius:12px" aria-label="Animation: Hey Siri, Mac – Hey Siri, Windows – Hey Siri, shutdown – Hey Siri, wake up"></video></p>
 
