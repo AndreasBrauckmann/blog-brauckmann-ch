@@ -1,6 +1,6 @@
 ---
 slogan: "Monitoring wird erst zum Sicherheitsnetz, wenn es niemals aufhört hinzusehen."
-title: "Monitoring, Teil II: Cloudflare, Firewall und das große Ganze + Claude MCP-Server (read & write*)"
+title: "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read & write*)"
 slug: monitoring-homelab-teil-2-cloudflare-firewall
 date: 2026-09-28
 updated: 2026-09-28
