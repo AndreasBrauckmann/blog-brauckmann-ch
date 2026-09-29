@@ -9,16 +9,20 @@ description: "Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Histori
 summary: >-
   Der Wirtschaftskalender unter brauckmann.ch/kalender/ zeigt über 84.000 Konjunkturtermine seit 2010, ohne Login, ohne Bezahlschranke: JSON-API, sechs Downloadformate (CSV, Excel, SQLite, NDJSON, ICS), Sparkline-Verlauf pro Kennzahl, ein Recherche-Link direkt in Googles KI-Modus und für 98 Prozent aller Kennzahlen die amtliche Originalquelle verlinkt. Kostet nirgends etwas — die Zahlen sind ohnehin öffentlich, also bleiben sie hier frei zugänglich, ganz ohne Einschränkung.
 tags: [Kontor, Wirtschaftsdaten, Open Data, API]
-image: /static/img/wirtschaftskalender-eyecatcher-square.png
-thumb: /static/img/thumbs/wirtschaftskalender-ohne-anmeldung.jpg
 draft: false
 ---
 
 <p><em>Ein Wirtschaftskalender, für den man sich nirgends anmelden muss — nicht für die Ansicht, nicht für die API, nicht für den Download. Zahlen, die ohnehin öffentlich sind, gehören niemandem.</em></p>
-    <style>
+<p>Kurz vorweg, damit von Anfang an klar ist, was dieser Kalender kann: Jeder Termin lässt sich <strong>herunterladen</strong> (sechs Formate, dazu unten mehr), erscheint als <strong>Diagramm</strong> (Sparkline-Verlauf pro Kennzahl), verlinkt zum <strong>Nachlesen</strong> direkt zur amtlichen Originalquelle — und taucht, das ist der eigentliche Kern dieses Artikels, genau so auch direkt im <strong>Chart</strong> der eigenen Handelsoberfläche „Kontor" auf.</p>
+<h2 id="der-eigentliche-punkt-makrodaten-direkt-im-chart">Der eigentliche Punkt: Makrodaten direkt im Chart</h2>
+<p>Einen Wirtschaftskalender mit Sparkline und Originalquelle hat inzwischen fast jeder Anbieter. Neu ist die Verknüpfung: In der eigenen Handelsoberfläche „Kontor" taucht genau derselbe Kalender als Modul <strong>„Makrodaten im Chart"</strong> direkt auf der Zeitleiste des Charts auf — als farbiges Symbol genau dort, wo der Termin liegt, filterbar nach Wichtigkeit (Hoch/Mittel/Niedrig, plus ältere Termine optional dazuschaltbar). Ein Klick auf den Marker öffnet direkt über dem Chart eine kleine Box mit Flagge, Titel, Ist-Wert/Prognose/Vorwert und einer kurzen Einordnung — und demselben grünen „Nachlesen"-Knopf wie auf der öffentlichen Kalenderseite. Der Chart selbst muss dafür nie verlassen werden.</p>
+<p>Das ist der eigentliche Sinn dieses ganzen Aufbaus: Wer im Chart sitzt und eine Kursbewegung beobachtet, sieht im selben Moment, ob unten auf der Zeitleiste gerade ein Termin ansteht, der die Bewegung erklärt — kein Tab-Wechsel, keine zweite Anwendung. Kontors Analyse-Agent kennt dieselben Termine: Steht ein wichtiger Termin unmittelbar bevor, blendet er das Traden in diesem Zeitfenster bewusst aus und sagt auch, warum — statt eine Zahl zu ignorieren, die er kennt.</p>
+<p>Und auch auf der öffentlichen Kalenderseite selbst bleibt der Weg zurück in den eigenen Kalender kurz: Jeder aufgeklappte Termin trägt neben der Originalquelle einen eigenen Knopf „In meinen Kalender (ICS)" — ein Klick, und genau dieser eine Termin landet in Outlook, Apple Kalender oder Google Kalender, ohne gleich den kompletten Datenbestand abonnieren zu müssen. Damit vergisst man ihn garantiert nicht.</p>
+<p>Kontor selbst ist als Weiterentwicklung eines Forks von <a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a> entstanden, einem quelloffenen Multi-Agenten-Framework fürs automatisierte Trading — der Wirtschaftskalender samt Chart-Anbindung ist eine der Erweiterungen, die seither dazugekommen sind.</p>
+<style>
 .chip-abschnitt::after { content: ""; display: table; clear: both; }
 .chip-abschnitt img.chip-bild {
-  width: 190px; max-width: 42%; height: auto;
+  width: 96px; max-width: 24%; height: auto;
   margin-bottom: 0.4rem;
 }
 .chip-abschnitt.chip-rechts img.chip-bild { float: right; margin-left: 0.6rem; }

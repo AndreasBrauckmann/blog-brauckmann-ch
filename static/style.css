@@ -150,6 +150,9 @@ article > p, article > ul, article > ol { max-width: 70ch; }
 }
 
 .article-list-head { grid-column: 2; grid-row: 1; min-width: 0; }
+.article-list-item:not(:has(.article-list-thumb)) .article-list-head {
+  grid-column: 1 / -1;
+}
 .article-list-item h2 { margin-top: 0; }
 .article-list-item h2 a { text-decoration: none; }
 
