@@ -25,7 +25,7 @@
   "headline": "Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und Kosten",
   "description": "Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle. Was er kann, warum er anders lizenziert ist als der Rest der Branche.",
   "datePublished": "2026-09-20",
-  "dateModified": "2026-09-20",
+  "dateModified": "2026-09-29",
   "author": {
     "@type": "Person",
     "name": "Andreas Brauckmann"
@@ -523,6 +523,20 @@ article img {
   background:var(--md-svc-bg); color:var(--md-svc-fg); font-size:0.72rem; font-weight:600;
   padding:6px 12px; border-radius:999px; white-space:nowrap;
 }
+
+/* Aenderungshistorie am Artikelende -- dezent, damit sie nicht mit dem
+   eigentlichen Inhalt konkurriert, aber auffindbar bleibt. */
+.aenderungshistorie {
+  margin: 3rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.aenderungshistorie h2 { font-size: 1rem; color: var(--fg-muted); margin: 0 0 0.75rem; }
+.aenderungshistorie ul { list-style: none; margin: 0; padding: 0; }
+.aenderungshistorie li {
+  font-size: 0.85rem; color: var(--fg-muted); line-height: 1.6;
+  padding: 0.35rem 0; border-bottom: 1px dashed var(--border);
+}
+.aenderungshistorie li:last-child { border-bottom: none; }
+.aenderungshistorie time { font-family: "SFMono-Regular", Consolas, Menlo, monospace; color: var(--fg); margin-right: 0.4em; }
 .bp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
 
 pre { line-height: 125%; }
@@ -765,6 +779,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 <p>Ansehen, filtern, als CSV/Excel/SQLite/NDJSON/ICS herunterladen, per API abfragen, jede Zahl bis zur Originalquelle zurückverfolgen, per Klick tiefer recherchieren — alles kostenlos, alles ohne Konto. Der Kalender selbst gehört allen.</p>
 <p>👉 <a href="https://brauckmann.ch/kalender/">brauckmann.ch/kalender</a></p>
+    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-09-29">2026-09-29</time> — Neuer Abschnitt zur Chart-Anbindung (&quot;Makrodaten im Chart&quot;), echten CSS-Bug behoben (Chip-Grafiken waren nie richtig gestylt), Chips verkleinert, schwarze Chart-Grafik entfernt, echtes Google-Antwort-Beispiel ergänzt.</li>
+<li><time datetime="2026-09-28">2026-09-28</time> — Titel gestrafft, quadratisches Vorschaubild für die Startseite ergänzt.</li>
+<li><time datetime="2026-09-20">2026-09-20</time> — Artikel veröffentlicht.</li></ul></section>
   </article>
 </main>
 

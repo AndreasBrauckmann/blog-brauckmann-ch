@@ -3,7 +3,7 @@ slogan: "„Hey Siri, Windows.“ – der Samsung-Monitor mit eingebautem KVM-Sw
 title: "„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten."
 slug: kvm-switch-per-sprache
 date: 2026-09-27
-updated: 2026-09-27
+updated: 2026-09-28
 description: "Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut."
 summary: >-
   Für ein Video zum Zero Trust Assessment arbeite ich parallel auf zwei Notebooks: Auf dem Mac schneide und rendere ich, auf dem Windows-Notebook laufen PowerShell-Skripte und die Verbindungen zu Azure und Microsoft Entra. Jeder Wechsel kostete drei Knöpfe – dutzende Male pro Stunde. Mit vier Gratis-Bausteinen geht das jetzt per Sprache: ddcctl schaltet den Eingang des Monitors, Deskflow reicht Maus, Tastatur und Zwischenablage über das Netzwerk an das Windows-Notebook weiter, und ein Apple-Kurzbefehl verbindet beides mit Siri. Der Artikel zeigt den Aufbau, die Komponenten, sechs Stolpersteine und wie man den SSH-Zugang dafür sauber absichert.
@@ -11,6 +11,11 @@ tags: [Arbeitsplatz, Automatisierung, Zero Trust, macOS, Windows]
 image: /static/img/kvm-per-sprache-eyecatcher.png
 thumb: /static/img/thumbs/kvm-switch-per-sprache.jpg
 draft: false
+changelog:
+  - datum: 2026-09-28
+    text: "Titel gekürzt, quadratisches Vorschaubild für die Startseite ergänzt."
+  - datum: 2026-09-27
+    text: "Artikel veröffentlicht; Video im Lauf des Tages verbessert (Ton statt Autoplay-stumm, ohne Endlosschleife, Maus-über-alle-Screens-Ausschnitt), Tastenbelegung als Stolperstein-Hinweis ergänzt."
 ---
 
 *Videoschnitt auf dem Mac, PowerShell und Azure auf Windows – und dazwischen ein einziger Satz: „Hey Siri, Windows.“ Der Monitor schaltet um, Maus und Tastatur wandern mit, die Zwischenablage auch. Kein Knopf, keine Kabel umstecken.*

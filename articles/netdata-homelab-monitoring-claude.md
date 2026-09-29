@@ -3,7 +3,7 @@ slogan: "Netdata bringt seit Version 2.6 einen eigenen MCP-Server mit — ganz o
 title: "Monitoring für kleine Infrastrukturen in 15 Minuten: Netdata + Claude als MCP-Server (read & write*)"
 slug: netdata-homelab-monitoring-claude
 date: 2026-09-20
-updated: 2026-09-20
+updated: 2026-09-29
 description: "Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für eine kleine Infrastruktur mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste."
 summary: >-
   Netdata bringt seit Version 2.6 einen eigenen MCP-Server mit — ganz ohne Zusatzinstallation. Wer eine kleine Infrastruktur mit ein paar Nodes betreibt, hat in gut 15 Minuten ein vollständiges Monitoring mit Hunderten Metriken pro Sekunde, plus einen KI-Assistenten, der die Daten tatsächlich versteht: Claude fragt "Warum ist der Server langsam?" nicht mehr rhetorisch, sondern zieht sich die echten Zahlen. Installation, erste Ansicht, MCP-Anbindung, eine Beispielfrage — und ein Hinweis, worauf zu achten ist, sobald man das Ganze von außerhalb des eigenen Netzes erreichbar machen will.
@@ -11,6 +11,13 @@ tags: [Monitoring, Netdata, Claude, Infrastruktur, MCP]
 image: /static/img/netdata-dashboard-uebersicht.png
 thumb: /static/img/thumbs/netdata-homelab-monitoring-claude.jpg
 draft: false
+changelog:
+  - datum: 2026-09-29
+    text: "Sprache professionalisiert (\"Homelab\" → \"kleine Infrastruktur\"), Abschnitt zum schreibfähigen MCP-Server wieder hervorgehoben, Verweis auf Teil II ergänzt."
+  - datum: 2026-09-28
+    text: "Quadratisches Vorschaubild für die Startseite ergänzt."
+  - datum: 2026-09-20
+    text: "Artikel veröffentlicht."
 ---
 
 <p><em>Netdata installieren, das Dashboard einmal ansehen, Claude als MCP-Client anschließen — fertig. Kein Cloud-Konto nötig, keine Konfigurationsdatei, die erst verstanden werden muss.</em></p>

@@ -156,6 +156,7 @@ def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_sty
         f'style="max-width:100%;border-radius:12px;border:1px solid var(--border)"></p>'
         if meta.get("image") else ""
     )
+    changelog_html = render_changelog_html(meta.get("changelog"))
 
     context = {
         "language": site["language"],
@@ -173,10 +174,31 @@ def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_sty
         "summary_html": summary_html,
         "eyecatcher_html": eyecatcher_html,
         "content": wrap_tables(content_html),
+        "changelog_html": changelog_html,
         "base_url": site["base_url"],
         "author": html.escape(site["author"]),
     }
     return meta["slug"], render(template, context)
+
+
+def render_changelog_html(eintraege: list[dict] | None) -> str:
+    """Aenderungshistorie am Artikelende -- rueckwirkend aus dem Git-Log
+    aufgebaut, damit wiederkehrende Leser sehen, dass und was sich seit dem
+    letzten Besuch getan hat. Frontmatter-Feld ``changelog``, neueste
+    Eintraege zuerst; kein Feld -> kein Abschnitt."""
+    if not eintraege:
+        return ""
+    zeilen = "\n".join(
+        f'<li><time datetime="{html.escape(str(e["datum"]))}">{html.escape(str(e["datum"]))}</time>'
+        f' — {html.escape(str(e["text"]))}</li>'
+        for e in eintraege
+    )
+    return (
+        '<section class="aenderungshistorie">'
+        "<h2>Änderungshistorie</h2>"
+        f"<ul>{zeilen}</ul>"
+        "</section>"
+    )
 
 
 def wrap_tables(content_html: str) -> str:

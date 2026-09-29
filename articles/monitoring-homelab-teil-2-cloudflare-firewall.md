@@ -10,6 +10,11 @@ summary: >-
 tags: [Monitoring, Cloudflare, Security, Claude, MCP]
 thumb: /static/img/thumbs/monitoring-homelab-teil-2-cloudflare-firewall.jpg
 draft: false
+changelog:
+  - datum: 2026-09-29
+    text: "Nachtrag zur Prompt-Injection-Härtung ergänzt (Dank an Volker Skwarek), Dashboard-Animation heller und langsamer, mehrere Formulierungen präzisiert, Titel gestrafft."
+  - datum: 2026-09-28
+    text: "Artikel veröffentlicht: sechs neue Dashboards, Sicherheitsnetz- und Big-Picture-Diagramme; im Lauf des Tages mehrfach überarbeitet (Text, Grafiken, Struktur)."
 ---
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>

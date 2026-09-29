@@ -502,6 +502,20 @@ article img {
   background:var(--md-svc-bg); color:var(--md-svc-fg); font-size:0.72rem; font-weight:600;
   padding:6px 12px; border-radius:999px; white-space:nowrap;
 }
+
+/* Aenderungshistorie am Artikelende -- dezent, damit sie nicht mit dem
+   eigentlichen Inhalt konkurriert, aber auffindbar bleibt. */
+.aenderungshistorie {
+  margin: 3rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.aenderungshistorie h2 { font-size: 1rem; color: var(--fg-muted); margin: 0 0 0.75rem; }
+.aenderungshistorie ul { list-style: none; margin: 0; padding: 0; }
+.aenderungshistorie li {
+  font-size: 0.85rem; color: var(--fg-muted); line-height: 1.6;
+  padding: 0.35rem 0; border-bottom: 1px dashed var(--border);
+}
+.aenderungshistorie li:last-child { border-bottom: none; }
+.aenderungshistorie time { font-family: "SFMono-Regular", Consolas, Menlo, monospace; color: var(--fg); margin-right: 0.4em; }
 .bp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
 
 </style>

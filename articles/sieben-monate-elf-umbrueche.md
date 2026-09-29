@@ -3,7 +3,7 @@ slogan: "Wer mit dem KI-Tempo mithalten will, muss anders ablegen statt schnelle
 title: "KI-Tempo, Nov.25 – Sep.26: Elf Monate, zwei Wellen — warum jetzt andere Regeln gelten"
 slug: sieben-monate-elf-umbrueche
 date: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-29
 description: "Elf Monate, zwei Wellen, ein Ebenenwechsel: Bei monatlichen Modellsprüngen ist die Fähigkeit, Kontext sauber zu übergeben, wertvoller als die Beherrschung eines bestimmten Modells. Fünf Techniken dagegen."
 summary: >-
   Von November 2025 bis September 2026 gab es zwei KI-Schübe: eine Modell-Welle im November/Dezember 2025 mit vier neuen Flaggschiff-Modellen und dem Start der Agent-Frameworks, und eine Infrastruktur-Welle im Sommer 2026 mit riesigen Kontextfenstern und einem Preisverfall von 80 Prozent. Dazwischen verschob sich still die Ebene: Nicht mehr das beste Modell entscheidet, sondern das Werkzeug drumherum. Fünf Techniken helfen dabei — Isolieren, Kodifizieren, Übergeben, Priorisieren, Dirigieren. Wer sie beherrscht, profitiert von jedem neuen Modell sofort, statt bei jedem Wechsel wieder von null zu lernen.
@@ -11,6 +11,11 @@ tags: [KI, Automatisierung, Skills]
 image: /static/img/00-eyecatcher-fuenf-techniken.png
 thumb: /static/img/thumbs/sieben-monate-elf-umbrueche.jpg
 draft: false
+changelog:
+  - datum: 2026-09-29
+    text: "Doppelt angezeigte Grafik behoben, Eyecatcher ohne weissen Rand, quadratisches Vorschaubild für die Startseite."
+  - datum: 2026-09-07
+    text: "Artikel veröffentlicht, im Lauf des Tages erweitert (fünf statt vier Techniken, Autokauf-Prompt-Beispiel, drei Infografiken, Zusammenfassungs-Akkordeon, Bild-Lightbox)."
 ---
 
 *Von November 2025 bis September 2026 hat sich nicht nur das Tempo erhöht — die Ebene hat gewechselt: vom Modell zum Werkzeug drumherum. Wer weiter nach dem einen besten Modell sucht, spielt das falsche Spiel.*
