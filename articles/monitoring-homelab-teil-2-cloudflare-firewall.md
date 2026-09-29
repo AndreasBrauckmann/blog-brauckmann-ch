@@ -3,7 +3,7 @@ slogan: "Monitoring wird erst zum Sicherheitsnetz, wenn es niemals aufhört hinz
 title: "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read & write*)"
 slug: monitoring-homelab-teil-2-cloudflare-firewall
 date: 2026-09-28
-updated: 2026-09-28
+updated: 2026-09-29
 description: "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird."
 summary: >-
   Vor einer Woche war der erste eigene, schreibfähige MCP-Server noch ein "grober Fahrplan" am Ende eines Artikels. Was seither daraus geworden ist: sechs Live-Dashboards (Gatekeeper, Ascent, Backup, System, Alerts, Connections), die innerhalb von 48 Stunden nach dem ersten Commit bereits eine echte Entra-ID-Anmeldung, echte Cloudflare-Firewall-Daten und einen Fix für einen selbst verursachten Fehler hatten. Der Artikel zeigt das neue Verbindungen-Dashboard, das auf einen Blick zeigt, was heute alles überwacht wird -- MCP-Server, Broker, Cloudflare, Search Console, Wirtschaftskalender, LLM-Wrapper -- und zeichnet das große Sicherheitsbild: zwei komplett getrennte Zugangswege (Cloudflare-Tunnel für brauckmann.ch, Tailscale Funnel für die eigene ts.net-Adresse), die beide auf dieselbe, nach außen portlose Infrastruktur treffen.
@@ -115,6 +115,22 @@ draft: false
 </ul>
 
 <p>Beide Wege laufen am Ende durch dieselbe lokale Infrastruktur auf demselben Server -- aber jeder Dienst dahinter hat seine eigene, unabhängige Zugriffskontrolle: die Trading-Oberfläche selbst mit einer dreistufigen Vertrauenslogik (lokales Netz / Tailnet / öffentlicher Funnel, mit Passwort und Einmalcode für die zwei strengeren Stufen), die Status- und Admin-Dashboards über echte Microsoft-Entra-ID-Anmeldung mit Multi-Faktor. Fällt einer der beiden äusseren Wege aus oder wird missbraucht, ist der andere davon komplett unberührt -- zwei unabhängige Frontends vor derselben, nach aussen portlosen Basis.</p>
+
+<h2 id="nachtrag-prompt-injection">Nachtrag, einen Tag später: eine Lücke, die reines Perimeter-Denken nicht sieht</h2>
+
+<p>Alles bisher Beschriebene -- Firewall, Tunnel, Zugriffskontrolle -- dreht sich um die Frage, <em>wer</em> ins System hineinkommt. Es gibt eine zweite Frage, die genauso wichtig ist und die im Sicherheitsbild oben komplett fehlt: Was, wenn eine Anfrage ganz regulär durch alle Türen hereinkommt -- als Wirtschaftskalender-Termin, als Alarmtext, als ganz gewöhnlicher Text --, aber etwas enthält, das die KI dahinter als Anweisung statt als Daten liest? Genau das ist <strong>Prompt Injection</strong>, Platz eins der <a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 für LLM-Anwendungen</a>, und der Anstoss dazu kam von aussen: <a href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7432466152238362624/">einer LinkedIn-Folge von Volker Skwarek</a> (Hochschule für Angewandte Wissenschaften Hamburg) über genau dieses Thema. Ohne diesen Anstoss wäre das hier vermutlich nicht angeschaut worden -- danke dafür, Volker.</p>
+
+<p>Der Check auf die eigene, in diesem Artikel beschriebene Infrastruktur brachte einen echten, wenn auch eingedämmten Fund: Kontors Analyse-Agent bekommt bei jeder Frage einen Kontext-Block mit aktuellen Marktdaten, dem eigenen Handelsplan -- und dem Titel des nächsten anstehenden Wirtschaftstermins. Dieser Titel stammt roh von externen Quellen (Trading Economics, Finnhub, ForexFactory) und landete bislang unverändert im Prompt. Ein böswillig formulierter Termintitel hätte also theoretisch versuchen können, sich als Anweisung an die KI auszugeben, statt als das gelesen zu werden, was er ist: ein Stück Text zum Anzeigen. Der Blast Radius war durch die bestehende Architektur schon vorher eng begrenzt -- derselbe Chat-Pfad schaltet Werkzeuge serverseitig komplett ab und erzwingt eine harte Ein-Zug-Grenze, eine erfolgreiche Injection hätte also nie mehr als die angezeigte Antwort verfälschen können. Trotzdem: eine offene Tür, die jetzt zu ist.</p>
+
+<p>Die Gegenmassnahme, wie im Rest dieses Artikels dokumentiert und überwacht statt nur einmalig gefixt: Freitext-Felder aus dem Kalender werden jetzt auf eine sinnvolle Länge begrenzt und von Steuerzeichen befreit, bevor sie den Prompt erreichen, und der System-Prompt selbst trennt jetzt explizit zwischen Datenmaterial und Anweisung -- ein Termintitel, der wie ein Befehl klingt, bleibt ein Termintitel. Und wie es zu diesem Ökosystem passt: ein neuer, alle 15 Minuten laufender Netdata-Sensor prüft seither, ob genau diese Absicherung im Quelltext noch steht, sichtbar als eigene "LLM Security"-Kachel auf der Connections-Seite von oben und als eigene Karte auf dem Gatekeeper-Dashboard -- derselbe Mechanismus, der schon den eigenen Fehler beim Arbeitsspeicher-Alarm 13 Minuten nach dem Auftreten fing, wacht jetzt auch hier mit:</p>
+
+<p>
+<img src="/static/img/monitoring2-llm-security-connections.png" alt="Connections-Dashboard mit rot eingekreister neuer 'LLM Security'-Kachel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+</p>
+
+<p>
+<img src="/static/img/monitoring2-llm-hardening-gatekeeper.png" alt="Gatekeeper-Dashboard mit rot eingekreister Karte 'LLM prompt-injection hardening'" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+</p>
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 
