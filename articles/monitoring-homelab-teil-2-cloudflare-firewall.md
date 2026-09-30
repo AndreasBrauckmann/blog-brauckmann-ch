@@ -18,7 +18,7 @@ changelog:
 ---
 
 <!-- ===== Radar-Grafik: KI-Monitoring als Sicherheitsnetz (Anfang) ===== -->
-<p><strong>Dieses Netz ist mehrstufig abgesichert, so wie ich es auch für Ihr Unternehmen aufbaue: erkennen, beobachten, sperren -- jede Schicht einzeln schaltbar, messbar und umkehrbar.</strong></p>
+<p><strong>mehrstufig absicher; aufbauen, erkennen, beobachten, sperren -- jede Schicht einzeln schaltbar, messbar und umkehrbar.</strong></p>
 
 <p>Ganz außen sitzt <strong>Cloudflare mit DDoS-Schutz, Firewall-Regeln und Rate Limiting</strong>: Was zu schnell und zu viel kommt, wird gedrosselt. Verschlüsselt wird ab TLS 1.2, alles darunter wird abgelehnt. <strong>KI-Sammler werden gesperrt</strong>, und wer sich nicht ausweist und trotzdem mitliest, läuft in ein <strong>Honeypot (Link Maze Injection)</strong> für Crawler. Dahinter arbeitet ein <strong>Edge-Proxy</strong> (Caddy) als Proxy zwischen den Netzen: Die Website hat keinen eingehenden Port, der Tunnel geht nur nach draußen, das Produktivsystem liegt in der DMZ (Demilitarisierte Zone). Auf den Servern <strong>liest CrowdSec die Logs</strong> mit und erkennt Angriffsmuster in Echtzeit.</p>
 
