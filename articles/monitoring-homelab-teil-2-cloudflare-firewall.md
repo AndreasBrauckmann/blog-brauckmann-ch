@@ -28,9 +28,7 @@ changelog:
 
 <p>Ein <strong>nftables-Bouncer sperrt</strong> erkannte Angreifer direkt lokal aus, während ein Cloudflare-Bouncer diese Sperren bis an die Cloudflare-Edge spiegelt – so erreichen Angriffe den Server in der DMZ erst gar nicht. Für klassische Setups lässt sich <strong>Fail2ban optional einbinden</strong>. Nach erfolgreicher Testphase und nachgewiesener Fehlalarmfreiheit ist das System nun scharf geschaltet. Fernzugriffe erfolgen nicht über eine offene Shell, sondern über eine Handvoll fest definierter Aktionen. Über all dem wachen rund um die Uhr sechs Live-Dashboards sowie ein KI-gestütztes Monitoring.</p>
 
-<div class="callout">
-<p>Wie das in der Praxis aussieht, zeigt die folgende Szene: Das Monitoring arbeitet 24h/7 ohne Pause -- Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate -- <strong>alles wird erfasst, beurteilt und erledigt oder ausgeschaltet, bevor es die produktive Umgebung beeinflusst</strong>. Genau das ist der Unterschied zwischen einem Monitoring, das ein Ticketsystem beschäftigt, und einem Monitoring, das handelt.</p>
-</div>
+<p class="kr-hervor">Wie das in der Praxis aussieht, zeigt die folgende Szene: Das Monitoring arbeitet 24h/7 ohne Pause -- Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate -- <strong>alles wird erfasst, beurteilt und erledigt oder ausgeschaltet, bevor es die produktive Umgebung beeinflusst</strong>. Genau das ist der Unterschied zwischen einem Monitoring, das ein Ticketsystem beschäftigt, und einem Monitoring, das handelt.</p>
 
 <style>
 .kr-radar{position:relative;width:100%;aspect-ratio:1200/720;border-radius:16px;overflow:hidden;background:#03060c;margin:0}
@@ -40,6 +38,7 @@ changelog:
 @keyframes kr-bl{50%{opacity:.15}}
 @media (prefers-reduced-motion:reduce){.kr-radar .kr-blink{animation:none}}
 .kr-radar-figure{margin:1.75rem 0 1.9rem}
+.kr-hervor{font-size:1.18em;line-height:1.6;border-left:6px solid #e0a51a;padding:.15rem 0 .15rem 1.1rem;margin:1.6rem 0}
 .kr-laptop{--k:.9;--ext:min(60px,4vw);--ram:9px;width:calc(var(--k)*(100% + 2*var(--ext)));margin:0 calc((100% - var(--k)*(100% + 2*var(--ext)))/2)}
 .kr-lid{position:relative;margin:0 calc(var(--k)*var(--ext) - var(--ram)) -1px;padding:var(--ram) var(--ram) 25px;background:linear-gradient(180deg,#3a3d43 0%,#2b2e33 45%,#23252a 100%);border-radius:19px 19px 0 0;box-shadow:0 0 0 1px #5d636b,0 0 0 2.5px #b4b9c0,0 0 0 3.5px #e8eaed,0 -2px 6px 3px rgba(255,255,255,.08),inset 0 0 0 1px #4a4e55,inset 0 1px 0 #555960}
 .kr-lid::before{content:"";position:absolute;top:var(--ram);left:50%;width:11%;height:11px;transform:translateX(-50%);background:#000;border-radius:0 0 9px 9px;z-index:6}
@@ -283,11 +282,11 @@ requestAnimationFrame(frame);
 </script>
 <!-- ===== Radar-Grafik (Ende) ===== -->
 
-<div class="callout">
-<p>Der Nutzen davon beschränkt sich nicht auf den eigenen Betrieb. <strong>Kontinuierliches, <span style="text-decoration:underline double;text-underline-offset:4px;text-decoration-thickness:1px">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</span></strong>, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
+<p>Der Nutzen davon beschränkt sich nicht auf den eigenen Betrieb. <strong>Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz</strong>, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
 
 <p>Ein Punkt daraus ist mir besonders wichtig: Gerade wenn im Ernstfall die Frage im Raum steht, wo eine Ursache wirklich lag, entscheidet oft nicht die Sachlage, sondern wer die überzeugendere Geschichte erzählt -- und genau da hilft eine lückenlose, automatisiert mitschreibende Kontrollebene allen Beteiligten weiter. <strong>Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich eine Ursache objektiv nachvollziehen, statt sie bei Behauptung gegen Behauptung zu belassen.</strong> Das schafft Klarheit für alle Seiten, schützt gewachsene Kundenbeziehungen vor unnötigem Vertrauensverlust und macht am Ende auch die eigene Arbeit sichtbar.</p>
 
+<div class="callout">
 <p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Ich helfe gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen. Besuchen Sie unser Team unter <a href="https://www.achermann.swiss/team" target="_blank" rel="noopener">https://www.achermann.swiss/team</a></p>
 </div>
 
