@@ -222,8 +222,6 @@ Die **Logitech MX Keys** hat oben links drei **Easy-Switch-Tasten** – jede ist
 
 Die Easy-Switch-Tasten fasse ich nicht an: Ein Druck löst eine neue Kopplung aus und kollidiert mit Deskflow – die Tastatur hängt dann direkt am anderen Gerät, und Deskflow verliert sie (siehe Stolperstein 5).
 
-![Detail-Illustration der Easy-Switch-Tasten: 1 = Mac, 2 = Windows, 3 = frei](/static/img/kvm-per-sprache-easyswitch.png)
-
 **Tastenbelegung:** Die MX Keys merkt sich für jeden Kanal das Betriebssystem. Einmal **fn + O** (3 Sekunden) auf Kanal 1 stellt auf Mac um – dann liegen ⌘ und ⌥ dort, wo sie hingehören. Damit unter Windows trotzdem alles wie beschriftet bleibt, tauscht Deskflow Alt und Windows-Taste für den Windows-Bildschirm wieder zurück (siehe Stolperstein 1).
 
 ## Die sechs Stolpersteine (und wie ich sie gelöst habe)
