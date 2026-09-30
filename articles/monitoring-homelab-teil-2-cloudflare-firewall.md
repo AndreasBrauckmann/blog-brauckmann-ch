@@ -35,10 +35,17 @@ changelog:
 .kr-radar .kr-blink{animation:kr-bl 1.6s steps(2) infinite}
 @keyframes kr-bl{50%{opacity:.15}}
 @media (prefers-reduced-motion:reduce){.kr-radar .kr-blink{animation:none}}
-.kr-radar-figure{margin:1.5rem 0}
+.kr-radar-figure{margin:1.75rem 0 1.5rem}
+.kr-laptop{--ext:min(48px,4vw);--ram:14px;margin:0 calc(-1*var(--ext))}
+.kr-lid{position:relative;margin:0 calc(var(--ext) - var(--ram));padding:var(--ram) var(--ram) calc(var(--ram) - 2px);background:linear-gradient(180deg,#3a3f47 0%,#1b1e23 100%);border-radius:16px 16px 3px 3px;box-shadow:0 0 0 1px #0b0c0f inset,0 1px 0 #555b64 inset}
+.kr-lid::before{content:"";position:absolute;top:5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#0d0f12;box-shadow:0 0 0 1px #2c3036}
+.kr-lid .kr-radar{border-radius:3px}
+.kr-base{position:relative;height:13px;background:linear-gradient(180deg,#e4e7eb 0%,#b7bcc4 55%,#8d939c 100%);border-radius:0 0 22px 22px/0 0 12px 12px;box-shadow:0 10px 18px -8px rgba(0,0,0,.45)}
+.kr-base::before{content:"";position:absolute;top:0;left:50%;width:17%;height:5px;transform:translateX(-50%);background:linear-gradient(180deg,#9aa0a8,#c8ccd2);border-radius:0 0 9px 9px}
 .kr-radar-figure figcaption{text-align:center;font-size:0.85rem;color:var(--fg-muted);margin-top:1rem}
 </style>
 <figure class="kr-radar-figure">
+<div class="kr-laptop"><div class="kr-lid">
 <div class="kr-radar" id="kr-stage">
 <!-- HINTERGRUND + RADAR-GEHÄUSE -->
 <canvas id="kr-stars"></canvas>
@@ -105,6 +112,7 @@ changelog:
 <circle cx="400" cy="275" r="205" fill="none" stroke="#000" stroke-width="4" stroke-opacity=".7"/>
 </svg>
 </div>
+</div><div class="kr-base"></div></div>
 <figcaption>Rund um die Uhr im Einsatz: KI-gestütztes Monitoring erkennt Abweichungen, bevor sie zum Vorfall werden -- und räumt sie aus dem Weg.</figcaption>
 </figure>
 <script>
