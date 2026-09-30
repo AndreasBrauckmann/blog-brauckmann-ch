@@ -35,13 +35,17 @@ changelog:
 .kr-radar .kr-blink{animation:kr-bl 1.6s steps(2) infinite}
 @keyframes kr-bl{50%{opacity:.15}}
 @media (prefers-reduced-motion:reduce){.kr-radar .kr-blink{animation:none}}
-.kr-radar-figure{margin:1.75rem 0 1.5rem}
-.kr-laptop{--ext:min(48px,4vw);--ram:14px;margin:0 calc(-1*var(--ext))}
-.kr-lid{position:relative;margin:0 calc(var(--ext) - var(--ram));padding:var(--ram) var(--ram) calc(var(--ram) - 2px);background:linear-gradient(180deg,#3a3f47 0%,#1b1e23 100%);border-radius:16px 16px 3px 3px;box-shadow:0 0 0 1px #0b0c0f inset,0 1px 0 #555b64 inset}
-.kr-lid::before{content:"";position:absolute;top:5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#0d0f12;box-shadow:0 0 0 1px #2c3036}
-.kr-lid .kr-radar{border-radius:3px}
-.kr-base{position:relative;height:13px;background:linear-gradient(180deg,#e4e7eb 0%,#b7bcc4 55%,#8d939c 100%);border-radius:0 0 22px 22px/0 0 12px 12px;box-shadow:0 10px 18px -8px rgba(0,0,0,.45)}
-.kr-base::before{content:"";position:absolute;top:0;left:50%;width:17%;height:5px;transform:translateX(-50%);background:linear-gradient(180deg,#9aa0a8,#c8ccd2);border-radius:0 0 9px 9px}
+.kr-radar-figure{margin:1.75rem 0 1.9rem}
+.kr-laptop{--ext:min(60px,4vw);--ram:10px;margin:0 calc(-1*var(--ext))}
+.kr-lid{position:relative;margin:0 calc(var(--ext) - var(--ram));padding:var(--ram) var(--ram) 22px;background:#050506;border-radius:18px 18px 0 0;box-shadow:0 0 0 1.5px #80868e,0 -1px 0 1.5px #b9bec5,inset 0 0 0 1px #202328}
+.kr-lid::before{content:"";position:absolute;top:var(--ram);left:50%;width:11%;height:11px;transform:translateX(-50%);background:#050506;border-radius:0 0 9px 9px;z-index:6}
+.kr-lid::after{content:"";position:absolute;top:var(--ram);left:50%;width:4px;height:4px;margin:3px 0 0 -2px;border-radius:50%;background:#14171c;box-shadow:0 0 0 1px #23272e;z-index:7}
+.kr-lid .kr-radar{border-radius:9px 9px 3px 3px}
+.kr-base{position:relative;height:19px;background:linear-gradient(180deg,#eceef1 0%,#cfd3d8 38%,#a9aeb5 100%);border-radius:0 0 26px 26px/0 0 14px 14px;box-shadow:inset 0 1px 0 #fff,0 12px 18px -10px rgba(0,0,0,.5)}
+.kr-mulde{position:absolute;top:0;left:50%;width:17%;height:9px;transform:translateX(-50%);background:linear-gradient(180deg,#b4b9c0,#e6e8eb);border-radius:0 0 12px 12px;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+.kr-fuss{position:absolute;bottom:-4px;width:7%;height:5px;background:#26282c;border-radius:0 0 5px 5px}
+.kr-f1{left:7%}
+.kr-f2{right:7%}
 .kr-radar-figure figcaption{text-align:center;font-size:0.85rem;color:var(--fg-muted);margin-top:1rem}
 </style>
 <figure class="kr-radar-figure">
@@ -112,7 +116,7 @@ changelog:
 <circle cx="400" cy="275" r="205" fill="none" stroke="#000" stroke-width="4" stroke-opacity=".7"/>
 </svg>
 </div>
-</div><div class="kr-base"></div></div>
+</div><div class="kr-base"><span class="kr-mulde"></span><span class="kr-fuss kr-f1"></span><span class="kr-fuss kr-f2"></span></div></div>
 <figcaption>Rund um die Uhr im Einsatz: KI-gestütztes Monitoring erkennt Abweichungen, bevor sie zum Vorfall werden -- und räumt sie aus dem Weg.</figcaption>
 </figure>
 <script>
