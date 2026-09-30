@@ -27,6 +27,8 @@ changelog:
 .kr-radar .kr-blink{animation:kr-bl 1.6s steps(2) infinite}
 @keyframes kr-bl{50%{opacity:.15}}
 @media (prefers-reduced-motion:reduce){.kr-radar .kr-blink{animation:none}}
+.kr-radar-figure{margin:1.5rem 0}
+.kr-radar-figure figcaption{text-align:center;font-size:0.85rem;color:var(--fg-muted);margin-top:1rem}
 </style>
 <figure class="kr-radar-figure">
 <div class="kr-radar" id="kr-stage">
