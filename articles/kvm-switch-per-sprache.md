@@ -3,7 +3,7 @@ slogan: "„Hey Siri, Windows.“ – der Samsung-Monitor mit eingebautem KVM-Sw
 title: "„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten."
 slug: kvm-switch-per-sprache
 date: 2026-09-27
-updated: 2026-09-28
+updated: 2026-09-30
 description: "Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut."
 summary: >-
   Für ein Video zum Zero Trust Assessment arbeite ich parallel auf zwei Notebooks: Auf dem Mac schneide und rendere ich, auf dem Windows-Notebook laufen PowerShell-Skripte und die Verbindungen zu Azure und Microsoft Entra. Jeder Wechsel kostete drei Knöpfe – dutzende Male pro Stunde. Mit vier Gratis-Bausteinen geht das jetzt per Sprache: ddcctl schaltet den Eingang des Monitors, Deskflow reicht Maus, Tastatur und Zwischenablage über das Netzwerk an das Windows-Notebook weiter, und ein Apple-Kurzbefehl verbindet beides mit Siri. Der Artikel zeigt den Aufbau, die Komponenten, sechs Stolpersteine und wie man den SSH-Zugang dafür sauber absichert.
@@ -11,6 +11,8 @@ tags: [Arbeitsplatz, Automatisierung, Zero Trust, macOS, Windows]
 thumb: /static/img/thumbs/kvm-switch-per-sprache.jpg
 draft: false
 changelog:
+  - datum: 2026-09-30
+    text: "Umschaltung über Hotkey-Simulation (kvm-hotkey) statt Mauszeiger-Trick; Berechtigungs-Hinweis für macOS ergänzt; Tastatur-Abschnitt an den aktuellen Stand angepasst."
   - datum: 2026-09-28
     text: "Titel gekürzt, quadratisches Vorschaubild für die Startseite ergänzt."
   - datum: 2026-09-27
@@ -129,11 +131,16 @@ Das Skript schaltet den Monitor um und stösst dann Deskflow an. Das war der kni
 - **Apple Watch:** als Komplikation direkt auf dem Zifferblatt – ein Tipp aufs Handgelenk
 - **Mac:** in der Menüleiste oder per Tastenkürzel
 
-### 4. Das Hilfsprogramm „DF-Umschalter“
+### 4. Die Hilfsprogramme „kvm-hotkey“ und „DF-Umschalter“
 
-Deskflow reagiert nur auf **echte** Tastendrücke – ein per Skript gesendetes ctrl + opt + cmd + W ignoriert es (siehe Stolperstein 2). Was Deskflow aber zuverlässig erkennt: wenn die Maus über den Bildschirmrand fährt. Genau das macht **DF-Umschalter**: ein winziges, selbst gebautes Mac-Programm ohne Fenster, das den Mauszeiger kurz über den rechten Rand schiebt (→ Windows) oder nach links zurück (→ Mac).
+Deskflow reagiert nur auf Tastendrücke, die wie echte Tastatureingaben ankommen – ein per AppleScript gesendetes ctrl + opt + cmd + W ignoriert es (siehe Stolperstein 2). Deshalb gibt es zwei kleine, selbst gebaute Mac-Programme ohne Fenster:
 
-Der ganze Code, rund 30 Zeilen Swift:
+- **kvm-hotkey** ist der eigentliche Mechanismus. Es simuliert die Deskflow-Hotkey-Kombination per `CGEventCreateKeyboardEvent`: ctrl + opt + cmd + **W** für Windows, ctrl + opt + cmd + **M** für den Mac – dieselben Tasten, die ich auch von Hand drücken könnte.
+- **DF-Umschalter** ist der zusätzliche Mechanismus: Er schiebt den Mauszeiger kurz über den Bildschirmrand, was Deskflow ebenfalls erkennt (→ Windows über den rechten, → Mac über den linken Rand).
+
+Das Gate-Skript `ddc-gate.sh` (siehe Abschnitt Sicherheit) ruft nach dem Umschalten des Monitors beide auf, parallel. Den Randtrick allein habe ich anfangs benutzt, er war aber nicht zuverlässig: Nach dem Sprachbefehl schaltete der Monitor um, doch Maus und Tastatur reagierten unter Windows nicht immer – erst ein manuelles ctrl + opt + cmd + W half. Seit dem 28.9.2026 läuft deshalb die Hotkey-Simulation mit. Sie ist noch jung und erst wenige Tage im Alltag im Einsatz.
+
+Der Randtrick, rund 30 Zeilen Swift:
 
 ```swift
 // DF-Umschalter: schaltet Deskflow um, indem es die
@@ -197,7 +204,7 @@ swiftc -O umschalter.swift \
 codesign --force -s - "$APP"
 ```
 
-Danach einmal unter *Datenschutz & Sicherheit → Bedienungshilfen* **DF-Umschalter** hinzufügen und einschalten – nur dieses eine Programm darf die Maus bewegen. Warum ein eigenes Programm und nicht einfach ein Skript? Weil macOS die Berechtigung an ein Programm bindet. Ein eigenes, kleines Programm bekommt eine eigene, stabile Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig.
+Danach einmal unter *Datenschutz & Sicherheit → Bedienungshilfen* **DF-Umschalter** hinzufügen und einschalten – nur dieses eine Programm darf die Maus bewegen. Warum ein eigenes Programm und nicht einfach ein Skript? Weil macOS die Berechtigung an ein Programm bindet. Ein eigenes, kleines Programm bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)
 
 Der Siri-Kurzbefehl „Windows“ schickt per SSH nur ein Stichwort an den Mac:
 
@@ -205,24 +212,19 @@ Der Siri-Kurzbefehl „Windows“ schickt per SSH nur ein Stichwort an den Mac:
 umschalten windows
 ```
 
-Was daraufhin genau passiert – Monitor-Eingang umschalten und DF-Umschalter starten –, legt ein kleines Skript auf dem Mac fest. Das ist gleichzeitig die Sicherheitsschranke, dazu gleich mehr.
+Was daraufhin genau passiert – Monitor-Eingang umschalten, kvm-hotkey und DF-Umschalter starten –, legt ein kleines Skript auf dem Mac fest. Das ist gleichzeitig die Sicherheitsschranke, dazu gleich mehr.
 
-## Mit dabei: Easy-Switch an der Tastatur
+**Berechtigungen unter macOS:** Deskflow, deskflow-core, DF-Umschalter und kvm-hotkey brauchen unter *Datenschutz & Sicherheit* die Freigaben **Bedienungshilfen** und **Eingabeüberwachung**. Weil die selbstgebauten Programme nur ad hoc signiert sind, setzt macOS diese Freigaben nach einem Rebuild oder einem Update gern stillschweigend zurück. Das Symptom: Der Bildschirm schaltet um, aber Tastatur und Maus reagieren nicht. Dann zuerst die Freigaben prüfen.
 
-Die **Logitech MX Keys** hat oben links drei **Easy-Switch-Tasten** – und weil sie schon da sind, gehören sie fest zum Aufbau. Jede Taste ist ein eigener Kanal, also ein eigenes gekoppeltes Gerät:
+## Die Tastatur: bewusst nur an einem Kanal
 
-- **Taste 1 = Mac** – das MacBook Pro, über den Logi-Bolt-Empfänger
-- **Taste 2 = Windows** – das HP EliteBook
-- **Taste 3** – frei für ein drittes Gerät
+Die **Logitech MX Keys** hat oben links drei **Easy-Switch-Tasten** – jede ist ein eigener Kanal für ein gekoppeltes Gerät. Ich nutze davon **bewusst nur Kanal 1**: Die Tastatur ist ausschliesslich mit dem Mac gekoppelt (über den Logi-Bolt-Empfänger) und steht im macOS-Layout-Modus. Deskflow leitet die Eingaben in Software an das Windows-Notebook weiter.
 
-Ein kurzer Druck, und die Tastatur tippt direkt auf dem anderen Notebook. Die kleine LED auf der Taste zeigt, welcher Kanal gerade aktiv ist. Die Kanäle lassen sich sogar per Software umschalten – der Mac kann die Tastatur selbst auf Kanal 2 schicken.
+Die Easy-Switch-Tasten fasse ich nicht an: Ein Druck löst eine neue Kopplung aus und kollidiert mit Deskflow – die Tastatur hängt dann direkt am anderen Gerät, und Deskflow verliert sie (siehe Stolperstein 5).
 
 ![Detail-Illustration der Easy-Switch-Tasten: 1 = Mac, 2 = Windows, 3 = frei](/static/img/kvm-per-sprache-easyswitch.png)
 
-Zwei Tipps dazu:
-
-- **Tastenbelegung pro Kanal:** Die MX Keys merkt sich für jeden Kanal das Betriebssystem. Einmal **fn + O** (3 Sekunden) auf Kanal 1 stellt auf Mac um – dann liegen ⌘ und ⌥ dort, wo sie hingehören. **fn + P** ist Windows.
-- **Nicht mischen:** Wer Deskflow nutzt, lässt die Tastatur auf Kanal 1 am Mac. Drückt man Taste 2, verbindet sie sich direkt mit Windows – und Deskflow verliert sie (siehe Stolperstein 5). Die Easy-Switch-Tasten sind dann für die Momente da, in denen ich direkt am Windows-Notebook tippen will.
+**Tastenbelegung:** Die MX Keys merkt sich für jeden Kanal das Betriebssystem. Einmal **fn + O** (3 Sekunden) auf Kanal 1 stellt auf Mac um – dann liegen ⌘ und ⌥ dort, wo sie hingehören. Damit unter Windows trotzdem alles wie beschriftet bleibt, tauscht Deskflow Alt und Windows-Taste für den Windows-Bildschirm wieder zurück (siehe Stolperstein 1).
 
 ## Die sechs Stolpersteine (und wie ich sie gelöst habe)
 
@@ -242,10 +244,10 @@ end
 ```
 
 **2. Deskflow reagiert nicht auf „künstliche“ Tastendrücke.**
-Die naheliegende Idee – der Kurzbefehl drückt per AppleScript ctrl + opt + cmd + W – funktioniert nicht. Deskflow nimmt Hotkeys nur von echten Tasten an. Die Lösung: Das Hilfsprogramm **DF-Umschalter** (siehe oben) schiebt stattdessen den Mauszeiger kurz über den rechten Bildschirmrand. Das erkennt Deskflow zuverlässig und wechselt. Für den Rückweg schiebt es die Maus nach links.
+Die naheliegende Idee – der Kurzbefehl drückt per AppleScript ctrl + opt + cmd + W – funktioniert nicht. Deskflow nimmt Hotkeys nur von Eingaben an, die wie echte Tasten ankommen. Meine erste Lösung war der **DF-Umschalter** (siehe oben): Er schiebt den Mauszeiger kurz über den Bildschirmrand, was Deskflow erkennt. Allein war das aber nicht zuverlässig – manchmal schaltete der Monitor um, und Maus und Tastatur blieben unter Windows stumm. Deshalb simuliert jetzt zusätzlich **kvm-hotkey** die echte Tastenkombination (ctrl + opt + cmd + W bzw. M) per `CGEventCreateKeyboardEvent`. Beide laufen parallel; der Hotkey ist der Hauptweg.
 
 **3. macOS fragt nach Berechtigungen – und merkt sie sich nicht immer.**
-Programme, die Maus oder Tastatur steuern, brauchen die Freigabe unter *Datenschutz & Sicherheit → Bedienungshilfen*. Die Kurzbefehle-App selbst bekam sie bei mir trotz Häkchen nicht zuverlässig. Ein eigenes kleines Hilfsprogramm mit eigener Freigabe war die stabile Lösung. Tipp: Nach dem Freigeben das betroffene Programm neu starten.
+Programme, die Maus oder Tastatur steuern, brauchen die Freigabe unter *Datenschutz & Sicherheit → Bedienungshilfen*. Die Kurzbefehle-App selbst bekam sie bei mir trotz Häkchen nicht zuverlässig. Ein eigenes kleines Hilfsprogramm mit eigener Freigabe war die bessere Lösung – solange das Programm unverändert bleibt: Nach einem Rebuild oder Update setzt macOS die Freigabe bei ad hoc signierten Programmen gern zurück (siehe Hinweis zu den Berechtigungen oben). Tipp: Nach dem Freigeben das betroffene Programm neu starten.
 
 **4. Die Maus ruckelt? WLAN-Energiesparen unter Windows.**
 Die Verbindung zum Windows-Notebook hatte anfangs Aussetzer: im Schnitt 33 ms, Spitzen über 100 ms. Schuld war der Energiesparmodus der WLAN-Karte. Im Geräte-Manager abgeschaltet – danach 3,5 ms und eine flüssige Maus.
@@ -304,7 +306,7 @@ Alles, was man braucht – kostenlos:
 - **Deskflow** – [github.com/deskflow/deskflow](https://github.com/deskflow/deskflow) (macOS, Windows, Linux)
 - **ddcctl** – kleines Kommandozeilen-Tool für DDC/CI am Mac
 - **Kurzbefehle / Siri** – ist auf jedem Mac und iPhone dabei
-- **DF-Umschalter** – das kleine Swift-Programm von oben, selbst gebaut in fünf Minuten
+- **kvm-hotkey** und **DF-Umschalter** – zwei kleine Swift-Programme, selbst gebaut; der DF-Umschalter ist oben als Code abgedruckt
 - ein Monitor mit **DDC/CI** (haben fast alle)
 - optional: Aktivboxen am Kopfhörer-Ausgang des Monitors (Kabel 3,5-mm-Klinke auf Cinch) – dann wechselt auch der Ton mit
 
@@ -337,3 +339,5 @@ So macht Einkaufen wieder Spass. Und eine Erfahrung, die uns überrascht hat: Wi
 Wer mehr als einmal im Monat für unter CHF 200 bestellt, fährt mit dem Jahrespass günstiger: Schon zwei Lieferungen à CHF 7.90 kosten mehr als die CHF 9.90 pro Monat.
 
 Mehr dazu, wenn es läuft – hier im Blog.
+
+*Aktualisiert am 30.9.2026: Umschaltung über Hotkey-Simulation statt Mauszeiger-Trick.*
