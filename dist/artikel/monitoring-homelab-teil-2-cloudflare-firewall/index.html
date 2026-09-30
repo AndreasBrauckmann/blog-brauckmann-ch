@@ -651,12 +651,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <figure class="kr-radar-figure">
 <div class="kr-radar" id="kr-stage">
 <!-- HINTERGRUND + RADAR-GEHÄUSE -->
+<canvas id="kr-stars"></canvas>
 <svg viewBox="-200 -70 1200 720" aria-hidden="true">
 <defs>
   <linearGradient id="kr-floor" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0a1726"/><stop offset="1" stop-color="#12304a"/></linearGradient>
   <linearGradient id="kr-ceil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05080f"/><stop offset="1" stop-color="#0c1d30"/></linearGradient>
-  <radialGradient id="kr-backglow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#67e8f9" stop-opacity=".55"/><stop offset="1" stop-color="#0891b2" stop-opacity="0"/></radialGradient>
-  <radialGradient id="kr-roomdim" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#02050b" stop-opacity=".15"/><stop offset="1" stop-color="#02050b" stop-opacity=".6"/></radialGradient>
   <filter id="kr-soft"><feGaussianBlur stdDeviation="1.1"/></filter>
   <filter id="kr-lightblur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
   <linearGradient id="kr-metal" x1="0" y1="0" x2="1" y2="1">
@@ -665,7 +664,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <radialGradient id="kr-screen" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0c2a17"/><stop offset=".7" stop-color="#061a0e"/><stop offset="1" stop-color="#010603"/></radialGradient>
   <radialGradient id="kr-screw"><stop offset="0" stop-color="#e5e7eb"/><stop offset=".7" stop-color="#6b7280"/><stop offset="1" stop-color="#1f2937"/></radialGradient>
   <radialGradient id="kr-core"><stop offset="0" stop-color="#4ade80" stop-opacity=".35"/><stop offset="1" stop-color="#4ade80" stop-opacity="0"/></radialGradient>
-  <radialGradient id="kr-floorshadow"><stop offset="0" stop-color="#000" stop-opacity=".8"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
   <filter id="kr-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   <filter id="kr-bigglow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   <filter id="kr-brushed"><feTurbulence type="fractalNoise" baseFrequency=".02 .9" numOctaves="2"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .18 0"/></filter>
@@ -674,10 +672,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <clipPath id="kr-bez"><circle cx="400" cy="275" r="255"/></clipPath>
   <path id="kr-bezelArc" d="M 400 275 m -228 0 a 228 228 0 1 1 456 0"/>
 </defs>
-<!-- Serverraum -->
-<g id="kr-room" opacity=".8"></g>
-<rect x="-200" y="-70" width="1200" height="720" fill="url(#kr-roomdim)"/>
-<ellipse cx="400" cy="560" rx="300" ry="40" fill="url(#kr-floorshadow)"/>
 <!-- Gehäuse -->
 <g filter="url(#kr-shadow)"><circle cx="400" cy="275" r="255" fill="url(#kr-metal)"/></g>
 <rect x="140" y="15" width="520" height="520" filter="url(#kr-brushed)" clip-path="url(#kr-bez)" opacity=".9"/>
@@ -729,37 +723,22 @@ const NS="http://www.w3.org/2000/svg",CX=400,CY=275,SR=205,P=6000;
 const VB={x:-200,y:-70,w:1200,h:720};
 const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
 const rnd=(a,b)=>a+Math.random()*(b-a);
-/* ---------- Serverraum (Zentralperspektive) ---------- */
+/* ---------- Sternenhimmel (wie auf der Plattform-Seite, dichter und schneller) ---------- */
 (function(){
-  const g=document.getElementById("kr-room"),V={x:400,y:250};
-  const xL=z=>V.x+(VB.x-V.x)/z, xR=z=>V.x+(VB.x+VB.w-V.x)/z;
-  const top=z=>V.y+(-35-V.y)/z, bot=z=>V.y+(610-V.y)/z, ceil=z=>V.y+(VB.y-V.y)/z, flo=z=>V.y+(VB.y+VB.h-V.y)/z;
-  const ZF=11;
-  el("polygon",{points:`${VB.x},${VB.y} ${VB.x+VB.w},${VB.y} ${xR(ZF)},${ceil(ZF)} ${xL(ZF)},${ceil(ZF)}`,fill:"url(#kr-ceil)"},g);
-  el("polygon",{points:`${VB.x},${VB.y+VB.h} ${VB.x+VB.w},${VB.y+VB.h} ${xR(ZF)},${flo(ZF)} ${xL(ZF)},${flo(ZF)}`,fill:"url(#kr-floor)"},g);
-  el("rect",{x:xL(ZF),y:ceil(ZF),width:xR(ZF)-xL(ZF),height:flo(ZF)-ceil(ZF),fill:"#0b2536"},g);
-  el("ellipse",{cx:V.x,cy:V.y,rx:120,ry:70,fill:"url(#kr-backglow)"},g);
-  // Bodenfugen
-  for(let i=-6;i<=6;i++){const xb=V.x+i*170;el("line",{x1:xb,y1:VB.y+VB.h,x2:V.x+(xb-V.x)/ZF,y2:flo(ZF),stroke:"#1d4ed8","stroke-opacity":.18},g)}
-  // Deckenlichter + Spiegelung am Boden
-  const lg=el("g",{filter:"url(#kr-lightblur)"},g);
-  for(let d=0;d<30;d+=1.6){const z1=1+d*.35,z2=1+(d+.9)*.35;if(z2>ZF)break;
-    el("polygon",{points:`${V.x-80/z1},${ceil(z1)} ${V.x+80/z1},${ceil(z1)} ${V.x+80/z2},${ceil(z2)} ${V.x-80/z2},${ceil(z2)}`,fill:"#a5f3fc","fill-opacity":.75},lg);
-    el("polygon",{points:`${V.x-60/z1},${flo(z1)} ${V.x+60/z1},${flo(z1)} ${V.x+60/z2},${flo(z2)} ${V.x-60/z2},${flo(z2)}`,fill:"#22d3ee","fill-opacity":.18},lg);}
-  // Racks links und rechts
-  const racks=el("g",{filter:"url(#kr-soft)"},g);
-  const LED=["#22d3ee","#38bdf8","#34d399","#60a5fa","#22d3ee","#a5f3fc"];
-  [xL,xR].forEach(X=>{
-    for(let d=0;d<30;d+=1.35){
-      const z1=1+d*.35,z2=1+(d+1.2)*.35;if(z2>ZF)break;
-      el("polygon",{points:`${X(z1)},${top(z1)} ${X(z2)},${top(z2)} ${X(z2)},${bot(z2)} ${X(z1)},${bot(z1)}`,fill:"#08111e",stroke:"#1e3a5f","stroke-width":Math.max(.4,2/z1)},racks);
-      for(let j=0;j<18;j++){const v=.06+j*.05;
-        for(let k=0;k<4;k++){if(Math.random()<.4)continue;
-          const u=.12+k*.22,z=z1+(z2-z1)*u,x=X(z),y=top(z)+(bot(z)-top(z))*v;
-          const c=Math.random()<.04?"#f87171":LED[(Math.random()*LED.length)|0];
-          el("rect",{x:x-3/z,y:y,width:7/z,height:2.6/z,fill:c,opacity:rnd(.45,1).toFixed(2),class:Math.random()<.08?"kr-blink":"",style:`animation-delay:${rnd(0,1.6).toFixed(2)}s`},racks);
-        }}
-    }});
+  const cs=document.getElementById("kr-stars"),sg=cs.getContext("2d"),stg=document.getElementById("kr-stage");
+  const EB=[{r:.6,v:12,a:.30,d:5500},{r:1,v:26,a:.48,d:9000},{r:1.7,v:50,a:.66,d:18000}];
+  let B=0,H=0,st=[],run=false,last=0,raf=0;
+  function sow(){st=[];EB.forEach(e=>{const n=Math.round(B*H/e.d);for(let i=0;i<n;i++)st.push({x:Math.random()*B,y:Math.random()*H,r:e.r*(.75+Math.random()*.5),v:e.v,a:e.a*(.6+Math.random()*.4)})})}
+  function size(){const d=Math.min(devicePixelRatio||1,2),w=stg.clientWidth,h=stg.clientHeight;if(w===B&&h===H)return false;B=w;H=h;cs.width=w*d;cs.height=h*d;sg.setTransform(d,0,0,d,0,0);sow();return true}
+  function draw(){sg.clearRect(0,0,B,H);sg.fillStyle="#fff";for(const s of st){sg.globalAlpha=s.a;sg.beginPath();sg.arc(s.x,s.y,s.r,0,6.2832);sg.fill()}sg.globalAlpha=1}
+  function tick(t){if(!run)return;const dt=last?Math.min((t-last)/1000,.1):0;last=t;for(const s of st){s.x-=s.v*dt;if(s.x<-3){s.x=B+3;s.y=Math.random()*H}}draw();raf=requestAnimationFrame(tick)}
+  function go(){if(run)return;run=true;last=0;raf=requestAnimationFrame(tick)}
+  function stop(){run=false;if(raf)cancelAnimationFrame(raf)}
+  size();draw();
+  addEventListener("resize",()=>{if(size())draw()});
+  if(matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  if(!window.IntersectionObserver){go();return}
+  new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting?go():stop()),{threshold:0}).observe(stg);
 })();
 /* ---------- Schrauben, Gradskala ---------- */
 const sc=document.getElementById("kr-screws");
@@ -897,6 +876,14 @@ requestAnimationFrame(frame);
 </script>
 <!-- ===== Radar-Grafik (Ende) ===== -->
 
+<div class="callout">
+<p>Der Nutzen davon beschränkt sich nicht auf den eigenen Betrieb. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
+
+<p>Ein Punkt daraus ist mir besonders wichtig: Gerade wenn im Ernstfall die Frage im Raum steht, wo eine Ursache wirklich lag, entscheidet oft nicht die Sachlage, sondern wer die überzeugendere Geschichte erzählt -- und genau da hilft eine lückenlose, automatisiert mitschreibende Kontrollebene allen Beteiligten weiter. <strong>Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich eine Ursache objektiv nachvollziehen, statt sie bei Behauptung gegen Behauptung zu belassen.</strong> Das schafft Klarheit für alle Seiten, schützt gewachsene Kundenbeziehungen vor unnötigem Vertrauensverlust und macht am Ende auch die eigene Arbeit sichtbar.</p>
+
+<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Ich helfe gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
+</div>
+
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
 <p><em>Ein Dashboard zeigt, was gerade ist. Ein Sicherheitsnetz fängt ab, was schiefgeht, bevor es jemand bemerkt -- genau das macht aus Monitoring ein Sicherheitsnetz: dass es niemals aufhört hinzusehen.</em></p>
@@ -921,14 +908,6 @@ requestAnimationFrame(frame);
 <div class="ergebnis"><div class="circ ergebnis-circ" style="--c-bg:var(--md-success-bg);--c-fg:var(--md-success-fg)"><i class="ti ti-shield-check"></i></div><div class="lbl">Business bleibt geschützt</div></div>
 <figcaption>Kein Vorfall entsteht aus dem Nichts -- er beginnt als kleine Abweichung. Das Netz fängt sie ab, bevor sie unten ankommt.</figcaption>
 </figure>
-
-<div class="callout">
-<p>Der Nutzen davon beschränkt sich nicht auf den eigenen Betrieb. Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
-
-<p>Ein Punkt daraus ist mir besonders wichtig: Gerade wenn im Ernstfall die Frage im Raum steht, wo eine Ursache wirklich lag, entscheidet oft nicht die Sachlage, sondern wer die überzeugendere Geschichte erzählt -- und genau da hilft eine lückenlose, automatisiert mitschreibende Kontrollebene allen Beteiligten weiter. <strong>Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich eine Ursache objektiv nachvollziehen, statt sie bei Behauptung gegen Behauptung zu belassen.</strong> Das schafft Klarheit für alle Seiten, schützt gewachsene Kundenbeziehungen vor unnötigem Vertrauensverlust und macht am Ende auch die eigene Arbeit sichtbar.</p>
-
-<p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Ich helfe gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen.</p>
-</div>
 
 <p><em>Vor einer Woche endete <a href="/artikel/netdata-homelab-monitoring-claude/">der erste Artikel dieser Reihe</a> mit einem "groben Fahrplan": Wer aus dem reinen Lese-MCP-Server einen echten Assistenten machen will, der auch handeln darf, braucht eigene Tools, echte Authentifizierung, einen Bestätigungsschritt vor heiklen Aktionen und ein Protokoll, das mitschreibt. Eine Woche und 35 Commits später ist aus dem Fahrplan ein laufendes System geworden -- und ein paar Dinge daran haben mich selbst überrascht.</em></p>
 
