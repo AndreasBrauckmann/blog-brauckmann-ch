@@ -12,7 +12,7 @@ thumb: /static/img/thumbs/kvm-switch-per-sprache.jpg
 draft: false
 changelog:
   - datum: 2026-09-30
-    text: "Umschaltung über Hotkey-Simulation (kvm-hotkey) statt Mauszeiger-Trick; Berechtigungs-Hinweis für macOS ergänzt; Tastatur-Abschnitt an den aktuellen Stand angepasst."
+    text: "Umschaltung über Hotkey-Simulation (kvm-hotkey) statt Mauszeiger-Trick, mit Code und aktuellem Gate-Skript; Berechtigungs-Hinweis für macOS ergänzt; Tastatur-Abschnitt an den aktuellen Stand angepasst."
   - datum: 2026-09-28
     text: "Titel gekürzt, quadratisches Vorschaubild für die Startseite ergänzt."
   - datum: 2026-09-27
@@ -135,12 +135,58 @@ Das Skript schaltet den Monitor um und stösst dann Deskflow an. Das war der kni
 
 Deskflow reagiert nur auf Tastendrücke, die wie echte Tastatureingaben ankommen – ein per AppleScript gesendetes ctrl + opt + cmd + W ignoriert es (siehe Stolperstein 2). Deshalb gibt es zwei kleine, selbst gebaute Mac-Programme ohne Fenster:
 
-- **kvm-hotkey** ist der eigentliche Mechanismus. Es simuliert die Deskflow-Hotkey-Kombination per `CGEventCreateKeyboardEvent`: ctrl + opt + cmd + **W** für Windows, ctrl + opt + cmd + **M** für den Mac – dieselben Tasten, die ich auch von Hand drücken könnte.
+- **kvm-hotkey** ist der eigentliche Mechanismus. Es simuliert die Deskflow-Hotkey-Kombination per `CGEvent(keyboardEventSource:…)` (Swift-Gegenstück zu `CGEventCreateKeyboardEvent`): ctrl + opt + cmd + **W** für Windows, ctrl + opt + cmd + **M** für den Mac – dieselben Tasten, die ich auch von Hand drücken könnte.
 - **DF-Umschalter** ist der zusätzliche Mechanismus: Er schiebt den Mauszeiger kurz über den Bildschirmrand, was Deskflow ebenfalls erkennt (→ Windows über den rechten, → Mac über den linken Rand).
 
-Das Gate-Skript `ddc-gate.sh` (siehe Abschnitt Sicherheit) ruft nach dem Umschalten des Monitors beide auf, parallel. Den Randtrick allein habe ich anfangs benutzt, er war aber nicht zuverlässig: Nach dem Sprachbefehl schaltete der Monitor um, doch Maus und Tastatur reagierten unter Windows nicht immer – erst ein manuelles ctrl + opt + cmd + W half. Seit dem 28.9.2026 läuft deshalb die Hotkey-Simulation mit. Sie ist noch jung und erst wenige Tage im Alltag im Einsatz.
+Das Gate-Skript `ddc-gate.sh` (siehe Abschnitt Sicherheit) schaltet den Monitor um und startet dann beide: Der DF-Umschalter wird nur angestossen, `kvm-hotkey` folgt sofort – die beiden Mechanismen laufen also praktisch gleichzeitig. Den Randtrick allein habe ich anfangs benutzt, er war aber nicht zuverlässig: Nach dem Sprachbefehl schaltete der Monitor um, doch Maus und Tastatur reagierten unter Windows nicht immer – erst ein manuelles ctrl + opt + cmd + W half. Seit dem 28.9.2026 läuft deshalb die Hotkey-Simulation mit. Sie ist noch jung und erst wenige Tage im Alltag im Einsatz.
 
-Der Randtrick, rund 30 Zeilen Swift:
+Der Code von **kvm-hotkey**, rund 30 Zeilen Swift:
+
+```swift
+// kvm-hotkey: simuliert die echte Tastenkombination, die Deskflow
+// selbst für den Screen-Wechsel konfiguriert hat:
+//   Ctrl+Option+Cmd+W -> Windows
+//   Ctrl+Option+Cmd+M -> Mac
+// Aufruf: kvm-hotkey windows | mac
+import CoreGraphics
+import Foundation
+
+let kVK_Control: CGKeyCode = 0x3B
+let kVK_Option: CGKeyCode  = 0x3A
+let kVK_Command: CGKeyCode = 0x37
+let kVK_W: CGKeyCode = 0x0D
+let kVK_M: CGKeyCode = 0x2E
+
+func post(_ key: CGKeyCode, down: Bool, flags: CGEventFlags) {
+    guard let ev = CGEvent(keyboardEventSource: nil,
+                           virtualKey: key,
+                           keyDown: down) else { return }
+    ev.flags = flags
+    ev.post(tap: .cghidEventTap)
+    usleep(15_000)
+}
+
+let args = CommandLine.arguments
+guard args.count >= 2,
+      (args[1] == "windows" || args[1] == "mac") else {
+    print("usage: kvm-hotkey windows|mac")
+    exit(1)
+}
+let letter: CGKeyCode = args[1] == "windows" ? kVK_W : kVK_M
+
+let allMods: CGEventFlags = [.maskControl, .maskAlternate, .maskCommand]
+
+post(kVK_Control, down: true,  flags: .maskControl)
+post(kVK_Option,  down: true,  flags: [.maskControl, .maskAlternate])
+post(kVK_Command, down: true,  flags: allMods)
+post(letter,      down: true,  flags: allMods)
+post(letter,      down: false, flags: allMods)
+post(kVK_Command, down: false, flags: [.maskControl, .maskAlternate])
+post(kVK_Option,  down: false, flags: .maskControl)
+post(kVK_Control, down: false, flags: [])
+```
+
+Der Randtrick des **DF-Umschalters**, ebenfalls rund 30 Zeilen Swift:
 
 ```swift
 // DF-Umschalter: schaltet Deskflow um, indem es die
@@ -206,13 +252,15 @@ codesign --force -s - "$APP"
 
 Danach einmal unter *Datenschutz & Sicherheit → Bedienungshilfen* **DF-Umschalter** hinzufügen und einschalten – nur dieses eine Programm darf die Maus bewegen. Warum ein eigenes Programm und nicht einfach ein Skript? Weil macOS die Berechtigung an ein Programm bindet. Ein eigenes, kleines Programm bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)
 
-Der Siri-Kurzbefehl „Windows“ schickt per SSH nur ein Stichwort an den Mac:
+Der Siri-Kurzbefehl „Windows“ schickt per SSH eine feste Befehlszeile an den Mac:
 
 ```text
-umschalten windows
+/usr/local/bin/ddcctl -d 1 -i 17; /usr/bin/open -g "$HOME/Applications/DF-Umschalter.app" --args windows
 ```
 
-Was daraufhin genau passiert – Monitor-Eingang umschalten, kvm-hotkey und DF-Umschalter starten –, legt ein kleines Skript auf dem Mac fest. Das ist gleichzeitig die Sicherheitsschranke, dazu gleich mehr.
+Ausgeführt wird dieser Text allerdings nie: Das Gate-Skript (siehe Abschnitt Sicherheit) erkennt die Zeile und startet stattdessen die dort fest hinterlegten Befehle.
+
+Was daraufhin genau passiert – Monitor-Eingang umschalten, DF-Umschalter und kvm-hotkey starten –, legt dieses kleine Skript auf dem Mac fest. Das ist gleichzeitig die Sicherheitsschranke, dazu gleich mehr.
 
 **Berechtigungen unter macOS:** Deskflow, deskflow-core, DF-Umschalter und kvm-hotkey brauchen unter *Datenschutz & Sicherheit* die Freigaben **Bedienungshilfen** und **Eingabeüberwachung**. Weil die selbstgebauten Programme nur ad hoc signiert sind, setzt macOS diese Freigaben nach einem Rebuild oder einem Update gern stillschweigend zurück. Das Symptom: Der Bildschirm schaltet um, aber Tastatur und Maus reagieren nicht. Dann zuerst die Freigaben prüfen.
 
@@ -242,7 +290,7 @@ end
 ```
 
 **2. Deskflow reagiert nicht auf „künstliche“ Tastendrücke.**
-Die naheliegende Idee – der Kurzbefehl drückt per AppleScript ctrl + opt + cmd + W – funktioniert nicht. Deskflow nimmt Hotkeys nur von Eingaben an, die wie echte Tasten ankommen. Meine erste Lösung war der **DF-Umschalter** (siehe oben): Er schiebt den Mauszeiger kurz über den Bildschirmrand, was Deskflow erkennt. Allein war das aber nicht zuverlässig – manchmal schaltete der Monitor um, und Maus und Tastatur blieben unter Windows stumm. Deshalb simuliert jetzt zusätzlich **kvm-hotkey** die echte Tastenkombination (ctrl + opt + cmd + W bzw. M) per `CGEventCreateKeyboardEvent`. Beide laufen parallel; der Hotkey ist der Hauptweg.
+Die naheliegende Idee – der Kurzbefehl drückt per AppleScript ctrl + opt + cmd + W – funktioniert nicht. Deskflow nimmt Hotkeys nur von Eingaben an, die wie echte Tasten ankommen. Meine erste Lösung war der **DF-Umschalter** (siehe oben): Er schiebt den Mauszeiger kurz über den Bildschirmrand, was Deskflow erkennt. Allein war das aber nicht zuverlässig – manchmal schaltete der Monitor um, und Maus und Tastatur blieben unter Windows stumm. Deshalb simuliert jetzt zusätzlich **kvm-hotkey** die echte Tastenkombination (ctrl + opt + cmd + W bzw. M) (siehe Abschnitt 4). Beide laufen parallel; der Hotkey ist der Hauptweg.
 
 **3. macOS fragt nach Berechtigungen – und merkt sie sich nicht immer.**
 Programme, die Maus oder Tastatur steuern, brauchen die Freigabe unter *Datenschutz & Sicherheit → Bedienungshilfen*. Die Kurzbefehle-App selbst bekam sie bei mir trotz Häkchen nicht zuverlässig. Ein eigenes kleines Hilfsprogramm mit eigener Freigabe war die bessere Lösung – solange das Programm unverändert bleibt: Nach einem Rebuild oder Update setzt macOS die Freigabe bei ad hoc signierten Programmen gern zurück (siehe Hinweis zu den Berechtigungen oben). Tipp: Nach dem Freigeben das betroffene Programm neu starten.
@@ -258,7 +306,7 @@ Klingt banal, hat mich aber eine halbe Stunde gekostet: Deskflow lief noch mit d
 
 ## Sicherheit: SSH ja, aber mit angezogener Handbremse
 
-Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb darf dieser Schlüssel **genau zwei Dinge** – nicht mehr. In der Datei `authorized_keys` bekommt der Schlüssel der Kurzbefehle einen Vorsatz:
+Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb darf dieser Schlüssel nur **vier fest hinterlegte Befehlszeilen** ausführen – zwei davon schalten nur den Monitor-Eingang, die beiden Umschaltbefehle der Kurzbefehle schalten zusätzlich Deskflow um. In der Datei `authorized_keys` bekommt der Schlüssel der Kurzbefehle einen Vorsatz:
 
 ```text
 restrict,command="/Users/<benutzer>/.ssh/ddc-gate.sh"
@@ -266,22 +314,28 @@ restrict,command="/Users/<benutzer>/.ssh/ddc-gate.sh"
 
 Dahinter folgt – **in derselben Zeile**, durch ein Leerzeichen getrennt – wie gewohnt der Schlüssel selbst (`ssh-ed25519 AAAA… Kurzbefehle auf iPhone`).
 
-Das Skript `ddc-gate.sh` prüft den angefragten Befehl gegen eine feste Liste und führt nur hinterlegte Aktionen aus:
+Das Skript `ddc-gate.sh` prüft den angefragten Befehl gegen eine feste Liste. Ausgeführt werden immer die im Skript hinterlegten Befehle, nie der übergebene Text selbst:
 
 ```sh
 #!/bin/sh
-# ddc-gate.sh – nur diese zwei Stichwoerter sind erlaubt
-DF="$HOME/Applications/DF-Umschalter.app"
+# ddc-gate.sh – erlaubt dem Kurzbefehle-Schlüssel nur diese vier Zeilen.
+# Ausgeführt werden immer die hier hinterlegten Befehle.
+DF="/Users/<benutzer>/Applications/DF-Umschalter.app"
+HOTKEY="/Users/<benutzer>/Applications/kvm-helpers/kvm-hotkey"
 case "$SSH_ORIGINAL_COMMAND" in
-  "umschalten windows")
+  "/usr/local/bin/ddcctl -d 1 -i 56")
+    exec /usr/local/bin/ddcctl -d 1 -i 56 ;;
+  "/usr/local/bin/ddcctl -d 1 -i 17")
+    exec /usr/local/bin/ddcctl -d 1 -i 17 ;;
+  '/usr/local/bin/ddcctl -d 1 -i 17; /usr/bin/open -g "$HOME/Applications/DF-Umschalter.app" --args windows')
     /usr/local/bin/ddcctl -d 1 -i 17
-    exec open -g "$DF" --args windows ;;
-  "umschalten mac")
+    /usr/bin/open -g "$DF" --args windows
+    exec "$HOTKEY" windows ;;
+  '/usr/local/bin/ddcctl -d 1 -i 56; /usr/bin/open -g "$HOME/Applications/DF-Umschalter.app" --args mac')
     /usr/local/bin/ddcctl -d 1 -i 56
-    exec open -g "$DF" --args mac ;;
-  *)
-    echo "nicht erlaubt: $SSH_ORIGINAL_COMMAND" >&2
-    exit 1 ;;
+    /usr/bin/open -g "$DF" --args mac
+    exec "$HOTKEY" mac ;;
+  *) echo "nicht erlaubt: $SSH_ORIGINAL_COMMAND" >&2; exit 1 ;;
 esac
 ```
 
