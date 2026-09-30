@@ -25,7 +25,7 @@
   "headline": "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read & write*)",
   "description": "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.",
   "datePublished": "2026-09-28",
-  "dateModified": "2026-09-29",
+  "dateModified": "2026-09-30",
   "author": {
     "@type": "Person",
     "name": "Andreas Brauckmann"
@@ -636,7 +636,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
     
     <!-- ===== Radar-Grafik: KI-Monitoring als Sicherheitsnetz (Anfang) ===== -->
-<p><strong>mehrstufig absicher; aufbauen, erkennen, beobachten, sperren -- jede Schicht einzeln schaltbar, messbar und umkehrbar.</strong></p>
+<p><strong>mehrstufig absichern, ausbauen, erkennen, beobachten, sperren -- jede Schicht einzeln schaltbar, messbar und umkehrbar.</strong></p>
 
 <p>Ganz außen sitzt <strong>Cloudflare mit DDoS-Schutz, Firewall-Regeln und Rate Limiting</strong>: Was zu schnell und zu viel kommt, wird gedrosselt. Verschlüsselt wird ab TLS 1.2, alles darunter wird abgelehnt. <strong>KI-Sammler werden gesperrt</strong>, und wer sich nicht ausweist und trotzdem mitliest, läuft in ein <strong>Honeypot (Link Maze Injection)</strong> für Crawler. Dahinter arbeitet ein <strong>Edge-Proxy</strong> (Caddy) als Proxy zwischen den Netzen: Die Website hat keinen eingehenden Port, der Tunnel geht nur nach draußen, das Produktivsystem liegt in der DMZ (Demilitarisierte Zone). Auf den Servern <strong>liest CrowdSec die Logs</strong> mit und erkennt Angriffsmuster in Echtzeit.</p>
 
@@ -1022,7 +1022,8 @@ requestAnimationFrame(frame);
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 
 <p>Eine Woche, 35 Commits, sechs Dashboards, ein selbst gefundener und selbst behobener Fehler binnen 13 Minuten -- und ein Sicherheitsbild mit zwei unabhängigen, portlosen Zugangswegen zu derselben Infrastruktur. Der grösste Unterschied zur Realität von vorher ist nicht die Zahl der Sensoren, <strong>sondern dass kleine Fehler nicht mehr liegen bleiben, bis jemand zufällig draufschaut.</strong></p>
-    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-09-29">2026-09-29</time> — Nachtrag zur Prompt-Injection-Härtung ergänzt (Dank an Volker Skwarek), Dashboard-Animation heller und langsamer, mehrere Formulierungen präzisiert, Titel gestrafft.</li>
+    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-09-30">2026-09-30</time> — Einleitung zur mehrstufigen Absicherung neu geschrieben (Cloudflare, Link Maze Injection, CrowdSec, Bouncer), Bindeglied-Absatz ergänzt, Reihenfolge der Abschnitte überarbeitet, Radar-Animation mit Sternenhimmel statt Serverraum und im Laptop-Rahmen, Schlüsselbegriffe hervorgehoben.</li>
+<li><time datetime="2026-09-29">2026-09-29</time> — Nachtrag zur Prompt-Injection-Härtung ergänzt (Dank an Volker Skwarek), Dashboard-Animation heller und langsamer, mehrere Formulierungen präzisiert, Titel gestrafft.</li>
 <li><time datetime="2026-09-28">2026-09-28</time> — Artikel veröffentlicht: sechs neue Dashboards, Sicherheitsnetz- und Big-Picture-Diagramm.</li></ul></section>
   </article>
 </main>

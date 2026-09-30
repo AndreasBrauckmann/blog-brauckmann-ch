@@ -3,7 +3,7 @@ slogan: "Monitoring wird erst zum Sicherheitsnetz, wenn es niemals aufhört hinz
 title: "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read & write*)"
 slug: monitoring-homelab-teil-2-cloudflare-firewall
 date: 2026-09-28
-updated: 2026-09-29
+updated: 2026-09-30
 description: "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird."
 summary: >-
   Vor einer Woche war der erste eigene, schreibfähige MCP-Server noch ein "grober Fahrplan" am Ende eines Artikels. Was seither daraus geworden ist: sechs Live-Dashboards (Gatekeeper, Ascent, Backup, System, Alerts, Connections), die innerhalb von 48 Stunden nach dem ersten Commit bereits eine echte Entra-ID-Anmeldung, echte Cloudflare-Firewall-Daten und einen Fix für einen selbst verursachten Fehler hatten. Der Artikel zeigt das neue Verbindungen-Dashboard, das auf einen Blick zeigt, was heute alles überwacht wird -- MCP-Server, Broker, Cloudflare, Search Console, Wirtschaftskalender, LLM-Wrapper -- und zeichnet das große Sicherheitsbild: zwei komplett getrennte Zugangswege (Cloudflare-Tunnel für brauckmann.ch, Tailscale Funnel für die eigene ts.net-Adresse), die beide auf dieselbe, nach außen portlose Infrastruktur treffen.
@@ -11,6 +11,8 @@ tags: [Monitoring, Cloudflare, Security, Claude, MCP]
 thumb: /static/img/thumbs/monitoring-homelab-teil-2-cloudflare-firewall.jpg
 draft: false
 changelog:
+  - datum: 2026-09-30
+    text: "Einleitung zur mehrstufigen Absicherung neu geschrieben (Cloudflare, Link Maze Injection, CrowdSec, Bouncer), Bindeglied-Absatz ergänzt, Reihenfolge der Abschnitte überarbeitet, Radar-Animation mit Sternenhimmel statt Serverraum und im Laptop-Rahmen, Schlüsselbegriffe hervorgehoben."
   - datum: 2026-09-29
     text: "Nachtrag zur Prompt-Injection-Härtung ergänzt (Dank an Volker Skwarek), Dashboard-Animation heller und langsamer, mehrere Formulierungen präzisiert, Titel gestrafft."
   - datum: 2026-09-28
@@ -18,7 +20,7 @@ changelog:
 ---
 
 <!-- ===== Radar-Grafik: KI-Monitoring als Sicherheitsnetz (Anfang) ===== -->
-<p><strong>mehrstufig absicher; aufbauen, erkennen, beobachten, sperren -- jede Schicht einzeln schaltbar, messbar und umkehrbar.</strong></p>
+<p><strong>mehrstufig absichern, ausbauen, erkennen, beobachten, sperren -- jede Schicht einzeln schaltbar, messbar und umkehrbar.</strong></p>
 
 <p>Ganz außen sitzt <strong>Cloudflare mit DDoS-Schutz, Firewall-Regeln und Rate Limiting</strong>: Was zu schnell und zu viel kommt, wird gedrosselt. Verschlüsselt wird ab TLS 1.2, alles darunter wird abgelehnt. <strong>KI-Sammler werden gesperrt</strong>, und wer sich nicht ausweist und trotzdem mitliest, läuft in ein <strong>Honeypot (Link Maze Injection)</strong> für Crawler. Dahinter arbeitet ein <strong>Edge-Proxy</strong> (Caddy) als Proxy zwischen den Netzen: Die Website hat keinen eingehenden Port, der Tunnel geht nur nach draußen, das Produktivsystem liegt in der DMZ (Demilitarisierte Zone). Auf den Servern <strong>liest CrowdSec die Logs</strong> mit und erkennt Angriffsmuster in Echtzeit.</p>
 

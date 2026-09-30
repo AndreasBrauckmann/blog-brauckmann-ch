@@ -12,7 +12,7 @@ thumb: /static/img/thumbs/kvm-switch-per-sprache.jpg
 draft: false
 changelog:
   - datum: 2026-09-30
-    text: "Umschaltung über Hotkey-Simulation (kvm-hotkey) statt Mauszeiger-Trick, mit Code und aktuellem Gate-Skript; Berechtigungs-Hinweis für macOS ergänzt; Tastatur-Abschnitt an den aktuellen Stand angepasst."
+    text: "Umschaltung über Hotkey-Simulation (kvm-hotkey) statt Mauszeiger-Trick, mit Code von kvm-hotkey und aktuellem Gate-Skript; Berechtigungs-Hinweis für macOS ergänzt; Tastatur-Abschnitt auf Kanal 1 angepasst, Easy-Switch-Bild entfernt; Monitor-Kauf als geprüfte Retoure korrigiert."
   - datum: 2026-09-28
     text: "Titel gekürzt, quadratisches Vorschaubild für die Startseite ergänzt."
   - datum: 2026-09-27
