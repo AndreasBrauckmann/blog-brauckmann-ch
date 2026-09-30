@@ -28,7 +28,9 @@ changelog:
 
 <p>Ein <strong>nftables-Bouncer sperrt</strong> erkannte Angreifer direkt lokal aus, während ein Cloudflare-Bouncer diese Sperren bis an die Cloudflare-Edge spiegelt – so erreichen Angriffe den Server in der DMZ erst gar nicht. Für klassische Setups lässt sich <strong>Fail2ban optional einbinden</strong>. Nach erfolgreicher Testphase und nachgewiesener Fehlalarmfreiheit ist das System nun scharf geschaltet. Fernzugriffe erfolgen nicht über eine offene Shell, sondern über eine Handvoll fest definierter Aktionen. Über all dem wachen rund um die Uhr sechs Live-Dashboards sowie ein KI-gestütztes Monitoring.</p>
 
+<div class="callout">
 <p>Wie das in der Praxis aussieht, zeigt die folgende Szene: Das Monitoring arbeitet 24h/7 ohne Pause -- Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate -- <strong>alles wird erfasst, beurteilt und erledigt oder ausgeschaltet, bevor es die produktive Umgebung beeinflusst</strong>. Genau das ist der Unterschied zwischen einem Monitoring, das ein Ticketsystem beschäftigt, und einem Monitoring, das handelt.</p>
+</div>
 
 <style>
 .kr-radar{position:relative;width:100%;aspect-ratio:1200/720;border-radius:16px;overflow:hidden;background:#03060c;margin:0}
