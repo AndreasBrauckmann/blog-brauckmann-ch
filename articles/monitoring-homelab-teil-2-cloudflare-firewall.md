@@ -276,6 +276,8 @@ requestAnimationFrame(frame);
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
+<p><strong>Jedes dieser Werkzeuge sieht seine eigene Ergebnisse: die Security den Angriff von außen, der Betrieb den Fehler von innen. Das Bindeglied dazwischen haben wir jetzt -- eine KI, die beide Bereiche verbindet, Ausnahmen pflegt, meldet, bei freigegebenen Aktionen selbst eingreift und sauber trennt, was ein Betriebsrisiko ist und was nur zweit- oder drittrangig.</strong></p>
+
 <p><em>Ein Dashboard zeigt, was gerade ist. Ein Sicherheitsnetz fängt ab, was schiefgeht, bevor es jemand bemerkt -- genau das macht aus Monitoring ein Sicherheitsnetz: dass es niemals aufhört hinzusehen.</em></p>
 
 <figure class="netz-diagramm">
