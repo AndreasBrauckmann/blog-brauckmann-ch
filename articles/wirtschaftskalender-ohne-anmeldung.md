@@ -25,12 +25,12 @@ changelog:
     text: "Artikel veröffentlicht."
 ---
 
-<p><em>Ein Wirtschaftskalender, für den man sich nirgends anmelden muss — nicht für die Ansicht, nicht für die API, nicht für den Download. Zahlen, die ohnehin öffentlich sind, gehören niemandem.</em></p>
-<p>Kurz vorweg, damit klar ist, was dieser Kalender kann: Jeder Termin lässt sich <strong>herunterladen</strong> (sechs Formate, dazu unten mehr). Er erscheint als <strong>Diagramm</strong> (Sparkline-Verlauf pro Kennzahl) und verlinkt zum <strong>Nachlesen</strong> direkt zur amtlichen Originalquelle. Und er taucht — das ist der eigentliche Kern dieses Artikels — genau so auch direkt im <strong>Chart</strong> der eigenen Handelsoberfläche „Kontor" auf.</p>
+<p><em>Ein Wirtschaftskalender, für den man sich nirgends anmelden muss. Weder für die Ansicht noch für die API oder den Download. Zahlen, die ohnehin öffentlich sind, gehören niemandem.</em></p>
+<p>Was dieser Kalender kann: Jeder Termin lässt sich <strong>herunterladen</strong> (sechs Formate, dazu unten mehr). Er erscheint als <strong>Diagramm</strong> (Sparkline-Verlauf pro Kennzahl) und verlinkt zum <strong>Nachlesen</strong> direkt zur amtlichen Originalquelle. Vor allem aber taucht er so auch direkt im <strong>Chart</strong> der eigenen Handelsoberfläche „Kontor" auf, und das ist der Kern dieses Artikels.</p>
 <h2 id="der-eigentliche-punkt-makrodaten-direkt-im-chart">Der eigentliche Punkt: Makrodaten direkt im Chart</h2>
-<p>Einen Wirtschaftskalender mit Sparkline und Originalquelle hat inzwischen fast jeder Anbieter. Neu ist die Verknüpfung: In der Handelsoberfläche „Kontor" taucht genau derselbe Kalender als Modul <strong>„Makrodaten im Chart"</strong> direkt auf der Zeitleiste auf. Dort erscheint er als farbiges Symbol genau an der Stelle des Termins. Die Anzeige lässt sich nach Wichtigkeit filtern (Hoch/Mittel/Niedrig, plus ältere Termine optional dazuschaltbar). Ein Klick auf den Marker öffnet direkt über dem Chart eine kleine Box mit Flagge, Titel, Ist-Wert/Prognose/Vorwert und einer kurzen Einordnung — samt demselben grünen „Nachlesen"-Knopf wie auf der öffentlichen Kalenderseite. Der Chart selbst muss dafür nie verlassen werden.</p>
-<p>Das ist der eigentliche Sinn dieses ganzen Aufbaus: Wer im Chart eine Kursbewegung beobachtet, sieht im selben Moment auf der Zeitleiste, ob gerade ein Termin die Bewegung erklärt — kein Tab-Wechsel, keine zweite Anwendung. <a href="/artikel/sieben-monate-elf-umbrueche/">Kontors Analyse-Agent</a> kennt dieselben Termine: Steht ein wichtiger Termin unmittelbar bevor, blendet er das Traden in diesem Zeitfenster bewusst aus. Er sagt auch, warum — statt eine Zahl zu ignorieren, die er kennt.</p>
-<p>Auch auf der öffentlichen Kalenderseite bleibt der Weg zurück in den eigenen Kalender kurz: Jeder aufgeklappte Termin trägt neben der Originalquelle einen eigenen Knopf „In meinen Kalender (ICS)". Ein Klick, und genau dieser eine Termin landet in Outlook, Apple Kalender oder Google Kalender — ohne gleich den kompletten Datenbestand abonnieren zu müssen. Damit vergisst man ihn garantiert nicht.</p>
+<p>Einen Wirtschaftskalender mit Sparkline und Originalquelle hat inzwischen fast jeder Anbieter. Neu ist die Verknüpfung: In der Handelsoberfläche „Kontor" taucht derselbe Kalender als Modul <strong>„Makrodaten im Chart"</strong> direkt auf der Zeitleiste auf. Ein farbiges Symbol markiert dort die Stelle des Termins. Die Anzeige lässt sich nach Wichtigkeit filtern (Hoch/Mittel/Niedrig, plus ältere Termine optional dazuschaltbar). Ein Klick auf den Marker öffnet über dem Chart eine kleine Box mit Flagge, Titel, Ist-Wert/Prognose/Vorwert und einer kurzen Einordnung, samt demselben grünen „Nachlesen"-Knopf wie auf der öffentlichen Kalenderseite. Den Chart selbst muss man dafür nie verlassen.</p>
+<p>Dieser Aufbau verfolgt ein klares Ziel: Wer im Chart eine Kursbewegung beobachtet, sieht auf der Zeitleiste sofort, ob ein Termin die Bewegung erklärt. Kein Tab-Wechsel, keine zweite Anwendung. <a href="/artikel/sieben-monate-elf-umbrueche/">Kontors Analyse-Agent</a> kennt dieselben Termine: Steht ein wichtiger Termin unmittelbar bevor, blendet er das Traden in diesem Zeitfenster bewusst aus. Er nennt den Grund dafür, statt eine Zahl zu ignorieren, die er kennt.</p>
+<p>Auch auf der öffentlichen Kalenderseite bleibt der Weg zurück in den eigenen Kalender kurz: Jeder aufgeklappte Termin trägt neben der Originalquelle einen eigenen Knopf „In meinen Kalender (ICS)". Ein Klick, und dieser eine Termin landet in Outlook, Apple Kalender oder Google Kalender, ohne den kompletten Datenbestand abonnieren zu müssen. So geht er nicht vergessen.</p>
 <p>Kontor selbst ist als Weiterentwicklung eines Forks von <a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a> entstanden. Dieses quelloffene Multi-Agenten-Framework dient dem automatisierten Trading. Der Wirtschaftskalender samt Chart-Anbindung ist eine der Erweiterungen, die seither dazugekommen sind.</p>
 <style>
 .chip-abschnitt::after { content: ""; display: table; clear: both; }
@@ -55,8 +55,8 @@ changelog:
 }
 </style>
 <h2 id="schluss-mit-der-anmeldepflicht-fur-oeffentliche-zahlen">Schluss mit der <span class="durchgestrichen">Anmeldepflicht</span> für öffentliche Zahlen</h2>
-<p>Konjunkturdaten — wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen — sind öffentliche Zahlen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
-<p><em>Das ist der Teil, der sich nicht rechtfertigen lässt — und genau den räumt dieser Kalender weg. Alles, was ohnehin öffentlich ist, bleibt hier öffentlich: keine Paywall vor der Ansicht, keine Anmeldung vor der API, kein Konto vor dem Download.</em></p>
+<p>Konjunkturdaten sind öffentliche Zahlen: wann die US-Notenbank tagt, wie hoch die Inflation in der Eurozone ausfällt, was die wöchentlichen Erstanträge auf Arbeitslosenhilfe sagen. Sie stammen von Zentralbanken, Statistikämtern und Ministerien, finanziert aus Steuergeldern, für jeden gedacht. Trotzdem verlangt praktisch jeder Wirtschaftskalender im Netz erst ein Konto, oft eine Kreditkarte, bevor er mehr als die nächsten drei Termine zeigt.</p>
+<p><em>Dieser Teil lässt sich nicht rechtfertigen. Der Kalender räumt ihn weg. Alles, was ohnehin öffentlich ist, bleibt hier öffentlich: keine Paywall vor der Ansicht, keine Anmeldung vor der API, kein Konto vor dem Download.</em></p>
 <p>Hier wird nichts verlangt. Zahlen, die von Zentralbanken und Statistikämtern stammen, aus Steuergeldern finanziert sind, gehören niemandem — also bleiben sie frei, ohne Kleingedrucktes, ohne "Premium"-Stufe, ohne Kreditkarte im Kleingedruckten.</p>
 <div class="chip-abschnitt chip-rechts"><h2 id="was-drinsteckt-84000-termine-16-jahre">Was drinsteckt: über 84.000 Termine, 16 Jahre</h2>
 <p>Unter <a href="https://brauckmann.ch/kalender/">brauckmann.ch/kalender</a> steht kein Ausschnitt, sondern ein vollständiges Archiv:</p>
@@ -71,7 +71,7 @@ changelog:
 </div>
 <div class="chip-abschnitt chip-links"><h2 id="warum-16-jahre-historie-mehr-sind-als-ein-archiv">Warum 16 Jahre Historie mehr sind als ein Archiv</h2>
 <p>Eine einzelne Veröffentlichung sagt wenig. Erst im Vergleich über Jahre wird eine Kennzahl aussagekräftig: Wie oft lag die Prognose daneben? In welche Richtung? Und wie schnell hat sich die Lücke zwischen Ist und Prognose danach wieder geschlossen?</p>
-<p>Genau das lässt sich mit 16 Jahren Historie beantworten, nicht nur mit den letzten drei Terminen. Als Beispiel die komplette US-Arbeitslosenquote seit 2010 — Ist-Wert und Prognose direkt übereinandergelegt:</p>
+<p>Mit 16 Jahren Historie lässt sich das beantworten, weit über die letzten drei Termine hinaus. Als Beispiel die komplette US-Arbeitslosenquote seit 2010: Ist-Wert und Prognose direkt übereinandergelegt:</p>
 <p><img alt="US-Arbeitslosenquote, Ist gegen Prognose, 2010 bis 2026" src="/static/img/01-arbeitslosenquote-usa-light.png" /></p>
 <img class="chip-bild" src="/static/img/chips/16-jahre.png" alt="16 Jahre Historie seit 2010">
 <p>Über weite Strecken liegen beide Linien fast deckungsgleich — der Markt preist diese Kennzahl gut ein. Auffällig wird es genau dort, wo sie auseinanderlaufen: im Frühjahr 2020, mit dem Corona-Schock, springt die Quote von 4,4 % im März auf 14,7 % im Mai — und selbst diese Prognose lag mit 16,0 % noch darüber, im Folgemonat mit 19,4 % gegen tatsächliche 13,3 % sogar noch deutlicher daneben. Ein sichtbares Zeichen dafür, wie schwer diese Phase einzuschätzen war. Wer solche Muster über eine ganze Kennzahlen-Reihe sieht statt nur den letzten Termin, bekommt ein Gefühl dafür, wie verlässlich der Marktkonsens bei genau dieser Zahl normalerweise ist — und wann er es ausnahmsweise nicht war.</p>
@@ -93,7 +93,7 @@ changelog:
 .dl-format-tabelle svg { width: 22px; height: 22px; display: block; }
 .dl-format-tabelle td:first-child { width: 44px; text-align: center; }
 </style>
-<p>Auch die Downloads sind kostenlos, mit einem knapperen Limit (1× pro Stunde ohne Schlüssel, 4× mit Schlüssel) — wieder: gegen Massenabzug, nicht gegen normale Nutzung.</p>
+<p>Auch die Downloads sind kostenlos, mit einem knapperen Limit (1× pro Stunde ohne Schlüssel, 4× mit Schlüssel). Das schützt gegen Massenabzug, nicht gegen normale Nutzung.</p>
 <div class="table-wrap"><table class="dl-format-tabelle">
 <thead>
 <tr>
@@ -150,7 +150,7 @@ changelog:
 <div class="chip-abschnitt chip-links"><h2 id="nachlesen-recherche-in-googles-ki-modus-ein-klick">„Nachlesen": Recherche in Googles KI-Modus, ein Klick</h2>
 <img class="chip-bild" src="/static/img/chips/ki-recherche.png" alt="KI-Recherche und Analyse">
 <p>Jeder Termin trägt zusätzlich einen Knopf: <strong>Nachlesen</strong>. Der öffnet keine Stichwortsuche, sondern einen vollständig ausformulierten Recherche-Auftrag in Googles KI-Modus (<code>udm=50</code>) — mit dem Termin, dem Datum und den bereits bekannten Zahlen (Ist/Prognose/Vorherig) direkt im Prompt, damit die Antwort nicht selbst nach der Zahl suchen und sie dabei verwechseln muss.</p>
-<p>So sieht das in echt aus — Zeile anklicken, Detail öffnet mit Ist/Prognose/Originalquelle und Sparkline, „Nachlesen" ist als grüner Knopf kaum zu übersehen:</p>
+<p>So sieht das aus: Zeile anklicken, Detail öffnet mit Ist/Prognose/Originalquelle und Sparkline, „Nachlesen" ist als grüner Knopf kaum zu übersehen:</p>
 <p><img src="/static/img/02-kalender-detail-demo.gif" alt="Kalender-Detail öffnet sich, Ist/Prognose/Originalquelle erscheinen, der Nachlesen-Knopf wird hervorgehoben" style="max-width:100%;border-radius:6px;border:1px solid #e4e6ea"></p>
 <p>Die Antwort kommt jedes Mal in derselben Gliederung:</p>
 <ol>
@@ -161,11 +161,11 @@ changelog:
   <li><strong>🎓 Für Einsteiger</strong> — kurze Einordnung, was die Kennzahl überhaupt misst</li>
 </ol>
 <p>Immer dieselbe Reihenfolge, dieselben Überschriften, dieselben Emoji als Wiedererkennung — wer eine Kennzahl nicht kennt, muss nicht erst googeln, wie sie einzuordnen ist, der Klick liefert die Einordnung fertig mit.</p>
-<p>Damit das kein abstraktes Versprechen bleibt, folgt ein konkretes Beispiel. Die echte Antwort zu einem realen Termin (Revised UoM Inflation Expectations, 25.9.2026) — unverändert, so wie Google sie liefert, inklusive der Quellen-Fussnoten am Ende:</p>
+<p>Damit das kein abstraktes Versprechen bleibt, folgt ein konkretes Beispiel. Die Antwort zu einem realen Termin (Revised UoM Inflation Expectations, 25.9.2026), unverändert, so wie Google sie liefert, inklusive der Quellen-Fussnoten am Ende:</p>
 <p><img src="/static/img/03-nachlesen-google-beispiel.png" alt="Echtes Beispiel der Google-KI-Modus-Antwort: Überblick, Hintergrund, Ausblick, Analysten-Konsens, für Einsteiger, mit Quellen" style="max-width:100%;border-radius:8px;border:1px solid var(--border)"></p>
 </div>
 <h2 id="modern-schnell-ohne-ballast">Modern, schnell, ohne Ballast</h2>
 <p>Die Seite selbst ist bewusst schlank gebaut. Eine eigene, <a href="/artikel/netdata-homelab-monitoring-claude/">kleine Flask-Anwendung</a> ersetzt ein volles CMS. Die Inhalte werden live gefiltert, ohne Neuladen. Excel-artige Spaltenfilter sitzen in der Kopfzeile, und das Design passt sich hell oder dunkel dem System-Theme des Browsers an. Keine Werbung, kein Tracking über das technisch Nötige hinaus, keine Cookie-Banner-Orgie.</p>
 <h2 id="zusammengefasst">Zusammengefasst</h2>
-<p>Ansehen, filtern, als CSV/Excel/SQLite/NDJSON/ICS herunterladen, per API abfragen. Jede Zahl bis zur Originalquelle zurückverfolgen, per Klick tiefer recherchieren — alles kostenlos, alles ohne Konto. Der Kalender selbst gehört allen.</p>
+<p>Ansehen, filtern, als CSV/Excel/SQLite/NDJSON/ICS herunterladen, per API abfragen. Jede Zahl lässt sich bis zur Originalquelle zurückverfolgen, per Klick tiefer recherchieren. Alles kostenlos, alles ohne Konto. Der Kalender gehört allen.</p>
 <p>👉 <a href="https://brauckmann.ch/kalender/">brauckmann.ch/kalender</a></p>
