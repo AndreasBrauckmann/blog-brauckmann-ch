@@ -7,7 +7,7 @@
     <title>Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)</title>
     <link>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</link>
     <guid>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</guid>
-    <description>Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.</description>
+    <description>Security sieht den Angriff, Betrieb den Fehler -- dazwischen fehlte das Bindeglied. Jetzt verbindet eine KI beide Welten, trennt Wichtiges von Rauschen und handelt, wo es freigegeben ist.</description>
     <pubDate>Mon, 28 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>

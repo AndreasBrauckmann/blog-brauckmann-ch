@@ -4,7 +4,7 @@ title: "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP
 slug: monitoring-homelab-teil-2-cloudflare-firewall
 date: 2026-09-28
 updated: 2026-10-01
-description: "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird."
+description: "Security sieht den Angriff, Betrieb den Fehler -- dazwischen fehlte das Bindeglied. Jetzt verbindet eine KI beide Welten, trennt Wichtiges von Rauschen und handelt, wo es freigegeben ist."
 summary: >-
   Vor einer Woche war der erste eigene, schreibfähige MCP-Server noch ein "grober Fahrplan" am Ende eines Artikels. Was seither daraus geworden ist: sechs Live-Dashboards (Gatekeeper, Ascent, Backup, System, Alerts, Connections), die innerhalb von 48 Stunden nach dem ersten Commit bereits eine echte Entra-ID-Anmeldung, echte Cloudflare-Firewall-Daten und einen Fix für einen selbst verursachten Fehler hatten. Der Artikel zeigt das neue Verbindungen-Dashboard, das auf einen Blick zeigt, was heute alles überwacht wird -- MCP-Server, Broker, Cloudflare, Search Console, Wirtschaftskalender, LLM-Wrapper -- und zeichnet das große Sicherheitsbild: zwei komplett getrennte Zugangswege (Cloudflare-Tunnel für brauckmann.ch, Tailscale Funnel für die eigene ts.net-Adresse), die beide auf dieselbe, nach außen portlose Infrastruktur treffen.
 tags: [Monitoring, Cloudflare, Security, Claude, MCP]
