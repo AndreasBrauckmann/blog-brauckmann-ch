@@ -57,13 +57,13 @@ Als Bonus wandert die Zwischenablage mit: Was ich auf dem Mac kopiere, füge ich
 
 Der Monitor ist der heimliche Star: Ein einziges **Thunderbolt-4-Kabel** zum Mac überträgt das Bild, **lädt den Mac mit 90 Watt** und bindet den USB-Hub und das Netzwerk des Monitors an. Er hat zusätzlich HDMI, DisplayPort, einen zweiten Thunderbolt-Anschluss und einen eingebauten KVM-Switch (dazu gleich mehr). Und das Beste: Ich habe ihn bei Galaxus als **geprüfte Retoure** gekauft – für **CHF 250.00**. Für einen 34-Zöller mit Thunderbolt und 90 Watt Ladeleistung ein echtes Schnäppchen. Tipp: Der Blick in die Rubriken „Gebraucht & geprüft“ und „B-Ware“ lohnt sich.
 
-Ein persönliches Highlight sind die **Edifier-Boxen** links und rechts vom Monitor: klein, weiss, passend zum Bildschirm – und sie klingen deutlich grösser, als sie aussehen. Der eigentliche Clou: Sie hängen **am Kopfhörer-Ausgang des Monitors** – ein simples Kabel von 3,5-mm-Klinke auf Cinch. Der Bildschirm gibt immer den Ton des Notebooks aus, das er gerade zeigt. Schalte ich auf Windows, kommt auch der Ton von Windows – ohne Kabel umzustecken, ohne Audio-Einstellungen. Beim Videoschnitt höre ich den Mac – ein Satz zu Siri, und der Ton kommt vom Windows-Notebook.
+Ein persönliches Highlight sind die **Edifier-Boxen** links und rechts vom Monitor: klein, weiss, passend zum Bildschirm. Sie klingen deutlich grösser, als sie aussehen. Der Clou: Sie hängen **am Kopfhörer-Ausgang des Monitors**, verbunden über ein simples Kabel von 3,5-mm-Klinke auf Cinch. Der Bildschirm gibt immer den Ton des Notebooks aus, das er gerade zeigt. Schalte ich auf Windows, kommt auch der Ton von Windows. Kein Kabelumstecken, keine Audio-Einstellungen. Beim Videoschnitt höre ich den Mac, ein Satz zu Siri, und der Ton kommt vom Windows-Notebook.
 
-Das Windows-Notebook hängt per **HDMI** am Monitor und hat sein eigenes Netzteil. Das ist nicht elegant, stört mich aber nicht – die Verbindung war vorhanden. (Wie es auch mit einem einzigen ginge, steht weiter unten.)
+Das Windows-Notebook hängt per **HDMI** am Monitor und hat sein eigenes Netzteil. Elegant ist das nicht, stört mich aber auch nicht. Die Verbindung war vorhanden. (Wie es auch mit einem einzigen ginge, steht weiter unten.)
 
 ## Warum ich das gebraucht habe
 
-Ich produziere gerade ein Video zum **Zero Trust Assessment** – also zur Prüfung, wie gut eine Microsoft-365- und Azure-Umgebung nach dem Zero-Trust-Prinzip abgesichert ist. Dafür brauche ich zwei Welten gleichzeitig:
+Ich produziere gerade ein Video zum **Zero Trust Assessment**, also zur Prüfung, wie gut eine Microsoft-365- und Azure-Umgebung nach dem Zero-Trust-Prinzip abgesichert ist. Dafür brauche ich zwei Welten gleichzeitig:
 
 - **Auf dem Mac** entsteht das Video: Das Storyboard erstelle ich mit **Cursor**, einem KI-Code-Editor, und schicke es von dort **per API an [HeyGen](https://www.heygen.com)**. HeyGen erzeugt daraus die Szenen mit meinem KI-Avatar. Danach schaue ich mir eine Vorschau an, komponiere die Szenen, bearbeite Bilder und rendere. Dafür ist der Mac gemacht.
 - **Auf dem Windows-Notebook** laufen die PowerShell-Skripte, die Verbindungen zu Azure und Microsoft Entra und das Assessment selbst. Dafür ist Windows gemacht.
@@ -72,7 +72,7 @@ Ich produziere gerade ein Video zum **Zero Trust Assessment** – also zur Prüf
 
 Das heisst: Skript starten auf Windows, Ergebnis ansehen, zum Mac wechseln, Szene schneiden, wieder auf Windows, nächster Befehl, Screenshot, weiter zum Schnitt … Jeder Wechsel bedeutete bisher drei Knöpfe: am Monitor den Eingang, an der Tastatur die Kanaltaste, unten an der Maus den Umschalter. Dutzende Male pro Stunde. Und irgendwann tippt man den Befehl ins falsche Fenster.
 
-Im Alltag wäre das ein nettes Extra. Bei so einem Projekt spart es richtig Zeit – und der Kopf bleibt beim Video statt bei den Knöpfen.
+Im Alltag wäre das ein nettes Extra. Bei so einem Projekt spart es richtig Zeit, und der Kopf bleibt beim Video statt bei den Knöpfen.
 
 Ein zusätzliches KVM-Kästchen auf dem Tisch brauchte ich dafür nicht. Der Monitor hatte es schon eingebaut.
 
@@ -80,9 +80,9 @@ Ein zusätzliches KVM-Kästchen auf dem Tisch brauchte ich dafür nicht. Der Mon
 
 Das wissen viele nicht: Der **Samsung ViewFinity S65TC hat einen KVM-Switch eingebaut.** Wer diesen Monitor kauft, braucht kein zusätzliches Umschalt-Kästchen.
 
-So funktioniert er: Tastatur und Maus (oder deren Funkempfänger) stecken **am USB-Hub des Monitors**. Beide Notebooks hängen per USB-C/Thunderbolt am Gerät – es hat zwei Thunderbolt-4-Anschlüsse (einer mit 90 W, einer mit 15 W). Wechselt man den Eingang, wandern Tastatur und Maus automatisch mit zum anderen Notebook.
+So funktioniert er: Tastatur und Maus (oder deren Funkempfänger) stecken **am USB-Hub des Monitors**. Beide Notebooks hängen per USB-C/Thunderbolt am Gerät. Es hat zwei Thunderbolt-4-Anschlüsse (einer mit 90 W, einer mit 15 W). Wechselt man den Eingang, wandern Tastatur und Maus automatisch mit zum anderen Notebook.
 
-Und das Schöne: Der Sprachbefehl funktioniert damit genauso. `ddcctl` schaltet den Eingang – und der eingebaute KVM nimmt Tastatur und Maus gleich mit. **Monitor kaufen, zwei Kabel stecken, Kurzbefehl anlegen – fertig.**
+Der Sprachbefehl funktioniert damit genauso. `ddcctl` schaltet den Eingang, und der eingebaute KVM nimmt Tastatur und Maus gleich mit. **Monitor kaufen, zwei Kabel stecken, Kurzbefehl anlegen, fertig.**
 
 Warum ich trotzdem Deskflow nutze: Mein Windows-Notebook hängt per HDMI am Monitor (HDMI überträgt kein USB), meine Tastatur und Maus sind per Bluetooth und Funk mit dem Mac verbunden, und ich wollte die gemeinsame Zwischenablage. Wer es einfacher mag: Der eingebaute KVM reicht völlig.
 
@@ -97,7 +97,7 @@ ddcctl -d 1 -i 17   # Monitor zeigt das Windows-Notebook
 ddcctl -d 1 -i 56   # Monitor zeigt wieder den Mac
 ```
 
-Welche Zahl zu welchem Eingang gehört, ist je nach Monitor verschieden – einmal ausprobieren, dann steht es fest.
+Welche Zahl zu welchem Eingang gehört, ist je nach Monitor verschieden. Einmal ausprobieren, dann steht es fest.
 
 ### 2. Maus und Tastatur wandern mit: Deskflow
 
@@ -119,13 +119,13 @@ section: options
 end
 ```
 
-So entsteht die durchgehende Oberfläche: Der Mauszeiger läuft über die Bildschirmkante einfach weiter auf das andere Notebook. Damit gibt es drei Wege zum Umschalten: die Maus einfach über den rechten Bildschirmrand schieben, **ctrl + opt + cmd + W / M** drücken – oder Siri fragen.
+So entsteht die durchgehende Oberfläche: Der Mauszeiger läuft über die Bildschirmkante weiter auf das andere Notebook. Damit gibt es drei Wege zum Umschalten: die Maus über den rechten Bildschirmrand schieben, **ctrl + opt + cmd + W / M** drücken oder Siri fragen.
 
 ### 3. Siri verbindet beides: ein Kurzbefehl per SSH
 
 Ein Apple-Kurzbefehl „Windows“ enthält genau **eine** Aktion: *Skript über SSH ausführen* – auf dem Mac selbst. Das hat einen Grund: Sagt man „Hey Siri“, hört oft das iPhone oder die Watch zu, und dort können keine Mac-Skripte laufen. Über SSH landet der Befehl trotzdem immer auf dem Mac.
 
-Das Skript schaltet den Monitor um und stösst dann Deskflow an. Das war der kniffligste Teil – dazu gleich mehr.
+Das Skript schaltet den Monitor um und stösst dann Deskflow an. Das war der kniffligste Teil (dazu gleich mehr).
 
 **Per Sprache oder per Tipp:** Der Kurzbefehl läuft vom Mac, vom iPhone und von der Apple Watch – und wer gerade nicht sprechen will, tippt einfach:
 
@@ -140,7 +140,7 @@ Deskflow reagiert nur auf Tastendrücke, die wie echte Tastatureingaben ankommen
 - **kvm-hotkey** ist der eigentliche Mechanismus. Es simuliert die Deskflow-Hotkey-Kombination per `CGEvent(keyboardEventSource:…)` (Swift-Gegenstück zu `CGEventCreateKeyboardEvent`): ctrl + opt + cmd + **W** für Windows, ctrl + opt + cmd + **M** für den Mac – dieselben Tasten, die ich auch von Hand drücken könnte.
 - **DF-Umschalter** ist der zusätzliche Mechanismus: Er schiebt den Mauszeiger kurz über den Bildschirmrand, was Deskflow ebenfalls erkennt (→ Windows über den rechten, → Mac über den linken Rand).
 
-Das Gate-Skript `ddc-gate.sh` (siehe Abschnitt Sicherheit) schaltet den Monitor um und startet dann beide: Der DF-Umschalter wird nur angestossen, `kvm-hotkey` folgt sofort – die beiden Mechanismen laufen also praktisch gleichzeitig. Den Randtrick allein habe ich anfangs benutzt, er war aber nicht zuverlässig: Nach dem Sprachbefehl schaltete der Monitor um, doch Maus und Tastatur reagierten unter Windows nicht immer – erst ein manuelles ctrl + opt + cmd + W half. Seit dem 28.9.2026 läuft deshalb die Hotkey-Simulation mit. Sie ist noch jung und erst wenige Tage im Alltag im Einsatz.
+Das Gate-Skript `ddc-gate.sh` (siehe Abschnitt Sicherheit) schaltet den Monitor um und startet dann beide Programme. Der DF-Umschalter wird angestossen, `kvm-hotkey` folgt sofort. Die beiden Mechanismen laufen praktisch gleichzeitig. Den Randtrick allein habe ich anfangs benutzt, er war aber nicht zuverlässig: Nach dem Sprachbefehl schaltete der Monitor um, doch Maus und Tastatur reagierten unter Windows nicht immer. Erst ein manuelles ctrl + opt + cmd + W half. Seit dem 28.9.2026 läuft deshalb die Hotkey-Simulation mit. Sie ist noch jung und erst wenige Tage im Alltag im Einsatz.
 
 Der Code von **kvm-hotkey**, rund 30 Zeilen Swift:
 
@@ -252,7 +252,7 @@ swiftc -O umschalter.swift \
 codesign --force -s - "$APP"
 ```
 
-Danach einmal unter *Datenschutz & Sicherheit → Bedienungshilfen* **DF-Umschalter** hinzufügen und einschalten – nur er darf die Maus bewegen. Warum eine eigene App und nicht einfach ein Skript? Weil macOS die Berechtigung an ein signiertes Bundle bindet. Eine kleine, eigenständige App bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)
+Danach einmal unter *Datenschutz & Sicherheit → Bedienungshilfen* **DF-Umschalter** hinzufügen und einschalten. Nur er darf die Maus bewegen. macOS bindet die Berechtigung an ein signiertes Bundle, deshalb braucht es eine eigene App statt eines Skripts. Eine kleine, eigenständige App bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)
 
 Der Siri-Kurzbefehl „Windows“ schickt per SSH eine feste Befehlszeile an den Mac:
 
@@ -262,13 +262,13 @@ Der Siri-Kurzbefehl „Windows“ schickt per SSH eine feste Befehlszeile an den
 
 Ausgeführt wird dieser Text allerdings nie: Das Gate-Skript (siehe Abschnitt Sicherheit) erkennt die Zeile und startet stattdessen die dort fest hinterlegten Befehle.
 
-Was daraufhin genau passiert – Monitor-Eingang umschalten, DF-Umschalter und kvm-hotkey starten –, legt dieses kleine Skript auf dem Mac fest. Das ist gleichzeitig die Sicherheitsschranke, dazu gleich mehr.
+Was daraufhin passiert (Monitor-Eingang umschalten, DF-Umschalter und kvm-hotkey starten), legt dieses kleine Skript auf dem Mac fest. Es dient gleichzeitig als Sicherheitsschranke, dazu gleich mehr.
 
 **Berechtigungen unter macOS:** Deskflow, deskflow-core, DF-Umschalter und kvm-hotkey brauchen unter *Datenschutz & Sicherheit* die Freigaben **Bedienungshilfen** und **Eingabeüberwachung**. Weil die selbstgebauten Programme nur ad hoc signiert sind, setzt macOS diese Freigaben nach einem Rebuild oder einem Update gern stillschweigend zurück. Das Symptom: Der Bildschirm schaltet um, aber Tastatur und Maus reagieren nicht. Dann zuerst die Freigaben prüfen.
 
 ## Die Tastatur: bewusst nur an einem Kanal
 
-Die **Logitech MX Keys** hat oben links drei **Easy-Switch-Tasten** – jede ist ein eigener Kanal für ein gekoppeltes Gerät. Ich nutze davon **bewusst nur Kanal 1**: Die Tastatur ist ausschliesslich mit dem Mac gekoppelt (über den Logi-Bolt-Empfänger) und steht im macOS-Layout-Modus. Deskflow leitet die Eingaben in Software an das Windows-Notebook weiter.
+Die **Logitech MX Keys** hat oben links drei **Easy-Switch-Tasten**, eine pro gekoppeltem Gerät. Ich nutze davon **bewusst nur Kanal 1**: Die Tastatur ist ausschliesslich mit dem Mac gekoppelt (über den Logi-Bolt-Empfänger) und steht im macOS-Layout-Modus. Deskflow leitet die Eingaben in Software an das Windows-Notebook weiter.
 
 Die Easy-Switch-Tasten fasse ich nicht an. Ein Druck löst eine neue Kopplung aus und kollidiert mit der Software-Weiterleitung: Die Tastatur hängt dann direkt am anderen Gerät und geht für Deskflow verloren (siehe Stolperstein 5).
 
@@ -308,13 +308,13 @@ Klingt banal, hat mich aber eine halbe Stunde gekostet: Deskflow lief noch mit d
 
 ## Sicherheit: SSH ja, aber mit angezogener Handbremse
 
-Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb erlaubt dieser Schlüssel nur **vier fest hinterlegte Befehlszeilen** – zwei davon wechseln lediglich den Monitor-Eingang, die beiden Umschaltbefehle der Kurzbefehle steuern zusätzlich Deskflow um. In der Datei `authorized_keys` bekommt der Schlüssel der Kurzbefehle einen Vorsatz:
+Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb erlaubt dieser Schlüssel nur **vier fest hinterlegte Befehlszeilen**. Zwei davon wechseln lediglich den Monitor-Eingang, die beiden anderen steuern zusätzlich Deskflow um. In der Datei `authorized_keys` bekommt der Schlüssel der Kurzbefehle einen Vorsatz:
 
 ```text
 restrict,command="/Users/<benutzer>/.ssh/ddc-gate.sh"
 ```
 
-Dahinter folgt – **in derselben Zeile**, durch ein Leerzeichen getrennt – wie gewohnt der Schlüssel selbst (`ssh-ed25519 AAAA… Kurzbefehle auf iPhone`).
+Dahinter folgt, **in derselben Zeile** und durch ein Leerzeichen getrennt, wie gewohnt der Schlüssel selbst (`ssh-ed25519 AAAA… Kurzbefehle auf iPhone`).
 
 Das Skript `ddc-gate.sh` prüft den angefragten Befehl gegen eine feste Liste. Ausgeführt werden immer die im Skript hinterlegten Befehle, nie der übergebene Text selbst:
 
@@ -341,11 +341,11 @@ case "$SSH_ORIGINAL_COMMAND" in
 esac
 ```
 
-Wer den Schlüssel stiehlt, kann damit den Monitor umschalten – sonst nichts. Dazu kommt: `restrict` verbietet Weiterleitungen und Terminal, [Deskflow verschlüsselt per TLS](/artikel/monitoring-homelab-teil-2-cloudflare-firewall/), und nichts davon läuft über eine Cloud.
+Wer den Schlüssel stiehlt, kann damit den Monitor umschalten, sonst nichts. Dazu kommt: `restrict` verbietet Weiterleitungen und Terminal, [Deskflow verschlüsselt per TLS](/artikel/monitoring-homelab-teil-2-cloudflare-firewall/), und nichts davon läuft über eine Cloud.
 
 ## Und wenn man das HDMI-Kabel nicht will?
 
-Der S65TC hat **zwei** Thunderbolt-Anschlüsse – aber nur einer liefert die 90 Watt, die ein Notebook zum Laden braucht, und den belegt der Mac. Der zweite bringt 15 Watt: genug für Bild und USB (und damit für den eingebauten KVM-Switch), aber nicht zum Laden. Wer beide Notebooks mit **je einem einzigen Kabel** (Bild + Strom + USB) anschliessen möchte, hat drei Möglichkeiten:
+Der S65TC hat **zwei** Thunderbolt-Anschlüsse. Nur einer liefert die 90 Watt, die ein Notebook zum Laden braucht, und den belegt der Mac. Der zweite bringt 15 Watt: genug für Bild und USB (und damit für den eingebauten KVM-Switch), aber nicht zum Laden. Wer beide Notebooks mit **je einem einzigen Kabel** (Bild + Strom + USB) anschliessen möchte, hat drei Möglichkeiten:
 
 - **Ein Monitor mit zwei USB-C-/Thunderbolt-Eingängen mit voller Ladeleistung.** Einige Business-Monitore bieten das.
 - **Ein USB-C-KVM-Dock** zwischen Notebooks und Monitor, das beide Notebooks lädt und das Bild umschaltet.
@@ -355,7 +355,7 @@ Für mich ist das HDMI-Kabel der pragmatische Weg, da das Kabel vorhanden war.
 
 ## Zum Nachbauen
 
-Alles, was man braucht – kostenlos:
+Alles, was man braucht, kostenlos:
 
 - **Deskflow** – [github.com/deskflow/deskflow](https://github.com/deskflow/deskflow) (macOS, Windows, Linux)
 - **ddcctl** – kleines Kommandozeilen-Tool für DDC/CI am Mac
@@ -368,20 +368,20 @@ Alles, was man braucht – kostenlos:
 
 ## Fazit
 
-Vier Gratis-Werkzeuge, Cursor & Claude eine Stunde tüfteln lassen – und der Arbeitsplatz fühlt sich an wie aus einem Guss. Beim Zero-Trust-Video springe ich jetzt dutzende Male pro Stunde zwischen Schnitt und PowerShell hin und her – ohne einen einzigen Knopf zu suchen. Ein Satz genügt, und ich arbeite einfach weiter.
+Vier Gratis-Werkzeuge, Cursor & Claude eine Stunde tüfteln lassen, und der Arbeitsplatz fühlt sich an wie aus einem Guss. Beim Zero-Trust-Video springe ich jetzt dutzende Male pro Stunde zwischen Schnitt und PowerShell hin und her, ohne einen einzigen Knopf zu suchen. Ein Satz genügt, und ich arbeite weiter.
 
 ## Mein nächstes Projekt: Einkaufen mit KI – bei Migros
 
 <p style="text-align:center"><img src="/static/img/kvm-per-sprache-migros.svg" alt="Per Sprache: Kühlschrank prüfen, Lebensmittel vorschlagen, bei Migros liefern lassen"></p>
 
-Der nächste Umbau betrifft nicht den Schreibtisch, sondern die Küche. Die Idee:
+Der nächste Umbau betrifft die Küche. Die Idee:
 
 1. **Kühlschrank auf, Handy raus:** Fotos vom Kühlschrank, ein kurzes Video vom Vorratsregal.
 2. **Die App erkennt, was da ist** – und was fehlt. Sie weiss, was wir gerne essen.
 3. **Vorschläge für die nächste Woche:** asiatisch, polnisch, französisch, italienisch oder schweizer Küche – ganz egal, worauf wir Lust haben.
 4. **Bestellen per Migros-App** – und die Sachen werden geliefert.
 
-So macht Einkaufen wieder Spass. Und eine Erfahrung, die uns überrascht hat: Wir haben den Eindruck, dass Obst und Gemüse aus der Lieferung **frischer sind und nicht angedatscht** – sie sind eben nicht schon durch tausend Grabbelfinger gegangen wie in der Auslage im Laden.
+So macht Einkaufen wieder Spass. Eine Erfahrung, die uns überrascht hat: Wir haben den Eindruck, dass Obst und Gemüse aus der Lieferung **frischer sind und nicht angedatscht**. Sie sind eben nicht schon durch tausend Grabbelfinger gegangen wie in der Auslage im Laden.
 
 **Was kostet die Lieferung?** Laut Migros-Hilfe kostet eine Lieferung ab CHF 99 Warenwert CHF 7.90, ab CHF 160 noch CHF 4.90, ab CHF 200 ist sie gratis – dazu kommen bei stark ausgelasteten Zeitfenstern CHF 1 bis 2 Zuschlag. Mit dem **Lieferpass** entfallen Lieferkosten und Zuschläge ab CHF 99 Bestellwert ganz:
 
@@ -392,6 +392,6 @@ So macht Einkaufen wieder Spass. Und eine Erfahrung, die uns überrascht hat: Wi
 
 Wer mehr als einmal im Monat für unter CHF 200 bestellt, fährt mit dem Jahrespass günstiger: Schon zwei Lieferungen à CHF 7.90 kosten mehr als die CHF 9.90 pro Monat.
 
-Mehr dazu, wenn es läuft – hier im Blog.
+Mehr dazu, wenn es läuft, hier im Blog.
 
 *Aktualisiert am 30.9.2026: Umschaltung über Hotkey-Simulation statt Mauszeiger-Trick.*

@@ -10,8 +10,8 @@ summary: >-
   Der Wirtschaftskalender unter brauckmann.ch/kalender/ zeigt über 84.000 Konjunkturtermine seit 2010, ohne Login, ohne Bezahlschranke: JSON-API, sechs Downloadformate (CSV, Excel, SQLite, NDJSON, ICS), Sparkline-Verlauf pro Kennzahl, ein Recherche-Link direkt in Googles KI-Modus und für 98 Prozent aller Kennzahlen die amtliche Originalquelle verlinkt. Kostet nirgends etwas — die Zahlen sind ohnehin öffentlich, also bleiben sie hier frei zugänglich, ganz ohne Einschränkung.
 tags: [Kontor, Wirtschaftsdaten, Open Data, API]
 image: /static/img/wirtschaftskalender-eyecatcher-square.gif
-og_image: /static/img/og-wirtschaftskalender-ohne-anmeldung.jpg
-og_image_alt: "Wirtschaftskalender von Kontor mit aufgeklapptem Termin und Sparkline-Verlauf der Arbeitslosenquote, im Hintergrund die Fassade der New Yorker Börse."
+og_image: /static/img/og-wirtschaftskalender-chart.jpg
+og_image_alt: "Liniendiagramm der US-Arbeitslosenquote von 2010 bis 2026: Ist-Werte und Prognose liegen fast deckungsgleich, mit dem Corona-Ausschlag 2020."
 thumb: /static/img/thumbs/wirtschaftskalender-ohne-anmeldung.jpg
 draft: false
 changelog:

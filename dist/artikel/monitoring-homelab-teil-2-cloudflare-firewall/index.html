@@ -796,7 +796,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </svg>
 </div>
 </div><div class="kr-base"><span class="kr-mulde"></span><span class="kr-fuss kr-f1"></span><span class="kr-fuss kr-f2"></span></div></div>
-<noscript><style>.kr-laptop{display:none}</style><img src="/static/img/og-monitoring-teil2-laptop-radar.jpg" alt="Laptop mit Radar-Animation: KI-gestütztes Monitoring erfasst Bedrohungen wie Brute-Force, ablaufende Zertifikate und volle Speicher und fängt sie ab, bevor sie das Business erreichen." style="width:100%;height:auto;border-radius:12px"></noscript>
+<noscript><style>.kr-laptop{display:none}</style><img width="1200" height="630" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="/static/img/og-monitoring-teil2-laptop-radar.jpg" alt="Laptop mit Radar-Animation: KI-gestütztes Monitoring erfasst Bedrohungen wie Brute-Force, ablaufende Zertifikate und volle Speicher und fängt sie ab, bevor sie das Business erreichen." style="width:100%;height:auto;border-radius:12px"></noscript>
 <figcaption>Rund um die Uhr im Einsatz: KI-gestütztes Monitoring erkennt Abweichungen, bevor sie zum Vorfall werden -- und räumt sie aus dem Weg.</figcaption>
 </figure>
 <script>
@@ -1012,7 +1012,7 @@ requestAnimationFrame(frame);
 <p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch. Auf ausdrücklichen Wunsch ist sie jetzt komplett auf Englisch, bis in die Menüs und die von der KI zusammengebauten Statustexte hinein. So versteht auch ein internationales Publikum sofort, was da steht. Alle sechs Seiten wechseln im hellen Design (der Standard der meisten Besucher hier im Blog). Ports, IP-Adresse und interne Subdomains sind anonymisiert. Bei längeren Dashboards scrollt die Animation einmal von oben nach unten durch, statt oben abzuschneiden:</p>
 
 <p>
-<img src="/static/img/monitoring2-dashboards-all-six-light.gif" alt="Animation: alle sechs Dashboards im Wechsel -- Gatekeeper, Ascent, Backup, System, Alerts, Connections" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+<img width="1280" height="700" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="/static/img/monitoring2-dashboards-all-six-light.gif" alt="Animation: alle sechs Dashboards im Wechsel -- Gatekeeper, Ascent, Backup, System, Alerts, Connections" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
 </p>
 
 <p>Dieses Zusehen-können ist der Kern der "Connections"-Seite (letzter Frame oben). Sechs Gruppen, auf einen Blick:</p>
@@ -1073,11 +1073,11 @@ requestAnimationFrame(frame);
 <p>Die Gegenmassnahme ist dokumentiert und überwacht, wie im Rest dieses Artikels, und über einen einmaligen Fix hinaus abgesichert. Freitext-Felder aus dem Kalender werden jetzt auf eine sinnvolle Länge begrenzt. Steuerzeichen entfernt das System, bevor sie den Prompt erreichen. Der System-Prompt selbst trennt jetzt explizit zwischen Datenmaterial und Anweisung. Ein Termintitel, der wie ein Befehl klingt, bleibt ein Termintitel. Passend zu diesem Ökosystem: Ein neuer Netdata-Sensor läuft alle 15 Minuten und prüft, ob diese Absicherung im Quelltext noch steht. Er ist sichtbar als eigene "LLM Security"-Kachel auf der Connections-Seite von oben und als eigene Karte auf dem Gatekeeper-Dashboard. Derselbe Mechanismus fing den eigenen Fehler beim Arbeitsspeicher-Alarm 13 Minuten nach dem Auftreten. Er wacht jetzt auch hier mit.</p>
 
 <p>
-<img src="/static/img/monitoring2-llm-security-connections.png" alt="Connections-Dashboard mit rot eingekreister neuer 'LLM Security'-Kachel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+<img width="2000" height="819" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="/static/img/monitoring2-llm-security-connections.png" alt="Connections-Dashboard mit rot eingekreister neuer 'LLM Security'-Kachel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
 </p>
 
 <p>
-<img src="/static/img/monitoring2-llm-hardening-gatekeeper.png" alt="Gatekeeper-Dashboard mit rot eingekreister Karte 'LLM prompt-injection hardening'" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
+<img width="2000" height="469" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="/static/img/monitoring2-llm-hardening-gatekeeper.png" alt="Gatekeeper-Dashboard mit rot eingekreister Karte 'LLM prompt-injection hardening'" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
 </p>
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
@@ -1099,6 +1099,8 @@ requestAnimationFrame(frame);
 </div>
 <script>
 (function () {
+  // Bilder im Text erst hier laden (siehe build.py, bilder_nachladen)
+  document.querySelectorAll('img[data-src]').forEach(function (i) { i.src = i.getAttribute('data-src'); });
   var overlay = document.getElementById('lightbox-overlay');
   var overlayImg = document.getElementById('lightbox-img');
 
