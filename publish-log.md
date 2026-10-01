@@ -41,3 +41,7 @@
 - kvm-switch-per-sprache: youtube_community: manuell (siehe manual-posts.md)
 - kvm-switch-per-sprache: microsoft_tech_community: manuell (siehe manual-posts.md)
 
+## 2026-10-01 07:29 UTC
+
+- deploy: Blog: Aktualisierung, 3 Dateien, über die Verwaltung
+
