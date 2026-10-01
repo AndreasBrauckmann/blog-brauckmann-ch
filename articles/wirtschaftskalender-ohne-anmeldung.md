@@ -11,7 +11,7 @@ summary: >-
 tags: [Kontor, Wirtschaftsdaten, Open Data, API]
 image: /static/img/wirtschaftskalender-eyecatcher-square.png
 og_image: /static/img/og-wirtschaftskalender-ohne-anmeldung.jpg
-og_image_alt: "Wirtschaftskalender von Kontor mit aufgeklapptem Termin und Sparkline-Verlauf der Arbeitslosenquote, im Hintergrund ein Kerzenchart."
+og_image_alt: "Wirtschaftskalender von Kontor mit aufgeklapptem Termin und Sparkline-Verlauf der Arbeitslosenquote, im Hintergrund die Fassade der New Yorker Börse."
 thumb: /static/img/thumbs/wirtschaftskalender-ohne-anmeldung.jpg
 draft: false
 changelog:
