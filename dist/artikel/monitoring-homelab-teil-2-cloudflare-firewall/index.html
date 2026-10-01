@@ -4,19 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*) · Brauckmann Blog</title>
-<meta name="description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
 
+<meta name="author" content="Andreas Brauckmann">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="alternate" type="application/rss+xml" title="Brauckmann Blog" href="https://blog.brauckmann.ch/rss.xml">
+
 <meta property="og:type" content="article">
-<meta property="og:title" content="Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)">
-<meta property="og:description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
+<meta property="og:site_name" content="Brauckmann Blog">
+<meta property="og:locale" content="de_DE">
+<meta name="title" property="og:title" content="Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)">
+<meta name="description" property="og:description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
-<meta property="og:image" content="">
+<meta name="image" property="og:image" content="https://blog.brauckmann.ch/static/img/og-monitoring-teil2-laptop-radar.jpg">
+<meta property="og:image:alt" content="Laptop mit Radar-Animation: KI-gestütztes Monitoring erfasst Bedrohungen wie Brute-Force, ablaufende Zertifikate und volle Speicher und fängt sie ab, bevor sie das Business erreichen.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)">
 <meta name="twitter:description" content="Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.">
-<meta name="twitter:image" content="">
+<meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/og-monitoring-teil2-laptop-radar.jpg">
+<meta property="article:published_time" content="2026-09-28">
+<meta property="article:modified_time" content="2026-10-01">
+<meta property="article:author" content="https://brauckmann.ch/about-me/">
+<meta property="article:tag" content="Monitoring">
+<meta property="article:tag" content="Cloudflare">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Claude">
+<meta property="article:tag" content="MCP">
+<meta name="keywords" content="Monitoring, Cloudflare, Security, Claude, MCP">
 
 <script type="application/ld+json">
 {
@@ -25,12 +42,22 @@
   "headline": "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read & write*)",
   "description": "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird.",
   "datePublished": "2026-09-28",
-  "dateModified": "2026-09-30",
+  "dateModified": "2026-10-01",
+  "inLanguage": "de",
   "author": {
     "@type": "Person",
-    "name": "Andreas Brauckmann"
+    "name": "Andreas Brauckmann",
+    "url": "https://brauckmann.ch/about-me/"
   },
-  "url": "https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/"
+  "publisher": {
+    "@type": "Person",
+    "name": "Andreas Brauckmann",
+    "url": "https://brauckmann.ch/about-me/"
+  },
+  "mainEntityOfPage": "https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/",
+  "url": "https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/",
+  "keywords": "Monitoring, Cloudflare, Security, Claude, MCP",
+  "image": "https://blog.brauckmann.ch/static/img/og-monitoring-teil2-laptop-radar.jpg"
 }
 </script>
 
@@ -670,7 +697,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <figure class="kr-radar-figure">
 <div class="kr-laptop"><div class="kr-lid">
-<div class="kr-radar" id="kr-stage">
+<div class="kr-radar" id="kr-stage" role="img" aria-label="Animation: Ein Radar dreht sich ohne Pause. Bedrohungen wie Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate oder Brute-Force-Versuche tauchen auf, werden erfasst, beurteilt und abgefangen, bevor sie die produktive Umgebung in der Mitte (Business geschützt) erreichen.">
 <!-- HINTERGRUND + RADAR-GEHÄUSE -->
 <canvas id="kr-stars"></canvas>
 <svg viewBox="-200 -70 1200 720" aria-hidden="true">
@@ -737,6 +764,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </svg>
 </div>
 </div><div class="kr-base"><span class="kr-mulde"></span><span class="kr-fuss kr-f1"></span><span class="kr-fuss kr-f2"></span></div></div>
+<noscript><style>.kr-laptop{display:none}</style><img src="/static/img/og-monitoring-teil2-laptop-radar.jpg" alt="Laptop mit Radar-Animation: KI-gestütztes Monitoring erfasst Bedrohungen wie Brute-Force, ablaufende Zertifikate und volle Speicher und fängt sie ab, bevor sie das Business erreichen." style="width:100%;height:auto;border-radius:12px"></noscript>
 <figcaption>Rund um die Uhr im Einsatz: KI-gestütztes Monitoring erkennt Abweichungen, bevor sie zum Vorfall werden -- und räumt sie aus dem Weg.</figcaption>
 </figure>
 <script>
@@ -1023,7 +1051,8 @@ requestAnimationFrame(frame);
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 
 <p>Eine Woche, 35 Commits, sechs Dashboards, ein selbst gefundener und selbst behobener Fehler binnen 13 Minuten -- und ein Sicherheitsbild mit zwei unabhängigen, portlosen Zugangswegen zu derselben Infrastruktur. Der grösste Unterschied zur Realität von vorher ist nicht die Zahl der Sensoren, <strong>sondern dass kleine Fehler nicht mehr liegen bleiben, bis jemand zufällig draufschaut.</strong></p>
-    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-09-30">2026-09-30</time> — Einleitung zur mehrstufigen Absicherung neu geschrieben (Cloudflare, Link Maze Injection, CrowdSec, Bouncer), Bindeglied-Absatz ergänzt, Reihenfolge der Abschnitte überarbeitet, Radar-Animation mit Sternenhimmel statt Serverraum und im Laptop-Rahmen, Schlüsselbegriffe hervorgehoben.</li>
+    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-10-01">2026-10-01</time> — Vorschaubild für Link-Vorschauen (Open Graph) ergänzt, Radar-Animation mit Textalternative und Ersatzbild für Browser ohne JavaScript.</li>
+<li><time datetime="2026-09-30">2026-09-30</time> — Einleitung zur mehrstufigen Absicherung neu geschrieben (Cloudflare, Link Maze Injection, CrowdSec, Bouncer), Bindeglied-Absatz ergänzt, Reihenfolge der Abschnitte überarbeitet, Radar-Animation mit Sternenhimmel statt Serverraum und im Laptop-Rahmen, Schlüsselbegriffe hervorgehoben.</li>
 <li><time datetime="2026-09-29">2026-09-29</time> — Nachtrag zur Prompt-Injection-Härtung ergänzt (Dank an Volker Skwarek), Dashboard-Animation heller und langsamer, mehrere Formulierungen präzisiert, Titel gestrafft.</li>
 <li><time datetime="2026-09-28">2026-09-28</time> — Artikel veröffentlicht: sechs neue Dashboards, Sicherheitsnetz- und Big-Picture-Diagramm.</li></ul></section>
   </article>

@@ -3,14 +3,18 @@ slogan: "Monitoring wird erst zum Sicherheitsnetz, wenn es niemals aufhört hinz
 title: "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read & write*)"
 slug: monitoring-homelab-teil-2-cloudflare-firewall
 date: 2026-09-28
-updated: 2026-09-30
+updated: 2026-10-01
 description: "Eine Woche nach dem ersten selbstgebauten MCP-Server: sechs neue Dashboards, ein Sicherheitsnetz aus Cloudflare-Firewall und Tailscale-Funnel, und der Befund, dass Human-in-the-Loop für die kleinen Dinge immer unwichtiger wird."
 summary: >-
   Vor einer Woche war der erste eigene, schreibfähige MCP-Server noch ein "grober Fahrplan" am Ende eines Artikels. Was seither daraus geworden ist: sechs Live-Dashboards (Gatekeeper, Ascent, Backup, System, Alerts, Connections), die innerhalb von 48 Stunden nach dem ersten Commit bereits eine echte Entra-ID-Anmeldung, echte Cloudflare-Firewall-Daten und einen Fix für einen selbst verursachten Fehler hatten. Der Artikel zeigt das neue Verbindungen-Dashboard, das auf einen Blick zeigt, was heute alles überwacht wird -- MCP-Server, Broker, Cloudflare, Search Console, Wirtschaftskalender, LLM-Wrapper -- und zeichnet das große Sicherheitsbild: zwei komplett getrennte Zugangswege (Cloudflare-Tunnel für brauckmann.ch, Tailscale Funnel für die eigene ts.net-Adresse), die beide auf dieselbe, nach außen portlose Infrastruktur treffen.
 tags: [Monitoring, Cloudflare, Security, Claude, MCP]
+og_image: /static/img/og-monitoring-teil2-laptop-radar.jpg
+og_image_alt: "Laptop mit Radar-Animation: KI-gestütztes Monitoring erfasst Bedrohungen wie Brute-Force, ablaufende Zertifikate und volle Speicher und fängt sie ab, bevor sie das Business erreichen."
 thumb: /static/img/thumbs/monitoring-homelab-teil-2-cloudflare-firewall.jpg
 draft: false
 changelog:
+  - datum: 2026-10-01
+    text: "Vorschaubild für Link-Vorschauen (Open Graph) ergänzt, Radar-Animation mit Textalternative und Ersatzbild für Browser ohne JavaScript."
   - datum: 2026-09-30
     text: "Einleitung zur mehrstufigen Absicherung neu geschrieben (Cloudflare, Link Maze Injection, CrowdSec, Bouncer), Bindeglied-Absatz ergänzt, Reihenfolge der Abschnitte überarbeitet, Radar-Animation mit Sternenhimmel statt Serverraum und im Laptop-Rahmen, Schlüsselbegriffe hervorgehoben."
   - datum: 2026-09-29
@@ -54,7 +58,7 @@ changelog:
 </style>
 <figure class="kr-radar-figure">
 <div class="kr-laptop"><div class="kr-lid">
-<div class="kr-radar" id="kr-stage">
+<div class="kr-radar" id="kr-stage" role="img" aria-label="Animation: Ein Radar dreht sich ohne Pause. Bedrohungen wie Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate oder Brute-Force-Versuche tauchen auf, werden erfasst, beurteilt und abgefangen, bevor sie die produktive Umgebung in der Mitte (Business geschützt) erreichen.">
 <!-- HINTERGRUND + RADAR-GEHÄUSE -->
 <canvas id="kr-stars"></canvas>
 <svg viewBox="-200 -70 1200 720" aria-hidden="true">
@@ -121,6 +125,7 @@ changelog:
 </svg>
 </div>
 </div><div class="kr-base"><span class="kr-mulde"></span><span class="kr-fuss kr-f1"></span><span class="kr-fuss kr-f2"></span></div></div>
+<noscript><style>.kr-laptop{display:none}</style><img src="/static/img/og-monitoring-teil2-laptop-radar.jpg" alt="Laptop mit Radar-Animation: KI-gestütztes Monitoring erfasst Bedrohungen wie Brute-Force, ablaufende Zertifikate und volle Speicher und fängt sie ab, bevor sie das Business erreichen." style="width:100%;height:auto;border-radius:12px"></noscript>
 <figcaption>Rund um die Uhr im Einsatz: KI-gestütztes Monitoring erkennt Abweichungen, bevor sie zum Vorfall werden -- und räumt sie aus dem Weg.</figcaption>
 </figure>
 <script>

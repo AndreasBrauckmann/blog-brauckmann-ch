@@ -4,6 +4,7 @@
 site:
   title: "Brauckmann Blog"
   author: "Andreas Brauckmann"
+  author_url: "https://brauckmann.ch/about-me/"
   description: "IT, KI und Automatisierung für Fachpublikum"
   base_url: "https://blog.brauckmann.ch"
   language: "de"

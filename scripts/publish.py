@@ -90,6 +90,12 @@ def write_manual_posts(manual_texts: dict[str, str]) -> None:
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     lines = [f"## {timestamp}\n"]
     for channel, text in manual_texts.items():
+        if channel == "linkedin":
+            lines.append(
+                "- [ ] **Vor dem Posten:** LinkedIn Post Inspector ausfuehren "
+                "(https://www.linkedin.com/post-inspector/) -- Live-URL des Artikels eingeben, "
+                "Inspect, Titel/Bild/Beschreibung pruefen. Regel in CLAUDE.md.\n"
+            )
         lines.append(f"### {channel}\n\n{text}\n")
     existing = path.read_text(encoding="utf-8") if path.exists() else "# Manuelle Posts\n\n"
     path.write_text(existing + "\n".join(lines) + "\n", encoding="utf-8")
@@ -226,6 +232,9 @@ def main() -> int:
 
     if manual_texts:
         print("\n7) Schreibe manual-posts.md ...")
+        if "linkedin" in manual_texts:
+            print("   ERINNERUNG: Vor dem LinkedIn-Post den Post Inspector ausfuehren: "
+                  "https://www.linkedin.com/post-inspector/")
         if not args.dry_run:
             write_manual_posts(manual_texts)
         for channel in manual_texts:

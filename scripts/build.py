@@ -116,6 +116,10 @@ def render_markdown(body_md: str) -> str:
 
 
 def build_jsonld(meta: dict, cfg: dict, canonical_url: str) -> str:
+    site = cfg["site"]
+    autor = {"@type": "Person", "name": site["author"]}
+    if site.get("author_url"):
+        autor["url"] = site["author_url"]
     data = {
         "@context": "https://schema.org",
         "@type": "Article",
@@ -123,12 +127,50 @@ def build_jsonld(meta: dict, cfg: dict, canonical_url: str) -> str:
         "description": meta["description"],
         "datePublished": str(meta["date"]),
         "dateModified": str(meta.get("updated", meta["date"])),
-        "author": {"@type": "Person", "name": cfg["site"]["author"]},
+        "inLanguage": site["language"],
+        "author": autor,
+        "publisher": autor,
+        "mainEntityOfPage": canonical_url,
         "url": canonical_url,
     }
-    if meta.get("image"):
-        data["image"] = cfg["site"]["base_url"] + meta["image"]
+    if meta.get("tags"):
+        data["keywords"] = ", ".join(meta["tags"])
+    bild = meta.get("og_image") or meta.get("image") or meta.get("thumb")
+    if bild:
+        data["image"] = site["base_url"] + bild
     return json.dumps(data, ensure_ascii=False, indent=2)
+
+
+_LOCALES = {"de": "de_DE", "en": "en_US", "fr": "fr_FR"}
+
+
+def article_head_extras(meta: dict, cfg: dict) -> dict:
+    """Meta-Angaben, die ein Blog-Artikel im Kopf braucht: Bild-Tags nur,
+    wenn es ein Bild gibt (frueher stand ein leeres content="" im Kopf),
+    Open-Graph-Artikelangaben (Zeitpunkte, Autor, Tags) und Schluesselwoerter."""
+    site = cfg["site"]
+    bild = meta.get("og_image") or meta.get("image") or meta.get("thumb")
+    og_bild = site["base_url"] + bild if bild else ""
+    esc = html.escape
+    zeilen = []
+    zeilen.append(f'<meta property="article:published_time" content="{esc(str(meta["date"]))}">')
+    zeilen.append(f'<meta property="article:modified_time" content="{esc(str(meta.get("updated", meta["date"])))}">')
+    zeilen.append(f'<meta property="article:author" content="{esc(site.get("author_url") or site["author"])}">')
+    for t in meta.get("tags", []):
+        zeilen.append(f'<meta property="article:tag" content="{esc(t)}">')
+    if meta.get("tags"):
+        zeilen.append(f'<meta name="keywords" content="{esc(", ".join(meta["tags"]))}">')
+    return {
+        "og_locale": _LOCALES.get(site["language"], site["language"]),
+        "og_image_tags": (
+            f'<meta name="image" property="og:image" content="{esc(og_bild)}">'
+            + (f'\n<meta property="og:image:alt" content="{esc(meta.get("og_image_alt") or meta["title"])}">' if meta.get("og_image") else "")
+            if og_bild else ""
+        ),
+        "twitter_image_tag": (f'<meta name="twitter:image" content="{esc(og_bild)}">' if og_bild else ""),
+        "twitter_card": "summary_large_image" if (meta.get("og_image") or meta.get("image")) else "summary",
+        "article_meta": "\n".join(zeilen),
+    }
 
 
 def slugify_tag(tag: str) -> str:
@@ -141,6 +183,27 @@ def tags_html_linked(tags: list[str]) -> str:
     return "".join(
         f'<a class="tag" href="/tag/{slugify_tag(t)}/">{html.escape(t)}</a>' for t in tags
     )
+
+
+_PFLICHT_META = (
+    ("title", "og:title", r'<meta name="title" property="og:title" content="[^"]+">'),
+    ("og:type", None, r'<meta property="og:type" content="[^"]+">'),
+    ("image", "og:image", r'<meta name="image" property="og:image" content="[^"]+">'),
+    ("description", "og:description", r'<meta name="description" property="og:description" content="[^"]+">'),
+    ("author", None, r'<meta name="author" content="[^"]+">'),
+)
+
+
+def pruefe_pflicht_meta(slug: str, kopf: str) -> None:
+    """Regel aus CLAUDE.md: jeder Artikel traegt diese fuenf Meta-Tags, nicht
+    leer. Fehlt eines (z. B. weil im Frontmatter Titel, Beschreibung oder Bild
+    fehlen), bricht der Build ab, statt eine Seite ohne Vorschau auszuliefern."""
+    fehlt = [n for n, _p, muster in _PFLICHT_META if not re.search(muster, kopf)]
+    if fehlt:
+        raise SystemExit(
+            f"Build abgebrochen: Artikel '{slug}' ohne Pflicht-Meta-Tag(s): {', '.join(fehlt)}. "
+            "Frontmatter pruefen (title, description, image oder thumb) -- siehe CLAUDE.md."
+        )
 
 
 def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_style: str) -> tuple[str, str]:
@@ -165,6 +228,7 @@ def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_sty
         "description": html.escape(meta["description"]),
         "canonical_url": canonical_url,
         "og_image": og_image,
+        **article_head_extras(meta, cfg),
         "jsonld": build_jsonld(meta, cfg, canonical_url),
         "style": style,
         "pygments_style": pygments_style,
@@ -178,7 +242,9 @@ def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_sty
         "base_url": site["base_url"],
         "author": html.escape(site["author"]),
     }
-    return meta["slug"], render(template, context)
+    seite = render(template, context)
+    pruefe_pflicht_meta(meta["slug"], seite[: seite.find("</head>")])
+    return meta["slug"], seite
 
 
 def render_changelog_html(eintraege: list[dict] | None) -> str:

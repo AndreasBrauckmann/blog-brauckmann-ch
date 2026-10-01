@@ -4,19 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{title}} · {{site_title}}</title>
-<meta name="description" content="{{description}}">
 <link rel="canonical" href="{{canonical_url}}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
 
+<meta name="author" content="{{author}}">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="alternate" type="application/rss+xml" title="{{site_title}}" href="{{base_url}}/rss.xml">
+
 <meta property="og:type" content="article">
-<meta property="og:title" content="{{title}}">
-<meta property="og:description" content="{{description}}">
+<meta property="og:site_name" content="{{site_title}}">
+<meta property="og:locale" content="{{og_locale}}">
+<meta name="title" property="og:title" content="{{title}}">
+<meta name="description" property="og:description" content="{{description}}">
 <meta property="og:url" content="{{canonical_url}}">
-<meta property="og:image" content="{{og_image}}">
-<meta name="twitter:card" content="summary_large_image">
+{{og_image_tags}}
+<meta name="twitter:card" content="{{twitter_card}}">
 <meta name="twitter:title" content="{{title}}">
 <meta name="twitter:description" content="{{description}}">
-<meta name="twitter:image" content="{{og_image}}">
+{{twitter_image_tag}}
+{{article_meta}}
 
 <script type="application/ld+json">
 {{jsonld}}
