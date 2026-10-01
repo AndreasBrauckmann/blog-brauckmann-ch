@@ -1,10 +1,10 @@
 ---
 slogan: "„Hey Siri, Windows.“ – der Samsung-Monitor mit eingebautem KVM-Switch schaltet um, Maus und Tastatur wandern mit. Per Sprache, mit Gratis-Software."
-title: "„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten."
+title: "KVM-Switch per Siri: Mac und Windows mit einem Satz umschalten"
 slug: kvm-switch-per-sprache
 date: 2026-09-27
 updated: 2026-09-30
-description: "Ein Satz zu Siri, und Bildschirm, Maus und Tastatur wechseln zwischen Mac und Windows-Notebook. So baue ich den KVM-Umschalter per Sprache, mit Gratis-Software."
+description: "Vier kostenlose Bausteine auf macOS verbinden Monitor, Tastatur und Maus zu einem Arbeitsplatz für zwei Notebooks, inklusive gemeinsamer Zwischenablage."
 summary: >-
   Für ein Video zum Zero Trust Assessment arbeite ich parallel auf zwei Notebooks: Auf dem Mac schneide und rendere ich, auf dem Windows-Notebook laufen PowerShell-Skripte und die Verbindungen zu Azure und Microsoft Entra. Jeder Wechsel kostete drei Knöpfe – dutzende Male pro Stunde. Mit vier Gratis-Bausteinen geht das jetzt per Sprache: ddcctl schaltet den Eingang des Monitors, Deskflow reicht Maus, Tastatur und Zwischenablage über das Netzwerk an das Windows-Notebook weiter, und ein Apple-Kurzbefehl verbindet beides mit Siri. Der Artikel zeigt den Aufbau, die Komponenten, sechs Stolpersteine und wie man den SSH-Zugang dafür sauber absichert.
 tags: [Arbeitsplatz, Automatisierung, Zero Trust, macOS, Windows]
@@ -57,9 +57,9 @@ Als Bonus wandert die Zwischenablage mit: Was ich auf dem Mac kopiere, füge ich
 
 Der Monitor ist der heimliche Star: Ein einziges **Thunderbolt-4-Kabel** zum Mac überträgt das Bild, **lädt den Mac mit 90 Watt** und bindet den USB-Hub und das Netzwerk des Monitors an. Er hat zusätzlich HDMI, DisplayPort, einen zweiten Thunderbolt-Anschluss und einen eingebauten KVM-Switch (dazu gleich mehr). Und das Beste: Ich habe ihn bei Galaxus als **geprüfte Retoure** gekauft – für **CHF 250.00**. Für einen 34-Zöller mit Thunderbolt und 90 Watt Ladeleistung ein echtes Schnäppchen. Tipp: Der Blick in die Rubriken „Gebraucht & geprüft“ und „B-Ware“ lohnt sich.
 
-Ein persönliches Highlight sind die **Edifier-Boxen** links und rechts vom Monitor: klein, weiss, passend zum Monitor – und sie klingen deutlich grösser, als sie aussehen. Der eigentliche Clou: Sie hängen **am Kopfhörer-Ausgang des Monitors** – ein simples Kabel von 3,5-mm-Klinke auf Cinch. Der Monitor gibt immer den Ton des Notebooks aus, das er gerade zeigt. Schalte ich auf Windows, kommt auch der Ton von Windows – ohne Kabel umzustecken, ohne Audio-Einstellungen. Beim Videoschnitt höre ich den Mac – ein Satz zu Siri, und der Ton kommt vom Windows-Notebook.
+Ein persönliches Highlight sind die **Edifier-Boxen** links und rechts vom Monitor: klein, weiss, passend zum Bildschirm – und sie klingen deutlich grösser, als sie aussehen. Der eigentliche Clou: Sie hängen **am Kopfhörer-Ausgang des Monitors** – ein simples Kabel von 3,5-mm-Klinke auf Cinch. Der Bildschirm gibt immer den Ton des Notebooks aus, das er gerade zeigt. Schalte ich auf Windows, kommt auch der Ton von Windows – ohne Kabel umzustecken, ohne Audio-Einstellungen. Beim Videoschnitt höre ich den Mac – ein Satz zu Siri, und der Ton kommt vom Windows-Notebook.
 
-Das Windows-Notebook hängt per **HDMI** am Monitor und hat sein eigenes Netzteil. Das ist nicht elegant, stört mich aber nicht – das Kabel war vorhanden. (Wie es auch mit einem Kabel ginge, steht weiter unten.)
+Das Windows-Notebook hängt per **HDMI** am Monitor und hat sein eigenes Netzteil. Das ist nicht elegant, stört mich aber nicht – die Verbindung war vorhanden. (Wie es auch mit einem einzigen ginge, steht weiter unten.)
 
 ## Warum ich das gebraucht habe
 
@@ -70,7 +70,7 @@ Ich produziere gerade ein Video zum **Zero Trust Assessment** – also zur Prüf
 
 **Optional, für mehr Sicherheit:** Der kleine MikroTik-Switch unter dem Schreibtisch läuft mit RouterOS und kann mehr als nur verteilen. Wer möchte, kann damit das HP EliteBook und das Teams-Telefon in ein **eigenes, abgeschottetes Netz** nehmen, das aus dem Heimnetz nicht erreichbar ist – die beiden Netze sehen sich dann nicht. Die einzige gewollte Ausnahme: Der Mac darf das EliteBook über den Deskflow-Port erreichen, sonst wandern Maus und Tastatur nicht mehr mit.
 
-Das heisst: Skript starten auf Windows, Ergebnis ansehen, zurück auf den Mac, Szene schneiden, wieder auf Windows, nächster Befehl, Screenshot, zurück zum Schnitt … Jeder Wechsel bedeutete bisher drei Knöpfe: am Monitor den Eingang, an der Tastatur die Kanaltaste, unten an der Maus den Umschalter. Dutzende Male pro Stunde. Und irgendwann tippt man den Befehl ins falsche Fenster.
+Das heisst: Skript starten auf Windows, Ergebnis ansehen, zum Mac wechseln, Szene schneiden, wieder auf Windows, nächster Befehl, Screenshot, weiter zum Schnitt … Jeder Wechsel bedeutete bisher drei Knöpfe: am Monitor den Eingang, an der Tastatur die Kanaltaste, unten an der Maus den Umschalter. Dutzende Male pro Stunde. Und irgendwann tippt man den Befehl ins falsche Fenster.
 
 Im Alltag wäre das ein nettes Extra. Bei so einem Projekt spart es richtig Zeit – und der Kopf bleibt beim Video statt bei den Knöpfen.
 
@@ -80,7 +80,7 @@ Ein zusätzliches KVM-Kästchen auf dem Tisch brauchte ich dafür nicht. Der Mon
 
 Das wissen viele nicht: Der **Samsung ViewFinity S65TC hat einen KVM-Switch eingebaut.** Wer diesen Monitor kauft, braucht kein zusätzliches Umschalt-Kästchen.
 
-So funktioniert er: Tastatur und Maus (oder deren Funkempfänger) stecken **am USB-Hub des Monitors**. Beide Notebooks hängen per USB-C/Thunderbolt am Monitor – der Monitor hat zwei Thunderbolt-4-Anschlüsse (einer mit 90 W, einer mit 15 W). Wechselt man den Eingang, wandern Tastatur und Maus automatisch mit zum anderen Notebook.
+So funktioniert er: Tastatur und Maus (oder deren Funkempfänger) stecken **am USB-Hub des Monitors**. Beide Notebooks hängen per USB-C/Thunderbolt am Gerät – es hat zwei Thunderbolt-4-Anschlüsse (einer mit 90 W, einer mit 15 W). Wechselt man den Eingang, wandern Tastatur und Maus automatisch mit zum anderen Notebook.
 
 Und das Schöne: Der Sprachbefehl funktioniert damit genauso. `ddcctl` schaltet den Eingang – und der eingebaute KVM nimmt Tastatur und Maus gleich mit. **Monitor kaufen, zwei Kabel stecken, Kurzbefehl anlegen – fertig.**
 
@@ -103,7 +103,7 @@ Welche Zahl zu welchem Eingang gehört, ist je nach Monitor verschieden – einm
 
 **Deskflow** ist ein kostenloser Software-KVM (der Nachfolger von Synergy und Barrier). Tastatur und Maus bleiben per Funk bzw. Bluetooth fest am Mac. Deskflow schickt die Bewegungen und Tastendrücke **über das Heimnetz** an das Windows-Notebook – verschlüsselt (TLS). Für Windows sieht das aus wie eine angeschlossene Maus.
 
-Der Mac ist der **Server**, das Windows-Notebook der **Client**. Im Server steht nur, wo der zweite Bildschirm liegt, plus zwei Tastenkürzel:
+Der Mac ist der **Server**, das Windows-Notebook der **Client**. In der Server-Konfiguration steht nur, wo der zweite Bildschirm liegt, plus zwei Tastenkürzel:
 
 ```text
 section: links
@@ -252,7 +252,7 @@ swiftc -O umschalter.swift \
 codesign --force -s - "$APP"
 ```
 
-Danach einmal unter *Datenschutz & Sicherheit → Bedienungshilfen* **DF-Umschalter** hinzufügen und einschalten – nur dieses eine Programm darf die Maus bewegen. Warum ein eigenes Programm und nicht einfach ein Skript? Weil macOS die Berechtigung an ein Programm bindet. Ein eigenes, kleines Programm bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)
+Danach einmal unter *Datenschutz & Sicherheit → Bedienungshilfen* **DF-Umschalter** hinzufügen und einschalten – nur er darf die Maus bewegen. Warum eine eigene App und nicht einfach ein Skript? Weil macOS die Berechtigung an ein signiertes Bundle bindet. Eine kleine, eigenständige App bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)
 
 Der Siri-Kurzbefehl „Windows“ schickt per SSH eine feste Befehlszeile an den Mac:
 
@@ -270,7 +270,7 @@ Was daraufhin genau passiert – Monitor-Eingang umschalten, DF-Umschalter und k
 
 Die **Logitech MX Keys** hat oben links drei **Easy-Switch-Tasten** – jede ist ein eigener Kanal für ein gekoppeltes Gerät. Ich nutze davon **bewusst nur Kanal 1**: Die Tastatur ist ausschliesslich mit dem Mac gekoppelt (über den Logi-Bolt-Empfänger) und steht im macOS-Layout-Modus. Deskflow leitet die Eingaben in Software an das Windows-Notebook weiter.
 
-Die Easy-Switch-Tasten fasse ich nicht an: Ein Druck löst eine neue Kopplung aus und kollidiert mit Deskflow – die Tastatur hängt dann direkt am anderen Gerät, und Deskflow verliert sie (siehe Stolperstein 5).
+Die Easy-Switch-Tasten fasse ich nicht an. Ein Druck löst eine neue Kopplung aus und kollidiert mit der Software-Weiterleitung: Die Tastatur hängt dann direkt am anderen Gerät und geht für Deskflow verloren (siehe Stolperstein 5).
 
 **Tastenbelegung:** Die MX Keys merkt sich für jeden Kanal das Betriebssystem. Einmal **fn + O** (3 Sekunden) auf Kanal 1 stellt auf Mac um – dann liegen ⌘ und ⌥ dort, wo sie hingehören. Damit unter Windows trotzdem alles wie beschriftet bleibt, tauscht Deskflow Alt und Windows-Taste für den Windows-Bildschirm wieder zurück (siehe Stolperstein 1).
 
@@ -308,7 +308,7 @@ Klingt banal, hat mich aber eine halbe Stunde gekostet: Deskflow lief noch mit d
 
 ## Sicherheit: SSH ja, aber mit angezogener Handbremse
 
-Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb darf dieser Schlüssel nur **vier fest hinterlegte Befehlszeilen** ausführen – zwei davon schalten nur den Monitor-Eingang, die beiden Umschaltbefehle der Kurzbefehle schalten zusätzlich Deskflow um. In der Datei `authorized_keys` bekommt der Schlüssel der Kurzbefehle einen Vorsatz:
+Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb erlaubt dieser Schlüssel nur **vier fest hinterlegte Befehlszeilen** – zwei davon wechseln lediglich den Monitor-Eingang, die beiden Umschaltbefehle der Kurzbefehle steuern zusätzlich Deskflow um. In der Datei `authorized_keys` bekommt der Schlüssel der Kurzbefehle einen Vorsatz:
 
 ```text
 restrict,command="/Users/<benutzer>/.ssh/ddc-gate.sh"
@@ -341,7 +341,7 @@ case "$SSH_ORIGINAL_COMMAND" in
 esac
 ```
 
-Wer den Schlüssel stiehlt, kann damit den Monitor umschalten – sonst nichts. Dazu kommt: `restrict` verbietet Weiterleitungen und Terminal, Deskflow verschlüsselt per TLS, und nichts davon läuft über eine Cloud.
+Wer den Schlüssel stiehlt, kann damit den Monitor umschalten – sonst nichts. Dazu kommt: `restrict` verbietet Weiterleitungen und Terminal, [Deskflow verschlüsselt per TLS](/artikel/monitoring-homelab-teil-2-cloudflare-firewall/), und nichts davon läuft über eine Cloud.
 
 ## Und wenn man das HDMI-Kabel nicht will?
 

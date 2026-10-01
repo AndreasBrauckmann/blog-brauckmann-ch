@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten. · Brauckmann Blog</title>
+<title>KVM-Switch per Siri: Mac und Windows mit einem Satz umschalten · Brauckmann Blog</title>
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
 
@@ -16,8 +16,8 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Brauckmann Blog">
 <meta property="og:locale" content="de_DE">
-<meta name="title" property="og:title" content="„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.">
-<meta name="description" property="og:description" content="Ein Satz zu Siri, und Bildschirm, Maus und Tastatur wechseln zwischen Mac und Windows-Notebook. So baue ich den KVM-Umschalter per Sprache, mit Gratis-Software.">
+<meta name="title" property="og:title" content="KVM-Switch per Siri: Mac und Windows mit einem Satz umschalten">
+<meta name="description" property="og:description" content="Vier kostenlose Bausteine auf macOS verbinden Monitor, Tastatur und Maus zu einem Arbeitsplatz für zwei Notebooks, inklusive gemeinsamer Zwischenablage.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/">
 <meta name="image" property="og:image" content="https://blog.brauckmann.ch/static/img/og-kvm-switch-per-sprache.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -25,8 +25,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Gezeichneter Schreibtisch: MacBook und HP-Notebook an einem Samsung-Monitor mit KVM-Switch, darüber die Sprechblasen „Hey Siri, Mac“ und „Hey Siri, Windows“.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.">
-<meta name="twitter:description" content="Ein Satz zu Siri, und Bildschirm, Maus und Tastatur wechseln zwischen Mac und Windows-Notebook. So baue ich den KVM-Umschalter per Sprache, mit Gratis-Software.">
+<meta name="twitter:title" content="KVM-Switch per Siri: Mac und Windows mit einem Satz umschalten">
+<meta name="twitter:description" content="Vier kostenlose Bausteine auf macOS verbinden Monitor, Tastatur und Maus zu einem Arbeitsplatz für zwei Notebooks, inklusive gemeinsamer Zwischenablage.">
 <meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/og-kvm-switch-per-sprache.jpg">
 <meta property="article:published_time" content="2026-09-27">
 <meta property="article:modified_time" content="2026-09-30">
@@ -42,8 +42,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.",
-  "description": "Ein Satz zu Siri, und Bildschirm, Maus und Tastatur wechseln zwischen Mac und Windows-Notebook. So baue ich den KVM-Umschalter per Sprache, mit Gratis-Software.",
+  "headline": "KVM-Switch per Siri: Mac und Windows mit einem Satz umschalten",
+  "description": "Vier kostenlose Bausteine auf macOS verbinden Monitor, Tastatur und Maus zu einem Arbeitsplatz für zwei Notebooks, inklusive gemeinsamer Zwischenablage.",
   "datePublished": "2026-09-27",
   "dateModified": "2026-09-30",
   "inLanguage": "de",
@@ -569,6 +569,31 @@ article img {
 .aenderungshistorie time { font-family: "SFMono-Regular", Consolas, Menlo, monospace; color: var(--fg); margin-right: 0.4em; }
 .bp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
 
+/* ===== Typografie v1 (1.10.2026): groessere Schrift, mehr Zeilen- und Absatzabstand, ruhigere Ueberschriften ===== */
+body { font-size: 1.125rem; line-height: 1.7; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+main { max-width: 66ch; }
+footer.site-footer { max-width: 66ch; }
+article > p, article > ul, article > ol { max-width: 66ch; }
+article p { margin: 0 0 1.2em; }
+h1 { font-size: 2.3rem; line-height: 1.15; letter-spacing: -0.018em; margin: 0.2em 0 0.45em; }
+h2 { font-size: 1.6rem; line-height: 1.22; letter-spacing: -0.01em; margin: 2.8em 0 0.7em; }
+h3 { font-size: 1.22rem; line-height: 1.3; margin: 2.1em 0 0.55em; }
+ul, ol { margin: 0 0 1.35em; padding-left: 1.45em; }
+li { margin: 0.4em 0; }
+li > p { margin: 0.4em 0; }
+strong { font-weight: 650; }
+blockquote { margin: 1.8em 0; padding: 0.1em 0 0.1em 1.1em; border-left: 3px solid var(--border); color: var(--fg-muted); }
+figure, article > p > img { margin-top: 1.8em; margin-bottom: 1.8em; }
+img { border-radius: 6px; }
+.table-wrap { margin: 2em 0; }
+th, td { padding: 0.6rem 0.9rem; }
+time.article-date { font-size: 0.92rem; }
+.tags { margin: 0.7rem 0 2rem; }
+pre { padding: 1.1rem 1.2rem; line-height: 1.5; font-size: 0.92rem; }
+@media (max-width: 30em) { body { font-size: 1.0625rem; line-height: 1.68; } h1 { font-size: 1.85rem; } h2 { font-size: 1.4rem; margin-top: 2.4em; } }
+.article-list-item > * { min-width: 0; }
+.article-list-item .teaser { overflow-wrap: anywhere; }
+
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -650,7 +675,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main>
   <article>
     <header>
-      <h1>„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.</h1>
+      <h1>KVM-Switch per Siri: Mac und Windows mit einem Satz umschalten</h1>
       <time class="article-date" datetime="2026-09-27">2026-09-27</time>
       <div class="article-meta-row">
         <div class="tags"><a class="tag" href="/tag/arbeitsplatz/">Arbeitsplatz</a><a class="tag" href="/tag/automatisierung/">Automatisierung</a><a class="tag" href="/tag/zero-trust/">Zero Trust</a><a class="tag" href="/tag/macos/">macOS</a><a class="tag" href="/tag/windows/">Windows</a></div>
@@ -718,8 +743,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </tbody>
 </table></div>
 <p>Der Monitor ist der heimliche Star: Ein einziges <strong>Thunderbolt-4-Kabel</strong> zum Mac überträgt das Bild, <strong>lädt den Mac mit 90 Watt</strong> und bindet den USB-Hub und das Netzwerk des Monitors an. Er hat zusätzlich HDMI, DisplayPort, einen zweiten Thunderbolt-Anschluss und einen eingebauten KVM-Switch (dazu gleich mehr). Und das Beste: Ich habe ihn bei Galaxus als <strong>geprüfte Retoure</strong> gekauft – für <strong>CHF 250.00</strong>. Für einen 34-Zöller mit Thunderbolt und 90 Watt Ladeleistung ein echtes Schnäppchen. Tipp: Der Blick in die Rubriken „Gebraucht &amp; geprüft“ und „B-Ware“ lohnt sich.</p>
-<p>Ein persönliches Highlight sind die <strong>Edifier-Boxen</strong> links und rechts vom Monitor: klein, weiss, passend zum Monitor – und sie klingen deutlich grösser, als sie aussehen. Der eigentliche Clou: Sie hängen <strong>am Kopfhörer-Ausgang des Monitors</strong> – ein simples Kabel von 3,5-mm-Klinke auf Cinch. Der Monitor gibt immer den Ton des Notebooks aus, das er gerade zeigt. Schalte ich auf Windows, kommt auch der Ton von Windows – ohne Kabel umzustecken, ohne Audio-Einstellungen. Beim Videoschnitt höre ich den Mac – ein Satz zu Siri, und der Ton kommt vom Windows-Notebook.</p>
-<p>Das Windows-Notebook hängt per <strong>HDMI</strong> am Monitor und hat sein eigenes Netzteil. Das ist nicht elegant, stört mich aber nicht – das Kabel war vorhanden. (Wie es auch mit einem Kabel ginge, steht weiter unten.)</p>
+<p>Ein persönliches Highlight sind die <strong>Edifier-Boxen</strong> links und rechts vom Monitor: klein, weiss, passend zum Bildschirm – und sie klingen deutlich grösser, als sie aussehen. Der eigentliche Clou: Sie hängen <strong>am Kopfhörer-Ausgang des Monitors</strong> – ein simples Kabel von 3,5-mm-Klinke auf Cinch. Der Bildschirm gibt immer den Ton des Notebooks aus, das er gerade zeigt. Schalte ich auf Windows, kommt auch der Ton von Windows – ohne Kabel umzustecken, ohne Audio-Einstellungen. Beim Videoschnitt höre ich den Mac – ein Satz zu Siri, und der Ton kommt vom Windows-Notebook.</p>
+<p>Das Windows-Notebook hängt per <strong>HDMI</strong> am Monitor und hat sein eigenes Netzteil. Das ist nicht elegant, stört mich aber nicht – die Verbindung war vorhanden. (Wie es auch mit einem einzigen ginge, steht weiter unten.)</p>
 <h2 id="warum-ich-das-gebraucht-habe">Warum ich das gebraucht habe</h2>
 <p>Ich produziere gerade ein Video zum <strong>Zero Trust Assessment</strong> – also zur Prüfung, wie gut eine Microsoft-365- und Azure-Umgebung nach dem Zero-Trust-Prinzip abgesichert ist. Dafür brauche ich zwei Welten gleichzeitig:</p>
 <ul>
@@ -727,12 +752,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><strong>Auf dem Windows-Notebook</strong> laufen die PowerShell-Skripte, die Verbindungen zu Azure und Microsoft Entra und das Assessment selbst. Dafür ist Windows gemacht.</li>
 </ul>
 <p><strong>Optional, für mehr Sicherheit:</strong> Der kleine MikroTik-Switch unter dem Schreibtisch läuft mit RouterOS und kann mehr als nur verteilen. Wer möchte, kann damit das HP EliteBook und das Teams-Telefon in ein <strong>eigenes, abgeschottetes Netz</strong> nehmen, das aus dem Heimnetz nicht erreichbar ist – die beiden Netze sehen sich dann nicht. Die einzige gewollte Ausnahme: Der Mac darf das EliteBook über den Deskflow-Port erreichen, sonst wandern Maus und Tastatur nicht mehr mit.</p>
-<p>Das heisst: Skript starten auf Windows, Ergebnis ansehen, zurück auf den Mac, Szene schneiden, wieder auf Windows, nächster Befehl, Screenshot, zurück zum Schnitt … Jeder Wechsel bedeutete bisher drei Knöpfe: am Monitor den Eingang, an der Tastatur die Kanaltaste, unten an der Maus den Umschalter. Dutzende Male pro Stunde. Und irgendwann tippt man den Befehl ins falsche Fenster.</p>
+<p>Das heisst: Skript starten auf Windows, Ergebnis ansehen, zum Mac wechseln, Szene schneiden, wieder auf Windows, nächster Befehl, Screenshot, weiter zum Schnitt … Jeder Wechsel bedeutete bisher drei Knöpfe: am Monitor den Eingang, an der Tastatur die Kanaltaste, unten an der Maus den Umschalter. Dutzende Male pro Stunde. Und irgendwann tippt man den Befehl ins falsche Fenster.</p>
 <p>Im Alltag wäre das ein nettes Extra. Bei so einem Projekt spart es richtig Zeit – und der Kopf bleibt beim Video statt bei den Knöpfen.</p>
 <p>Ein zusätzliches KVM-Kästchen auf dem Tisch brauchte ich dafür nicht. Der Monitor hatte es schon eingebaut.</p>
 <h2 id="tipp-der-kvm-switch-steckt-schon-im-monitor">Tipp: Der KVM-Switch steckt schon im Monitor</h2>
 <p>Das wissen viele nicht: Der <strong>Samsung ViewFinity S65TC hat einen KVM-Switch eingebaut.</strong> Wer diesen Monitor kauft, braucht kein zusätzliches Umschalt-Kästchen.</p>
-<p>So funktioniert er: Tastatur und Maus (oder deren Funkempfänger) stecken <strong>am USB-Hub des Monitors</strong>. Beide Notebooks hängen per USB-C/Thunderbolt am Monitor – der Monitor hat zwei Thunderbolt-4-Anschlüsse (einer mit 90 W, einer mit 15 W). Wechselt man den Eingang, wandern Tastatur und Maus automatisch mit zum anderen Notebook.</p>
+<p>So funktioniert er: Tastatur und Maus (oder deren Funkempfänger) stecken <strong>am USB-Hub des Monitors</strong>. Beide Notebooks hängen per USB-C/Thunderbolt am Gerät – es hat zwei Thunderbolt-4-Anschlüsse (einer mit 90 W, einer mit 15 W). Wechselt man den Eingang, wandern Tastatur und Maus automatisch mit zum anderen Notebook.</p>
 <p>Und das Schöne: Der Sprachbefehl funktioniert damit genauso. <code>ddcctl</code> schaltet den Eingang – und der eingebaute KVM nimmt Tastatur und Maus gleich mit. <strong>Monitor kaufen, zwei Kabel stecken, Kurzbefehl anlegen – fertig.</strong></p>
 <p>Warum ich trotzdem Deskflow nutze: Mein Windows-Notebook hängt per HDMI am Monitor (HDMI überträgt kein USB), meine Tastatur und Maus sind per Bluetooth und Funk mit dem Mac verbunden, und ich wollte die gemeinsame Zwischenablage. Wer es einfacher mag: Der eingebaute KVM reicht völlig.</p>
 <h2 id="vier-bausteine-alle-kostenlos">Vier Bausteine, alle kostenlos</h2>
@@ -745,7 +770,7 @@ ddcctl<span class="w"> </span>-d<span class="w"> </span><span class="m">1</span>
 <p>Welche Zahl zu welchem Eingang gehört, ist je nach Monitor verschieden – einmal ausprobieren, dann steht es fest.</p>
 <h3 id="2-maus-und-tastatur-wandern-mit-deskflow">2. Maus und Tastatur wandern mit: Deskflow</h3>
 <p><strong>Deskflow</strong> ist ein kostenloser Software-KVM (der Nachfolger von Synergy und Barrier). Tastatur und Maus bleiben per Funk bzw. Bluetooth fest am Mac. Deskflow schickt die Bewegungen und Tastendrücke <strong>über das Heimnetz</strong> an das Windows-Notebook – verschlüsselt (TLS). Für Windows sieht das aus wie eine angeschlossene Maus.</p>
-<p>Der Mac ist der <strong>Server</strong>, das Windows-Notebook der <strong>Client</strong>. Im Server steht nur, wo der zweite Bildschirm liegt, plus zwei Tastenkürzel:</p>
+<p>Der Mac ist der <strong>Server</strong>, das Windows-Notebook der <strong>Client</strong>. In der Server-Konfiguration steht nur, wo der zweite Bildschirm liegt, plus zwei Tastenkürzel:</p>
 <div class="codehilite"><pre><span></span><code>section: links
     mac:
         right = windows
@@ -880,7 +905,7 @@ swiftc<span class="w"> </span>-O<span class="w"> </span>umschalter.swift<span cl
 codesign<span class="w"> </span>--force<span class="w"> </span>-s<span class="w"> </span>-<span class="w"> </span><span class="s2">"</span><span class="nv">$APP</span><span class="s2">"</span>
 </code></pre></div>
 
-<p>Danach einmal unter <em>Datenschutz &amp; Sicherheit → Bedienungshilfen</em> <strong>DF-Umschalter</strong> hinzufügen und einschalten – nur dieses eine Programm darf die Maus bewegen. Warum ein eigenes Programm und nicht einfach ein Skript? Weil macOS die Berechtigung an ein Programm bindet. Ein eigenes, kleines Programm bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)</p>
+<p>Danach einmal unter <em>Datenschutz &amp; Sicherheit → Bedienungshilfen</em> <strong>DF-Umschalter</strong> hinzufügen und einschalten – nur er darf die Maus bewegen. Warum eine eigene App und nicht einfach ein Skript? Weil macOS die Berechtigung an ein signiertes Bundle bindet. Eine kleine, eigenständige App bekommt eine eigene Freigabe; die Kurzbefehle-App bekam sie bei mir nicht zuverlässig. (Zu den Grenzen dieser Freigaben siehe den Hinweis am Ende dieses Abschnitts.)</p>
 <p>Der Siri-Kurzbefehl „Windows“ schickt per SSH eine feste Befehlszeile an den Mac:</p>
 <div class="codehilite"><pre><span></span><code>/usr/local/bin/ddcctl -d 1 -i 17; /usr/bin/open -g "$HOME/Applications/DF-Umschalter.app" --args windows
 </code></pre></div>
@@ -890,7 +915,7 @@ codesign<span class="w"> </span>--force<span class="w"> </span>-s<span class="w"
 <p><strong>Berechtigungen unter macOS:</strong> Deskflow, deskflow-core, DF-Umschalter und kvm-hotkey brauchen unter <em>Datenschutz &amp; Sicherheit</em> die Freigaben <strong>Bedienungshilfen</strong> und <strong>Eingabeüberwachung</strong>. Weil die selbstgebauten Programme nur ad hoc signiert sind, setzt macOS diese Freigaben nach einem Rebuild oder einem Update gern stillschweigend zurück. Das Symptom: Der Bildschirm schaltet um, aber Tastatur und Maus reagieren nicht. Dann zuerst die Freigaben prüfen.</p>
 <h2 id="die-tastatur-bewusst-nur-an-einem-kanal">Die Tastatur: bewusst nur an einem Kanal</h2>
 <p>Die <strong>Logitech MX Keys</strong> hat oben links drei <strong>Easy-Switch-Tasten</strong> – jede ist ein eigener Kanal für ein gekoppeltes Gerät. Ich nutze davon <strong>bewusst nur Kanal 1</strong>: Die Tastatur ist ausschliesslich mit dem Mac gekoppelt (über den Logi-Bolt-Empfänger) und steht im macOS-Layout-Modus. Deskflow leitet die Eingaben in Software an das Windows-Notebook weiter.</p>
-<p>Die Easy-Switch-Tasten fasse ich nicht an: Ein Druck löst eine neue Kopplung aus und kollidiert mit Deskflow – die Tastatur hängt dann direkt am anderen Gerät, und Deskflow verliert sie (siehe Stolperstein 5).</p>
+<p>Die Easy-Switch-Tasten fasse ich nicht an. Ein Druck löst eine neue Kopplung aus und kollidiert mit der Software-Weiterleitung: Die Tastatur hängt dann direkt am anderen Gerät und geht für Deskflow verloren (siehe Stolperstein 5).</p>
 <p><strong>Tastenbelegung:</strong> Die MX Keys merkt sich für jeden Kanal das Betriebssystem. Einmal <strong>fn + O</strong> (3 Sekunden) auf Kanal 1 stellt auf Mac um – dann liegen ⌘ und ⌥ dort, wo sie hingehören. Damit unter Windows trotzdem alles wie beschriftet bleibt, tauscht Deskflow Alt und Windows-Taste für den Windows-Bildschirm wieder zurück (siehe Stolperstein 1).</p>
 <h2 id="die-sechs-stolpersteine-und-wie-ich-sie-gelost-habe">Die sechs Stolpersteine (und wie ich sie gelöst habe)</h2>
 <p><strong>1. Die Tastenbelegung – der grösste Stolperstein!</strong>
@@ -915,7 +940,7 @@ Wer die Maus zusätzlich per Bluetooth mit Windows koppelt, bekommt Chaos: Sie s
 <p><strong>6. Nach dem Ändern der Konfiguration: Server neu starten.</strong>
 Klingt banal, hat mich aber eine halbe Stunde gekostet: Deskflow lief noch mit der alten, leeren Konfiguration. Kein Übergang, keine Hotkeys – bis zum Neustart.</p>
 <h2 id="sicherheit-ssh-ja-aber-mit-angezogener-handbremse">Sicherheit: SSH ja, aber mit angezogener Handbremse</h2>
-<p>Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb darf dieser Schlüssel nur <strong>vier fest hinterlegte Befehlszeilen</strong> ausführen – zwei davon schalten nur den Monitor-Eingang, die beiden Umschaltbefehle der Kurzbefehle schalten zusätzlich Deskflow um. In der Datei <code>authorized_keys</code> bekommt der Schlüssel der Kurzbefehle einen Vorsatz:</p>
+<p>Ein SSH-Schlüssel, mit dem das iPhone Befehle auf dem Mac ausführen darf, ist mächtig. Deshalb erlaubt dieser Schlüssel nur <strong>vier fest hinterlegte Befehlszeilen</strong> – zwei davon wechseln lediglich den Monitor-Eingang, die beiden Umschaltbefehle der Kurzbefehle steuern zusätzlich Deskflow um. In der Datei <code>authorized_keys</code> bekommt der Schlüssel der Kurzbefehle einen Vorsatz:</p>
 <div class="codehilite"><pre><span></span><code>restrict,command="/Users/&lt;benutzer&gt;/.ssh/ddc-gate.sh"
 </code></pre></div>
 
@@ -943,7 +968,7 @@ Klingt banal, hat mich aber eine halbe Stunde gekostet: Deskflow lief noch mit d
 <span class="k">esac</span>
 </code></pre></div>
 
-<p>Wer den Schlüssel stiehlt, kann damit den Monitor umschalten – sonst nichts. Dazu kommt: <code>restrict</code> verbietet Weiterleitungen und Terminal, Deskflow verschlüsselt per TLS, und nichts davon läuft über eine Cloud.</p>
+<p>Wer den Schlüssel stiehlt, kann damit den Monitor umschalten – sonst nichts. Dazu kommt: <code>restrict</code> verbietet Weiterleitungen und Terminal, <a href="/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">Deskflow verschlüsselt per TLS</a>, und nichts davon läuft über eine Cloud.</p>
 <h2 id="und-wenn-man-das-hdmi-kabel-nicht-will">Und wenn man das HDMI-Kabel nicht will?</h2>
 <p>Der S65TC hat <strong>zwei</strong> Thunderbolt-Anschlüsse – aber nur einer liefert die 90 Watt, die ein Notebook zum Laden braucht, und den belegt der Mac. Der zweite bringt 15 Watt: genug für Bild und USB (und damit für den eingebauten KVM-Switch), aber nicht zum Laden. Wer beide Notebooks mit <strong>je einem einzigen Kabel</strong> (Bild + Strom + USB) anschliessen möchte, hat drei Möglichkeiten:</p>
 <ul>

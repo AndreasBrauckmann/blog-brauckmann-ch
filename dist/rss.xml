@@ -4,35 +4,35 @@
   <link>https://blog.brauckmann.ch</link>
   <description>IT, KI und Automatisierung für Fachpublikum</description>
   <item>
-    <title>Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)</title>
+    <title>KI-Monitoring mit Claude MCP: Cloudflare &amp; Firewall im Griff</title>
     <link>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</link>
     <guid>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</guid>
-    <description>Security sieht den Angriff, Betrieb den Fehler -- dazwischen fehlte das Bindeglied. Jetzt verbindet eine KI beide Welten, trennt Wichtiges von Rauschen und handelt, wo es freigegeben ist.</description>
+    <description>Cloudflare, CrowdSec und ein KI-MCP-Server: Wie Angriffe, Fehlkonfigurationen und Ausfälle erkannt und behoben werden – bevor ein Mensch hinschaut.</description>
     <pubDate>Mon, 28 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
-    <title>„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.</title>
+    <title>KVM-Switch per Siri: Mac und Windows mit einem Satz umschalten</title>
     <link>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</link>
     <guid>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</guid>
-    <description>Ein Satz zu Siri, und Bildschirm, Maus und Tastatur wechseln zwischen Mac und Windows-Notebook. So baue ich den KVM-Umschalter per Sprache, mit Gratis-Software.</description>
+    <description>Vier kostenlose Bausteine auf macOS verbinden Monitor, Tastatur und Maus zu einem Arbeitsplatz für zwei Notebooks, inklusive gemeinsamer Zwischenablage.</description>
     <pubDate>Sun, 27 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
-    <title>Monitoring für kleine Infrastrukturen in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; write*)</title>
+    <title>Netdata + Claude: Server-Monitoring ohne Grafana-Stack</title>
     <link>https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/</link>
     <guid>https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/</guid>
-    <description>Netdata installieren, Claude per MCP an die eigenen Metriken anschließen: Monitoring für kleine Infrastrukturen in 15 Minuten, ohne Cloud-Konto und Yaml-Wüste.</description>
+    <description>Installation in zwei Minuten, danach Anomalien und Alarme per Rückfrage statt per Dashboard-Klick auswerten; läuft lokal, ohne Cloud-Zwang, auch auf ARM.</description>
     <pubDate>Sun, 20 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
-    <title>Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und Kosten</title>
+    <title>Makrodaten direkt im Chart mit Kontors Wirtschaftskalender</title>
     <link>https://blog.brauckmann.ch/artikel/wirtschaftskalender-ohne-anmeldung/</link>
     <guid>https://blog.brauckmann.ch/artikel/wirtschaftskalender-ohne-anmeldung/</guid>
-    <description>Über 84.000 Konjunkturtermine seit 2010, ohne Login: kostenlose API, sechs Download-Formate, KI-Recherche per Klick und Link zur Originalquelle jedes Termins.</description>
+    <description>Seit 2010 lückenlos gepflegt, mit kostenloser API, sechs Download-Formaten und Sparkline-Verlauf pro Kennzahl bis zur amtlichen Originalquelle.</description>
     <pubDate>Sun, 20 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
-    <title>KI-Tempo, Nov.25 – Sep.26: Elf Monate, zwei Wellen — warum jetzt andere Regeln gelten</title>
+    <title>Robuste KI-Skills statt Modellwissen mit Verfallsdatum</title>
     <link>https://blog.brauckmann.ch/artikel/sieben-monate-elf-umbrueche/</link>
     <guid>https://blog.brauckmann.ch/artikel/sieben-monate-elf-umbrueche/</guid>
     <description>Alle paar Wochen ein neues KI-Modell: Wichtiger als Modellkenntnis ist sauberer Kontext. Elf Monate, zwei Wellen und fünf Techniken, die den Wechsel überstehen.</description>

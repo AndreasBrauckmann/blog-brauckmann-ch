@@ -1,6 +1,6 @@
 ---
 slogan: "Wer mit dem KI-Tempo mithalten will, muss anders ablegen statt schneller lernen: fünf Techniken gegen den ständigen Modellwechsel."
-title: "KI-Tempo, Nov.25 – Sep.26: Elf Monate, zwei Wellen — warum jetzt andere Regeln gelten"
+title: "Robuste KI-Skills statt Modellwissen mit Verfallsdatum"
 slug: sieben-monate-elf-umbrueche
 date: 2026-09-07
 updated: 2026-09-29
@@ -34,7 +34,7 @@ changelog:
 
 ## Der Prompt, der alle fünf Techniken zusammenbringt
 
-So sieht das in der Praxis aus — nicht an einem Software-Beispiel, sondern an einer Frage, die gerade jeder Autokäufer umtreibt: Verbrenner, Hybrid oder Elektro — und lohnt sich ein chinesisches Modell gegenüber einer etablierten Marke? Ein einzelner Prompt, aufgebaut wie ein Ticket, nicht wie eine Bitte. Fünf Techniken in einem Prompt — und jeder versteht sofort, worum es geht.
+So sieht das in der Praxis aus — nicht an einem Software-Beispiel, sondern an einer Frage, die gerade jeder Autokäufer umtreibt: Verbrenner, Hybrid oder Elektro — und lohnt sich ein chinesisches Modell gegenüber einer etablierten Marke? Eine einzige Eingabe, aufgebaut wie ein Ticket, nicht wie eine Bitte. Fünf Techniken auf einen Blick — und jeder versteht sofort, worum es geht.
 
 ```
 [Request · Priorität B]
@@ -74,9 +74,9 @@ Der Bruch liegt nicht im Februar. Er liegt in den letzten Wochen des Jahres 2025
 
 ![Elf Monate, zwei Wellen — Realitätscheck November 2025 bis September 2026](/static/img/01-realitaetscheck-zeitstreifen.png)
 
-Die Schlagzeilen liefern die beiden Ränder: November/Dezember 2025 mit vier Flaggschiff-Modellen in Wochen und dem Start der Agent-Frameworks, Juli bis September 2026 mit explodierenden Kontextfenstern und einem Preiszusammenbruch von 80 Prozent. Die Details dazu stehen in der Grafik oben.
+Genau hier liefern die Schlagzeilen die beiden Ränder. November/Dezember 2025 brachte vier Flaggschiff-Modelle in Wochen und den Start der Agent-Frameworks. Juli bis September 2026 folgte mit explodierenden Kontextfenstern und einem Preiszusammenbruch von 80 Prozent. Die Details dazu stehen in der Grafik oben.
 
-Interessant ist aber nicht der Rand — interessant ist die Mitte. Zwischen April und Juni wurde es scheinbar ruhig. Tatsächlich verschob sich in diesen drei Monaten etwas Grundlegenderes: Nicht mehr das Modell entschied über den Vorsprung, sondern das Harness — die Orchestrierung drumherum. Die Konsolidierung war keine Pause. Sie war ein Ebenenwechsel.
+Aufschlussreich ist aber nicht der Rand — sondern die Mitte. Zwischen April und Juni wurde es scheinbar ruhig. Tatsächlich verschob sich in diesen drei Monaten etwas Grundlegenderes: Nicht mehr das Modell entschied über den Vorsprung, sondern das Harness — die Orchestrierung drumherum. Die Konsolidierung war keine Pause. Sie war ein Ebenenwechsel.
 
 ![Zwei Wellen, ein Ebenenwechsel — was sich zwischen November 2025 und September 2026 wirklich verschoben hat](/static/img/02-zwei-wellen-vergleich.png)
 
@@ -90,9 +90,9 @@ Die meisten Menschen legen ihr KI-Wissen an zwei Orten ab, die beide nicht haltb
 
 Der erste Ort ist der **Chatverlauf**. Ein langes Gespräch, in dem über Wochen Kontext gewachsen ist: Entscheidungen, Präferenzen, Erklärungen, halbfertige Gedanken. Das fühlt sich produktiv an. Es ist aber die flüchtigste Form von Wissen, die es gibt. Der Verlauf lässt sich nicht auf ein neues Modell übertragen. Er lässt sich nicht mit Kollegen teilen. Er wird mit jeder Nachricht teurer, weil das komplette Fenster erneut verarbeitet wird. Und er wird nachweislich schlechter: Chroma hat unter dem Namen *Context Rot* dokumentiert, dass die Antwortqualität mit wachsender Kontextlänge sinkt — auch weit unterhalb des technischen Limits. Das Modell verliert die Mitte, klammert sich an frühe Festlegungen und wiederholt Fehler, die es einmal gemacht hat.
 
-Der zweite Ort ist der **eigene Kopf** — konkret: das Wissen, wie man *dieses eine Modell* am besten anspricht. Welche Formulierung funktioniert, wo es zickt, welcher Umweg nötig ist. Diese Investition hat eine Halbwertszeit von etwa acht Wochen. Sie ist beim nächsten Release teilweise wertlos, und das Ärgerliche ist: Man merkt es nicht sofort. Man merkt es, wenn die Ergebnisse schleichend schlechter werden und man nicht weiss, warum.
+Der zweite Ort ist der **eigene Kopf** — konkret: das Wissen, wie man *dieses eine Modell* am besten anspricht. Welche Formulierung funktioniert, wo es zickt, welcher Umweg nötig ist. Diese Investition hat eine Halbwertszeit von etwa acht Wochen. Sie ist beim nächsten Release teilweise wertlos, und das Ärgerliche ist: Man bemerkt es nicht sofort. Man merkt es erst, wenn die Ergebnisse schleichend schlechter werden und man nicht weiss, warum.
 
-💡 **Die Kompensation besteht nicht darin, schneller zu lernen. Sie besteht darin, Wissen an Orte zu legen, die den Modellwechsel überleben.**
+💡 **Deshalb besteht die Kompensation nicht darin, schneller zu lernen. Sie besteht darin, Wissen an Orte zu legen, die den Modellwechsel überleben.**
 
 ## Fünf Techniken
 
@@ -102,29 +102,29 @@ Der zweite Ort ist der **eigene Kopf** — konkret: das Wissen, wie man *dieses 
 
 Der Grund, warum viele Teams neue Modelle spät testen, ist selten Desinteresse. Es ist Reibung. Ein neues Werkzeug auf einem Arbeitsrechner auszuprobieren, auf dem Kundendaten, Zugangsdaten und produktive Konfigurationen liegen, erfordert entweder Mut oder ein Freigabeverfahren. Beides bremst.
 
-Sandboxing löst das, indem es die Grenze einmal zieht statt bei jedem Befehl neu. Der Agent bekommt eine isolierte Umgebung — je nach Risiko eine OS-native Sandbox (unter macOS Seatbelt, unter Linux bubblewrap, unter Windows die von OpenAI für Codex entwickelte Windows-Sandbox), einen Devcontainer, oder eine microVM in der Cloud. Innerhalb dieser Grenze darf er arbeiten, ohne dass jede Aktion bestätigt werden muss. Ausserhalb kommt er nicht heran.
+Sandboxing löst das, indem es die Grenze einmal zieht statt bei jedem Befehl neu. Der Agent bekommt eine isolierte Umgebung — je nach Risiko eine OS-native Sandbox ([unter macOS Seatbelt](/artikel/kvm-switch-per-sprache/), unter Linux bubblewrap, unter Windows die von OpenAI für Codex entwickelte Windows-Sandbox), einen Devcontainer, oder eine microVM in der Cloud. Innerhalb dieser Grenze darf er arbeiten, ohne dass jede Aktion bestätigt werden muss. Ausserhalb kommt er nicht heran.
 
 Der Effekt auf das Tempo ist unmittelbar: Ein neues Modell lässt sich am Freitagnachmittag an einer echten Aufgabe testen, statt im nächsten Change-Fenster. Der Autonomiegrad steigt, das Risiko nicht.
 
-Zwei Dinge sollte man dabei wissen. Erstens ist die Netzwerkgrenze wichtiger als die Dateigrenze. Eine Sandbox mit grosszügiger Egress-Freigabe ist kaum eine Sandbox — Daten fliessen dann über erlaubte Kanäle ab. *Default-deny* mit expliziter Allowlist ist der einzige sinnvolle Ausgangspunkt. Zweitens: Sandboxing schützt nicht vor Prompt Injection. Ein manipulierter Agent nutzt innerhalb der Sandbox genau die Rechte, die er legitimerweise hat. Eine Sandbox begrenzt den Schaden. Sie verhindert den Angriff nicht.
+Zwei Dinge sollte man dabei wissen. Erstens ist die Netzwerkgrenze wichtiger als die Dateigrenze. Eine Sandbox mit grosszügiger Egress-Freigabe ist kaum eine — Daten fliessen dann über erlaubte Kanäle ab. *Default-deny* mit expliziter Allowlist ist der einzige sinnvolle Ausgangspunkt. Zweitens: Sandboxing schützt nicht vor Prompt Injection. Ein manipulierter Agent nutzt innerhalb der Umgebung genau die Rechte, die er legitimerweise hat. Sie begrenzt den Schaden, verhindert den Angriff aber nicht.
 
 ### 2. Kodifizieren, damit Wissen den Modellwechsel überlebt
 
 📄 **Einmal sauber als Skill aufgeschrieben, übersteht Wissen jede Modellgeneration, die danach kommt.**
 
-Ein *Skill* ist im Kern unspektakulär: ein Ordner mit einer Markdown-Datei, die beschreibt, wie eine wiederkehrende Aufgabe zu erledigen ist — plus optional Vorlagen und Skripte. Die Datei trägt einen Namen und eine Beschreibung, und die Beschreibung ist der Auslöser: Erkennt das Modell, dass die aktuelle Aufgabe dazu passt, lädt es den Skill nach.
+Genau hier setzt das Skill-Konzept an — und es ist im Kern unspektakulär: ein Ordner mit einer Markdown-Datei, die beschreibt, wie eine wiederkehrende Aufgabe zu erledigen ist, plus optional Vorlagen und Skripte. Die Datei trägt einen Namen und einen Kurztext als Auslöser: Erkennt das Modell, dass die aktuelle Aufgabe dazu passt, lädt es den Skill nach.
 
 Der technische Kniff heisst *progressive disclosure*. Dauerhaft im Kontext liegt nur die Beschreibung, etwa hundert Token. Der eigentliche Inhalt kommt erst beim Auslösen dazu, Detaildateien und Skriptausgaben noch später. Man kann hundert Skills bereithalten, ohne den Kontext zu fluten.
 
 Der strategische Wert liegt woanders. Das SKILL.md-Format ist ein offener Standard und läuft mittlerweile in mehreren Werkzeugen verschiedener Anbieter. Wenn ein neues Modell erscheint, wird die Skill-Bibliothek **nachgetestet, nicht neu geschrieben**. Was einmal sauber aufgeschrieben wurde — wie ein Bericht in diesem Haus aussieht, wie ein Skript hier strukturiert wird, welche Prüfschritte vor einer Auslieferung kommen — überlebt die Modellgeneration, in der es entstanden ist.
 
-Damit verschiebt sich auch die Ökonomie des Lernens. Die Stunde, die man in einen guten Skill investiert, zahlt bei jeder künftigen Ausführung und bei jedem künftigen Modell. Die Stunde, die man investiert, um ein bestimmtes Modell besser zu überreden, zahlt bis zum nächsten Release.
+Damit verschiebt sich auch die Ökonomie des Lernens. Die Stunde, die man in einen guten Skill steckt, zahlt bei jeder weiteren Ausführung und bei jedem neuen Modell. Die Stunde hingegen, die in das Überreden eines bestimmten Modells fließt, zahlt nur bis zum nächsten Release.
 
-Ein Wort zu den Fehlern, die dabei üblich sind: Die häufigste Ursache dafür, dass ein Skill nie greift, ist eine vage Beschreibung. "Hilft mit Dokumenten" löst nichts aus. Die Beschreibung muss sagen, *was* der Skill tut und *wann* er einzusetzen ist. Die zweithäufigste Ursache ist der Alleskönner-Skill, der so viel umfasst, dass unklar ist, wann er passt — zwei kleine Skills mit klaren Grenzen schlagen einen grossen.
+Ein Wort zu den Fehlern, die dabei üblich sind: Die häufigste Ursache dafür, dass ein Skill nie greift, ist eine vage Beschreibung. "Hilft mit Dokumenten" löst nichts aus. Sie muss sagen, *was* der Skill tut und *wann* er einzusetzen ist. Die zweithäufigste Ursache ist der Alleskönner-Skill, der so viel umfasst, dass unklar ist, wann er passt — zwei kleine Skills mit klaren Grenzen schlagen einen grossen.
 
 ### 3. Übergeben, damit die Session nicht der Speicher ist
 
-🔁 **Ein Handover-Dokument macht den Stand anschlussfähig — für den nächsten Menschen, die nächste Session, das nächste Modell.**
+🔁 **Ein Handover-Dokument macht den Stand anschlussfähig — für den nächsten Menschen, eine weitere Session oder ein anderes Modell.**
 
 > **Neu, nicht etabliert.** Handover als benannte, portable Technik — Kontext sauber zwischen Sessions übergeben, statt ihn im Chatverlauf verrotten zu lassen — ist zum Zeitpunkt dieses Artikels rund **vier Monate alt**. Erstmals als eigenständiges, werkzeugübergreifendes Konzept beschrieben im **Mai 2026**. Das ist der Grund, warum sie in den meisten Teams noch keine Routine ist, obwohl sie hier als die zentrale der fünf Techniken behandelt wird: Die Praxis ist jünger als die Modelle, für die man sie am dringendsten braucht — und genau das ist ihr Sinn: Wissen "anders ablegen", statt es weiter im Chatverlauf zu vergraben.
 
@@ -134,9 +134,9 @@ Ein Handover ist ein Dokument im Projekt — kein Chat, keine Notiz im Kopf —,
 
 Für die Übergabe zwischen Agenten gilt dasselbe Prinzip in kompakterer Form. Ein Subagent, der eine Recherche durchführt, verbrennt womöglich hunderttausend Token. Zurück gibt er ein bis zwei Seiten. Dass er den Rest *nicht* zurückgibt, ist kein Verlust, sondern der Zweck der Übung: Der Hauptagent bleibt schlank und klar, während die Detailarbeit anderswo stattfindet.
 
-Es gibt einen Fehler, der schlimmer ist als kein Handover — nämlich ein veraltetes. Wer ein Dokument findet, das den Stand von vor drei Wochen als aktuell beschreibt, handelt vertrauensvoll auf falscher Grundlage. Deshalb gehört in jedes Handover ein Ablaufdatum, und deshalb ist das Schreiben Teil der Arbeit, nicht ihre Nachbereitung.
+Es gibt einen Fehler, der schlimmer ist als kein Handover — nämlich ein veraltetes. Wer ein Dokument findet, das den Stand von vor drei Wochen als aktuell beschreibt, handelt vertrauensvoll auf falscher Grundlage. Deshalb gehört in jedes Handover ein Ablaufdatum, und darum ist das Schreiben Teil der Arbeit, nicht ihre Nachbereitung.
 
-Wenn man diesen Artikel auf einen Satz reduzieren müsste, wäre es dieser: **Bei monatlichen Modellsprüngen ist die Fähigkeit, Kontext sauber zu übergeben, wertvoller als die Beherrschung eines bestimmten Modells.** Wer Handovers beherrscht, profitiert von jedem Upgrade sofort. Wer im Endlos-Chat arbeitet, fängt bei jedem Upgrade von vorne an.
+Wenn man diesen Artikel auf einen Satz reduzieren müsste, wäre es dieser: **Bei monatlichen Modellsprüngen ist die Fähigkeit, Kontext sauber zu übergeben, wertvoller als die Beherrschung eines bestimmten Modells.** Wer Handovers beherrscht, profitiert von jedem neuen Release sofort. Wer im Endlos-Chat arbeitet, fängt bei jedem Versionswechsel von vorne an.
 
 ### 4. Priorisieren, damit Tempo nicht in Aktionismus umschlägt
 
@@ -144,13 +144,13 @@ Wenn man diesen Artikel auf einen Satz reduzieren müsste, wäre es dieser: **Be
 
 Die drei bisherigen Techniken machen einen schneller. Die vierte verhindert, dass Geschwindigkeit in Hektik umschlägt.
 
-Der Ansatz stammt aus der IT-Betriebspraxis und ist alt genug, um belastbar zu sein: Jede offene Sache wird zu einem Ticket mit einer Kategorie und einer Priorität.
+Genau hier setzt eine bewährte Methode an: Der Ansatz stammt aus der IT-Betriebspraxis und ist alt genug, um belastbar zu sein. Jede offene Sache wird zu einem Ticket mit einer Kategorie und einer Priorität.
 
-Die Kategorie sagt, um welche Art von Sache es sich handelt. Ein **Incident** ist eine ungeplante Störung — etwas Funktionierendes ist kaputt. Ein **Request** ist der Wunsch nach etwas Neuem; nichts ist kaputt. Ein **Change** ist eine geplante Änderung an etwas Bestehendem. (Ein **Problem** ist die gemeinsame Ursache mehrerer Incidents — die Kategorie, die man am häufigsten übersieht.)
+Die Kategorie sagt, um welche Art von Sache es sich handelt. Ein **Incident** ist eine ungeplante Störung — etwas Funktionierendes ist kaputt. Ein **Request** ist der Wunsch nach etwas Neuem; nichts ist defekt. Ein **Change** ist eine geplante Änderung an etwas Bestehendem. (Ein **Problem** ist die gemeinsame Ursache mehrerer Incidents — die Kategorie, die man am häufigsten übersieht.)
 
 Die Priorität folgt dem ABC-Schema: A ist kritisch und wird sofort bearbeitet, B ist wichtig und läuft im normalen Rhythmus, C kann warten und wird gebündelt.
 
-Der Nutzen dieser Kombination zeigt sich genau bei KI-Themen, weil sie sonst schwer einzuordnen sind. Ein bisher funktionierender Skill bricht nach einem Anbieter-Update — das ist ein Incident, Priorität A, obwohl niemand ihn gemeldet hat. Ein neues Flaggschiff-Modell erscheint — das ist ein Change mit Priorität A, obwohl nichts brennt: Es hat hohen strategischen Wert und niedrige Dringlichkeit, eine Kombination, die klassische Impact-mal-Urgency-Matrizen systematisch unterbewerten. Genau deshalb lohnt sich die zusätzliche ABC-Achse. Eine angekündigte Deprecation in drei Monaten ist ein Change mit Priorität B — wichtig, aber planbar. Ein Kollege, der Zugang zu einem neuen Tool möchte, ist ein Request mit Priorität B. Die Dokumentation, die nach dem Modellwechsel nachgezogen werden muss, ist ein Change mit Priorität C und wandert ins nächste Sammelfenster.
+Der Nutzen dieser Kombination zeigt sich genau bei KI-Themen, weil sie sonst schwer einzuordnen sind. Ein bisher funktionierender Skill bricht nach einem Anbieter-Update — das ist ein Incident, Priorität A, obwohl niemand ihn gemeldet hat. Ein neues Flaggschiff-Modell erscheint — das ist ein Change mit Stufe A, obwohl nichts brennt: Es hat hohen strategischen Wert und niedrige Dringlichkeit, eine Kombination, die klassische Impact-mal-Urgency-Matrizen systematisch unterbewerten. Genau deshalb lohnt sich die zusätzliche ABC-Achse. Eine angekündigte Deprecation in drei Monaten ist ein Change mit Einstufung B — wichtig, aber planbar. Ein Kollege, der Zugang zu einem neuen Tool möchte, ist ein Request mit Stufe B. Die Dokumentation, die nach dem Modellwechsel nachgezogen werden muss, ist ein Change mit Rang C und wandert ins nächste Sammelfenster.
 
 Das Werkzeug ist zweitrangig. Eine Markdown-Tabelle im Projektordner erfüllt den Zweck genauso wie ein ITSM-System. Entscheidend ist, dass jede Neuigkeit einen Ort bekommt, an dem sie wartet — statt sofort Aufmerksamkeit zu fordern.
 
@@ -184,7 +184,7 @@ Die fünf Techniken sind nicht fünf Themen, sondern fünf Achsen desselben Prin
 
 **Isolieren**, damit Ausprobieren billig wird. **Kodifizieren**, damit sich Wiederholtes nicht wiederholt erklären lässt. **Übergeben**, damit Wissen nicht in der Session stirbt. **Priorisieren**, damit nicht jede Neuigkeit zum Notfall wird. **Dirigieren**, damit Autonomie nicht zum Ratespiel wird.
 
-Was dabei entsteht, ist eine Wissensschicht ausserhalb des Modells: Skills, die beschreiben, wie hier gearbeitet wird. Handovers, die festhalten, wo man steht. Sandboxes, in denen Neues gefahrlos getestet wird. Ein Ticketbestand, der Wichtiges von Lautem trennt. Ein Dirigent, der jedes Ergebnis hört, bevor es übernommen wird.
+Was dabei entsteht, ist eine Wissensschicht ausserhalb des Modells: Skills, die beschreiben, wie hier gearbeitet wird. Handovers, die festhalten, wo man steht. Sandboxes, in denen Neues gefahrlos getestet wird. Ein Ticketbestand, der [Wichtiges von Lautem trennt](/artikel/netdata-homelab-monitoring-claude/). Ein Dirigent, der jedes Ergebnis hört, bevor es übernommen wird.
 
 Diese Schicht ist der eigentliche Besitz. Modelle werden dagegen austauschbar — und das ist keine Kapitulation, sondern das Ziel. Wenn im November das nächste Modell erscheint, ist die Frage nicht mehr, wie viel man neu lernen muss. Die Frage ist nur noch, ob die Evals durchlaufen.
 

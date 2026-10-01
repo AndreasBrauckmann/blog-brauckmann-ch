@@ -1,10 +1,10 @@
 ---
 slogan: "Netdata bringt seit Version 2.6 einen eigenen MCP-Server mit — ganz ohne Zusatzinstallation."
-title: "Monitoring für kleine Infrastrukturen in 15 Minuten: Netdata + Claude als MCP-Server (read & write*)"
+title: "Netdata + Claude: Server-Monitoring ohne Grafana-Stack"
 slug: netdata-homelab-monitoring-claude
 date: 2026-09-20
 updated: 2026-09-29
-description: "Netdata installieren, Claude per MCP an die eigenen Metriken anschließen: Monitoring für kleine Infrastrukturen in 15 Minuten, ohne Cloud-Konto und Yaml-Wüste."
+description: "Installation in zwei Minuten, danach Anomalien und Alarme per Rückfrage statt per Dashboard-Klick auswerten; läuft lokal, ohne Cloud-Zwang, auch auf ARM."
 summary: >-
   Netdata bringt seit Version 2.6 einen eigenen MCP-Server mit — ganz ohne Zusatzinstallation. Wer eine kleine Infrastruktur mit ein paar Nodes betreibt, hat in gut 15 Minuten ein vollständiges Monitoring mit Hunderten Metriken pro Sekunde, plus einen KI-Assistenten, der die Daten tatsächlich versteht: Claude fragt "Warum ist der Server langsam?" nicht mehr rhetorisch, sondern zieht sich die echten Zahlen. Installation, erste Ansicht, MCP-Anbindung, eine Beispielfrage — und ein Hinweis, worauf zu achten ist, sobald man das Ganze von außerhalb des eigenen Netzes erreichbar machen will.
 tags: [Monitoring, Netdata, Claude, Infrastruktur, MCP]
@@ -23,11 +23,11 @@ changelog:
 ---
 
 <p><em>Netdata installieren, das Dashboard einmal ansehen, Claude als MCP-Client anschließen — fertig. Kein Cloud-Konto nötig, keine Konfigurationsdatei, die erst verstanden werden muss.</em></p>
-<p>Netdatas eigene Oberfläche ist absichtlich umfangreich — Hunderte Metriken, Dutzende Ansichten, für tiefe Analyse genau richtig. Für den täglichen Blick reicht das oft zu viel. Das folgende Dashboard hat Claude für genau diesen Fall gebaut: ein eigenes, schlankes Layout, das die wichtigsten Zahlen aus Netdata auf einen Blick zusammenfasst, statt sich durch die volle Netdata-Oberfläche zu klicken.</p>
+<p>Dabei ist Netdatas eigene Oberfläche absichtlich umfangreich — Hunderte Metriken, Dutzende Ansichten, für tiefe Analyse genau richtig. Für den täglichen Blick reicht das oft zu viel. Das folgende Dashboard hat Claude für genau diesen Fall gebaut: ein eigenes, schlankes Layout. Es fasst die wichtigsten Zahlen aus Netdata auf einen Blick zusammen — statt sich durch die volle Netdata-Oberfläche zu klicken.</p>
 <p>
 <img alt="Torwächter-Dashboard-Entwurf: Perimeter-Monitoring für Cloudflare-Proxy und internes Netzwerk" src="/static/img/torwaechter-mockup-light.png">
 </p>
-<p>Für die meisten kleinen Infrastrukturen und Setups — ein Server, ein NAS, ein paar Raspberry Pis, vielleicht ein Handvoll Container — ist professionelles Monitoring bisher an zwei Dingen gescheitert: entweder es brauchte eine eigene Prometheus/Grafana-Installation mit Zeit, die man an einem Wochenende nicht wirklich übrig hat, oder es war eine der leichteren Lösungen, die dann doch nur eine Handvoll Kennzahlen zeigen. Netdata liegt dazwischen — und bringt seit Kurzem etwas mit, das den Unterschied macht: einen eingebauten MCP-Server, über den ein KI-Assistent wie Claude direkt auf die Live-Metriken zugreifen kann.</p>
+<p>Für die meisten kleinen Infrastrukturen — ein Server, ein NAS, ein paar Raspberry Pis, vielleicht eine Handvoll Container — ist professionelles Monitoring bisher an zwei Dingen gescheitert. Entweder brauchte es eine eigene Prometheus/Grafana-Installation, für die am Wochenende schlicht die Zeit fehlt. Oder es war eine der leichteren Lösungen, die dann doch nur eine Handvoll Kennzahlen zeigen. Netdata liegt dazwischen — und bringt seit Kurzem etwas mit, das den Unterschied macht: einen eingebauten MCP-Server. Über ihn kann ein KI-Assistent wie Claude direkt auf die Live-Metriken zugreifen.</p>
 <h2 id="installation-ein-befehl">Installation: ein Befehl</h2>
 <p>Netdata hat ein offizielles Installationsskript, das auf so gut wie jeder gängigen Linux-Distribution funktioniert (Debian, Ubuntu, Raspberry Pi OS, Fedora, Arch — auch auf ARM, also problemlos auf einem Raspberry Pi):</p>
 <div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-Ss<span class="w"> </span>https://get.netdata.cloud/kickstart.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
@@ -37,7 +37,7 @@ changelog:
 <div class="codehilite"><pre><span></span><code>http://&lt;deine-server-ip&gt;:19999
 </code></pre></div>
 
-<p>Kein Login, kein Cloud-Konto nötig — das Dashboard funktioniert vollständig lokal und zeigt sofort an, was gerade passiert: CPU pro Kern, Arbeitsspeicher, Netzwerkdurchsatz, Festplatten-I/O, laufende Prozesse, und bei den meisten Distributionen automatisch erkannt auch Docker-Container, laufende Datenbanken oder Webserver, falls welche installiert sind.</p>
+<p>Dabei ist kein Login und kein Cloud-Konto nötig — das Dashboard funktioniert vollständig lokal. Es zeigt sofort an, was gerade passiert: CPU pro Kern, Arbeitsspeicher, Netzwerkdurchsatz, Festplatten-I/O, laufende Prozesse. Bei den meisten Distributionen werden automatisch auch Docker-Container, laufende Datenbanken oder Webserver erkannt, falls welche installiert sind.</p>
 <h2 id="die-erste-ansicht">Die erste Ansicht</h2>
 <p>Das Dashboard sammelt ab der ersten Sekunde und aktualisiert sich laufend — pro Sekunde, nicht alle fünf Minuten wie bei den meisten klassischen Lösungen. Das merkt man sofort, wenn ein kurzer CPU-Spike auftaucht: er ist als einzelner Zacken sichtbar, nicht als geglättete Linie, die den eigentlichen Moment verschluckt.</p>
 <p><img alt="Alerts-Ansicht mit einem ausgelösten Alarm" src="/static/img/netdata-alerts-ansicht.png" /></p>
@@ -61,7 +61,7 @@ changelog:
 </blockquote>
 <p>Claude sucht sich über die MCP-Werkzeuge selbstständig zusammen, welche Metriken in diesem Zeitraum ungewöhnlich waren, ob es einen CPU- oder Speicher-Ausreißer gab, und ob ein Alarm ausgelöst wurde — und antwortet mit der tatsächlichen Ursache statt mit einer allgemeinen Vermutung. Das Dashboard bleibt trotzdem da — für den Blick aufs große Bild ist die grafische Ansicht weiterhin die bessere Wahl, für die gezielte Nachfrage danach ist der MCP-Server der schnellere Weg.</p>
 <h2 id="wenns-uber-das-eigene-netz-hinausgehen-soll">Wenn's über das eigene Netz hinausgehen soll</h2>
-<p>Für eine kleine Infrastruktur mit Claude auf demselben Rechner oder im selben WLAN reicht das oben Beschriebene komplett aus. Sobald der MCP-Server aber von claude.ai oder der Claude-Desktop-App aus erreichbar sein soll, während man selbst unterwegs ist, ändert sich eine Sache grundlegend: Der Verbindungsversuch kommt dann nicht mehr vom eigenen Gerät, sondern aus der Cloud-Infrastruktur von Anthropic — eine Adresse, die nur im eigenen (V)LAN oder nur im eigenen VPN erreichbar ist, funktioniert von dort aus nicht, egal wie korrekt sie sonst konfiguriert ist. Für diesen Fall braucht es einen öffentlich erreichbaren HTTPS-Endpunkt und einen echten Zugriffsschutz (Token oder OAuth) davor — das sprengt für unter fünf Nodes den Rahmen dieses Artikels, ist aber der Punkt, an dem man aufpassen muss, bevor man sich wundert, warum die Verbindung „einfach nicht geht", obwohl lokal alles funktioniert.</p>
+<p>Für eine kleine Infrastruktur mit Claude auf demselben Rechner oder im selben WLAN reicht das oben Beschriebene komplett aus. Sobald der MCP-Server aber von claude.ai oder der Claude-Desktop-App aus erreichbar sein soll, ändert sich eine Sache grundlegend: Der Verbindungsversuch kommt dann nicht mehr vom eigenen Gerät. Er kommt aus der Cloud-Infrastruktur von Anthropic. Eine Adresse, die nur im eigenen (V)LAN oder VPN erreichbar ist, funktioniert von dort aus nicht — egal wie korrekt sie sonst konfiguriert ist. Für diesen Fall braucht es einen öffentlich erreichbaren HTTPS-Endpunkt. Außerdem muss ein echter Zugriffsschutz (Token oder OAuth) davorstehen. Das sprengt für unter fünf Nodes den Rahmen dieses Artikels. Es ist aber genau der Punkt, an dem man aufpassen muss. Sonst wundert man sich, warum die Verbindung "einfach nicht geht", obwohl lokal alles funktioniert.</p>
 <h2 id="vom-lesen-zum-handeln-ein-eigener-mcp-server-mit-schreibzugriff">Vom Lesen zum Handeln: ein eigener MCP-Server mit Schreibzugriff mit MFA</h2>
 <figure class="mcp-diagramm">
 <div class="chain">
@@ -127,7 +127,7 @@ changelog:
 </figure>
 <div class="callout">
 <p>Netdatas eingebauter MCP-Server ist bewusst nur lesend — Claude kann Metriken abfragen, aber nichts am System verändern, und das soll auch so bleiben: Lesen und Handeln sind zwei völlig unterschiedliche Risikostufen, die Netdata absichtlich trennt. Der Rest dieses Abschnitts war entsprechend zunächst nur ein Fahrplan, keine fertige Lösung — das war Phase 1. Inzwischen ist daraus ein echter, laufender, schreibfähiger MCP-Server mit eigenen Tools geworden, MFA inklusive: <a href="/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">Teil II dieser Reihe</a> zeigt ihn in Betrieb.</p>
-<p>Für den eigentlichen Wunschtraum vieler Betreiber kleiner Infrastrukturen reicht das rein lesende Netdata-Tool nämlich nicht: „Sag mir per Sprachbefehl, ob das Backup heute Nacht geklappt hat, und wenn nicht, stoß es einfach neu an" — während man im Auto sitzt und keine Hand frei hat, um selbst nachzuschauen.</p>
+<p>Für den eigentlichen Wunschtraum vieler Betreiber kleiner Infrastrukturen reicht das rein lesende Netdata-Tool allerdings nicht. Die Idee klingt so: „Sag mir per Sprachbefehl, ob das Backup heute Nacht geklappt hat, und wenn nicht, stoß es einfach neu an." Genau das will man, während man im Auto sitzt und keine Hand frei hat, um selbst nachzuschauen.</p>
 <p>Wer wirklich handeln lassen will — einen Dienst neu starten, ein Backup-Skript anstoßen, einen Alarm quittieren —, braucht dafür einen <strong>eigenen, zusätzlichen</strong> MCP-Server, den man selbst baut und selbst absichert. Grober Fahrplan, wie das in der Praxis aussieht (Stand vor Teil II):</p>
 <ul>
 <li><strong>Eigene Tools statt Netdata-Tools:</strong> ein kleiner, selbst geschriebener MCP-Server (z. B. mit dem offiziellen Python- oder TypeScript-SDK) mit gezielten, benannten Funktionen wie <code>backup_jetzt_starten()</code> oder <code>dienst_neu_starten(name)</code> — keine generische „Shell-Befehl ausführen"-Funktion, die alles und damit auch zu viel könnte.</li>
@@ -138,4 +138,4 @@ changelog:
 <p>Das ist mehr Aufwand als Netdatas eingebauter Read-only-Server — aber genau der Aufwand, der den Unterschied ausmacht zwischen „ich kann meine Daten abfragen" und „ich kann von unterwegs auch per Voice Steuerung eingreifen.</p>
 </div>
 <h2 id="zusammengefasst">Zusammengefasst</h2>
-<p>Ein Installationsbefehl, zwei Minuten Wartezeit, ein Connector-Eintrag in Claude — und eine kleine Infrastruktur mit weniger als fünf Nodes hat ein vollständiges, sekundengenaues Monitoring samt KI-Assistent, der die eigenen Metriken tatsächlich versteht. Kein Grafana-Stack, kein Yaml, kein Cloud-Zwang.</p>
+<p>Ein Installationsbefehl, zwei Minuten Wartezeit, ein Connector-Eintrag in Claude — fertig. Eine kleine Infrastruktur mit weniger als fünf Nodes hat damit ein vollständiges, sekundengenaues Monitoring samt KI-Assistent. Einem Assistenten, der die eigenen Metriken tatsächlich versteht. Kein Grafana-Stack, kein Yaml, kein Cloud-Zwang.</p>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*) · Brauckmann Blog</title>
+<title>KI-Monitoring mit Claude MCP: Cloudflare &amp; Firewall im Griff · Brauckmann Blog</title>
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
 
@@ -16,8 +16,8 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Brauckmann Blog">
 <meta property="og:locale" content="de_DE">
-<meta name="title" property="og:title" content="Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)">
-<meta name="description" property="og:description" content="Security sieht den Angriff, Betrieb den Fehler -- dazwischen fehlte das Bindeglied. Jetzt verbindet eine KI beide Welten, trennt Wichtiges von Rauschen und handelt, wo es freigegeben ist.">
+<meta name="title" property="og:title" content="KI-Monitoring mit Claude MCP: Cloudflare &amp; Firewall im Griff">
+<meta name="description" property="og:description" content="Cloudflare, CrowdSec und ein KI-MCP-Server: Wie Angriffe, Fehlkonfigurationen und Ausfälle erkannt und behoben werden – bevor ein Mensch hinschaut.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/">
 <meta name="image" property="og:image" content="https://blog.brauckmann.ch/static/img/og-monitoring-teil2-laptop-radar.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -25,8 +25,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Laptop mit Radar-Animation: KI-gestütztes Monitoring erfasst Bedrohungen wie Brute-Force, ablaufende Zertifikate und volle Speicher und fängt sie ab, bevor sie das Business erreichen.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)">
-<meta name="twitter:description" content="Security sieht den Angriff, Betrieb den Fehler -- dazwischen fehlte das Bindeglied. Jetzt verbindet eine KI beide Welten, trennt Wichtiges von Rauschen und handelt, wo es freigegeben ist.">
+<meta name="twitter:title" content="KI-Monitoring mit Claude MCP: Cloudflare &amp; Firewall im Griff">
+<meta name="twitter:description" content="Cloudflare, CrowdSec und ein KI-MCP-Server: Wie Angriffe, Fehlkonfigurationen und Ausfälle erkannt und behoben werden – bevor ein Mensch hinschaut.">
 <meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/og-monitoring-teil2-laptop-radar.jpg">
 <meta property="article:published_time" content="2026-09-28">
 <meta property="article:modified_time" content="2026-10-01">
@@ -42,8 +42,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read & write*)",
-  "description": "Security sieht den Angriff, Betrieb den Fehler -- dazwischen fehlte das Bindeglied. Jetzt verbindet eine KI beide Welten, trennt Wichtiges von Rauschen und handelt, wo es freigegeben ist.",
+  "headline": "KI-Monitoring mit Claude MCP: Cloudflare & Firewall im Griff",
+  "description": "Cloudflare, CrowdSec und ein KI-MCP-Server: Wie Angriffe, Fehlkonfigurationen und Ausfälle erkannt und behoben werden – bevor ein Mensch hinschaut.",
   "datePublished": "2026-09-28",
   "dateModified": "2026-10-01",
   "inLanguage": "de",
@@ -569,6 +569,31 @@ article img {
 .aenderungshistorie time { font-family: "SFMono-Regular", Consolas, Menlo, monospace; color: var(--fg); margin-right: 0.4em; }
 .bp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
 
+/* ===== Typografie v1 (1.10.2026): groessere Schrift, mehr Zeilen- und Absatzabstand, ruhigere Ueberschriften ===== */
+body { font-size: 1.125rem; line-height: 1.7; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+main { max-width: 66ch; }
+footer.site-footer { max-width: 66ch; }
+article > p, article > ul, article > ol { max-width: 66ch; }
+article p { margin: 0 0 1.2em; }
+h1 { font-size: 2.3rem; line-height: 1.15; letter-spacing: -0.018em; margin: 0.2em 0 0.45em; }
+h2 { font-size: 1.6rem; line-height: 1.22; letter-spacing: -0.01em; margin: 2.8em 0 0.7em; }
+h3 { font-size: 1.22rem; line-height: 1.3; margin: 2.1em 0 0.55em; }
+ul, ol { margin: 0 0 1.35em; padding-left: 1.45em; }
+li { margin: 0.4em 0; }
+li > p { margin: 0.4em 0; }
+strong { font-weight: 650; }
+blockquote { margin: 1.8em 0; padding: 0.1em 0 0.1em 1.1em; border-left: 3px solid var(--border); color: var(--fg-muted); }
+figure, article > p > img { margin-top: 1.8em; margin-bottom: 1.8em; }
+img { border-radius: 6px; }
+.table-wrap { margin: 2em 0; }
+th, td { padding: 0.6rem 0.9rem; }
+time.article-date { font-size: 0.92rem; }
+.tags { margin: 0.7rem 0 2rem; }
+pre { padding: 1.1rem 1.2rem; line-height: 1.5; font-size: 0.92rem; }
+@media (max-width: 30em) { body { font-size: 1.0625rem; line-height: 1.68; } h1 { font-size: 1.85rem; } h2 { font-size: 1.4rem; margin-top: 2.4em; } }
+.article-list-item > * { min-width: 0; }
+.article-list-item .teaser { overflow-wrap: anywhere; }
+
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -650,7 +675,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main>
   <article>
     <header>
-      <h1>Monitoring, Teil II: Cloudflare, Firewall, das große Ganze + Claude MCP-Server (read &amp; write*)</h1>
+      <h1>KI-Monitoring mit Claude MCP: Cloudflare &amp; Firewall im Griff</h1>
       <time class="article-date" datetime="2026-09-28">2026-09-28</time>
       <div class="article-meta-row">
         <div class="tags"><a class="tag" href="/tag/monitoring/">Monitoring</a><a class="tag" href="/tag/cloudflare/">Cloudflare</a><a class="tag" href="/tag/security/">Security</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/mcp/">MCP</a></div>
@@ -668,13 +693,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <!-- ===== Radar-Grafik: KI-Monitoring als Sicherheitsnetz (Anfang) ===== -->
 <p><strong>mehrstufig absichern, ausbauen, erkennen, beobachten, sperren -- jede Schicht einzeln schaltbar, messbar und umkehrbar.</strong></p>
 
-<p>Ganz außen sitzt <strong>Cloudflare mit DDoS-Schutz, Firewall-Regeln und Rate Limiting</strong>: Was zu schnell und zu viel kommt, wird gedrosselt. Verschlüsselt wird ab TLS 1.2, alles darunter wird abgelehnt. <strong>KI-Sammler werden gesperrt</strong>, und wer sich nicht ausweist und trotzdem mitliest, läuft in ein <strong>Honeypot (Link Maze Injection)</strong> für Crawler. Dahinter arbeitet ein <strong>Edge-Proxy</strong> (Caddy) als Proxy zwischen den Netzen: Die Website hat keinen eingehenden Port, der Tunnel geht nur nach draußen, das Produktivsystem liegt in der DMZ (Demilitarisierte Zone). Auf den Servern <strong>liest CrowdSec die Logs</strong> mit und erkennt Angriffsmuster in Echtzeit.</p>
+<p>Ganz außen sitzt <strong>Cloudflare mit DDoS-Schutz, Firewall-Regeln und Rate Limiting</strong>: Was zu schnell und zu viel kommt, wird gedrosselt. Verschlüsselung greift ab TLS 1.2; alles darunter lehnt das System ab. <strong>KI-Sammler werden gesperrt</strong>, und wer sich nicht ausweist und trotzdem mitliest, läuft in ein <strong>Honeypot (Link Maze Injection)</strong> für Crawler. Dahinter arbeitet ein <strong>Edge-Proxy</strong> (Caddy) als Proxy zwischen den Netzen: Die Website hat keinen eingehenden Port. Der Tunnel geht nur nach draußen, das Produktivsystem liegt in der DMZ (Demilitarisierte Zone). Auf den Servern <strong>liest CrowdSec die Logs</strong> mit und erkennt Angriffsmuster in Echtzeit.</p>
 
-<p>Als Security Layer sind zwei Komponenten vorgesehen: Ein lokaler <strong>Firewall-Bouncer auf nftables-Basis</strong> blockiert erkannte Angreifer direkt über deren IP-Adresse auf dem Server. Parallel dazu trägt ein <strong>Cloudflare-Bouncer</strong> dieselben <strong>IP-Sperren</strong> bis an die Cloudflare-Kante (Edge), sodass schädlicher Datenverkehr blockiert wird, noch bevor er die Server-Infrastruktur überhaupt erreicht.</p>
+<p>Als Security Layer sind zwei Komponenten vorgesehen: Ein lokaler <strong>Firewall-Bouncer auf nftables-Basis</strong> blockiert erkannte Angreifer direkt über deren IP-Adresse auf dem Server. Parallel dazu trägt ein <strong>Cloudflare-Bouncer</strong> dieselben <strong>IP-Sperren</strong> bis an die Cloudflare-Kante (Edge). So wird schädlicher Datenverkehr blockiert, noch bevor er die Server-Infrastruktur überhaupt erreicht.</p>
 
-<p>Ein <strong>nftables-Bouncer sperrt</strong> erkannte Angreifer direkt lokal aus, während ein Cloudflare-Bouncer diese Sperren bis an die Cloudflare-Edge spiegelt – so erreichen Angriffe den Server in der DMZ erst gar nicht. Für klassische Setups lässt sich <strong>Fail2ban optional einbinden</strong>. Nach erfolgreicher Testphase und nachgewiesener Fehlalarmfreiheit ist das System nun scharf geschaltet. Fernzugriffe erfolgen nicht über eine offene Shell, sondern über eine Handvoll fest definierter Aktionen. Über all dem wachen rund um die Uhr sechs Live-Dashboards sowie ein KI-gestütztes Monitoring.</p>
+<p>Ein <strong>nftables-Bouncer sperrt</strong> erkannte Angreifer direkt lokal aus. Gleichzeitig spiegelt ein Cloudflare-Bouncer diese Sperren bis an die Cloudflare-Edge. So erreichen Angriffe den Server in der DMZ erst gar nicht. Für klassische Setups lässt sich <strong>Fail2ban optional einbinden</strong>. Nach erfolgreicher Testphase und nachgewiesener Fehlalarmfreiheit ist das System nun scharf geschaltet. Fernzugriffe laufen nicht über eine offene Shell, sondern über eine Handvoll fest definierter Aktionen. Über all dem wachen rund um die Uhr sechs Live-Dashboards sowie ein KI-gestütztes Monitoring.</p>
 
-<p class="kr-hervor">Wie das in der Praxis aussieht, zeigt die folgende Szene: Das Monitoring arbeitet 24h/7 ohne Pause -- Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate -- <strong>alles wird erfasst, beurteilt und erledigt oder ausgeschaltet, bevor es die produktive Umgebung beeinflusst</strong>. Genau das ist der Unterschied zwischen einem Monitoring, das ein Ticketsystem beschäftigt, und einem Monitoring, das handelt.</p>
+<p class="kr-hervor">Wie das in der Praxis aussieht, zeigt die folgende Szene: Das Monitoring arbeitet 24h/7 ohne Pause. Bugs, Fehlkonfigurationen, offene Ports, ablaufende Zertifikate -- <strong>alles wird erfasst, beurteilt und erledigt oder ausgeschaltet, bevor es die produktive Umgebung beeinflusst</strong>. Genau das ist der Unterschied: ein Monitoring, das nicht nur ein Ticketsystem beschäftigt, sondern selbst handelt.</p>
 
 <style>
 .kr-radar{position:relative;width:100%;aspect-ratio:1200/720;border-radius:16px;overflow:hidden;background:#03060c;margin:0}
@@ -929,9 +954,9 @@ requestAnimationFrame(frame);
 </script>
 <!-- ===== Radar-Grafik (Ende) ===== -->
 
-<p>Der Nutzen davon beschränkt sich nicht auf den eigenen Betrieb. <strong>Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz</strong>, unabhängig davon, wer ein System im Tagesgeschäft betreut: Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand, fängt Fehlkonfigurationen und Abweichungen ab, bevor sie zum Vorfall werden, und gibt dem Management eine objektive, nachvollziehbare Kontrollebene -- statt sich allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen zu müssen. Das ist für jedes Unternehmen relevant, unabhängig davon, wie erfahren das eigene Team ist.</p>
+<p>Dabei beschränkt sich der Nutzen nicht auf den eigenen Betrieb. <strong>Kontinuierliches, KI-gestütztes Monitoring wirkt als Sicherheitsnetz</strong> – unabhängig davon, wer ein System im Tagesgeschäft betreut. Es prüft Konfiguration und Verhalten laufend gegen den Ist-Zustand. Fehlkonfigurationen und Abweichungen werden abgefangen, bevor sie zum Vorfall werden. Dem Management gibt es eine objektive, nachvollziehbare Kontrollebene. So muss sich niemand allein auf die Selbsteinschätzung einer einzelnen Fachkraft verlassen. Das ist für jedes Unternehmen relevant – unabhängig davon, wie erfahren das eigene Team ist.</p>
 
-<p>Ein Punkt daraus ist mir besonders wichtig: Gerade wenn im Ernstfall die Frage im Raum steht, wo eine Ursache wirklich lag, entscheidet oft nicht die Sachlage, sondern wer die überzeugendere Geschichte erzählt -- und genau da hilft eine lückenlose, automatisiert mitschreibende Kontrollebene allen Beteiligten weiter. <strong>Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich eine Ursache objektiv nachvollziehen, statt sie bei Behauptung gegen Behauptung zu belassen.</strong> Das schafft Klarheit für alle Seiten, schützt gewachsene Kundenbeziehungen vor unnötigem Vertrauensverlust und macht am Ende auch die eigene Arbeit sichtbar.</p>
+<p>Ein Punkt daraus ist mir besonders wichtig: Wenn im Ernstfall die Frage im Raum steht, wo eine Ursache wirklich lag, entscheidet oft nicht die Sachlage. Oft gewinnt, wer die überzeugendere Geschichte erzählt. Genau da hilft eine lückenlose, automatisiert mitschreibende Kontrollebene allen Beteiligten weiter. <strong>Wenn jede Änderung, jeder Alarm und jeder Fix mit Zeitstempel dokumentiert ist, lässt sich eine Ursache objektiv nachvollziehen. Das ersetzt Behauptung gegen Behauptung durch Fakten.</strong> Das schafft Klarheit für alle Seiten. Es schützt gewachsene Kundenbeziehungen vor unnötigem Vertrauensverlust. Und es macht am Ende auch die eigene Arbeit sichtbar.</p>
 
 <div class="callout">
 <p><strong>Läuft die eigene ICT-Landschaft über die Jahre zu einem unübersichtlichen Gewucher aus Diensten, Ausnahmen und Alt-Konfigurationen zusammen? Ich helfe gerne dabei</strong>, dieses Ökosystem zurechtzustutzen, das wilde Wachstum an Irritationen einzudämmen und es mit KI-gestützten Mechanismen dauerhaft in den Griff zu bekommen. Haben wir Ihr Interesse geweckt? Dann <a href="https://www.achermann.swiss/team" target="_blank" rel="noopener">stellen Sie uns auf die Probe</a>.</p>
@@ -939,7 +964,7 @@ requestAnimationFrame(frame);
 
 <h2 id="was-das-fuer-unternehmen-bedeutet">KI-gestütztes Monitoring wirkt als Sicherheitsnetz</h2>
 
-<p><strong>Jedes dieser Werkzeuge sieht seine eigene Ergebnisse: die Security den Angriff von außen, der Betrieb den Fehler von innen. Das Bindeglied dazwischen haben wir jetzt -- eine KI, die beide Bereiche verbindet, Ausnahmen pflegt, meldet, bei freigegebenen Aktionen selbst eingreift und sauber trennt, was ein Betriebsrisiko ist und was nur zweit- oder drittrangig.</strong></p>
+<p><strong>Jedes dieser Werkzeuge sieht seine eigenen Ergebnisse: die Security den Angriff von außen, der Betrieb den Fehler von innen. Das Bindeglied dazwischen haben wir jetzt -- eine KI, die beide Bereiche verbindet. Sie pflegt Ausnahmen, meldet Auffälligkeiten und greift bei freigegebenen Aktionen selbst ein. Dabei trennt sie sauber, was ein Betriebsrisiko ist und was nur zweit- oder drittrangig.</strong></p>
 
 <p><em>Ein Dashboard zeigt, was gerade ist. Ein Sicherheitsnetz fängt ab, was schiefgeht, bevor es jemand bemerkt -- genau das macht aus Monitoring ein Sicherheitsnetz: dass es niemals aufhört hinzusehen.</em></p>
 
@@ -964,7 +989,7 @@ requestAnimationFrame(frame);
 <figcaption>Kein Vorfall entsteht aus dem Nichts -- er beginnt als kleine Abweichung. Das Netz fängt sie ab, bevor sie unten ankommt.</figcaption>
 </figure>
 
-<p><em>Vor einer Woche endete <a href="/artikel/netdata-homelab-monitoring-claude/">der erste Artikel dieser Reihe</a> mit einem "groben Fahrplan": Wer aus dem reinen Lese-MCP-Server einen echten Assistenten machen will, der auch handeln darf, braucht eigene Tools, echte Authentifizierung, einen Bestätigungsschritt vor heiklen Aktionen und ein Protokoll, das mitschreibt. Eine Woche und 35 Commits später ist aus dem Fahrplan ein laufendes System geworden -- und ein paar Dinge daran haben mich selbst überrascht.</em></p>
+<p><em>Vor einer Woche endete <a href="/artikel/netdata-homelab-monitoring-claude/">der erste Artikel dieser Reihe</a> mit einem "groben Fahrplan": Wer aus dem reinen Lese-MCP-Server einen echten Assistenten machen will, braucht eigene Tools. Dazu kommen echte Authentifizierung und ein Bestätigungsschritt vor heiklen Aktionen. Ausserdem braucht es ein Protokoll, das mitschreibt. Eine Woche und 35 Commits später ist aus dem Fahrplan ein laufendes System geworden. Ein paar Dinge daran haben mich selbst überrascht.</em></p>
 
 <h2 id="teil-1-48-stunden">Nach einer Woche das Resümee: Die ersten 48 Stunden entschieden alles</h2>
 
@@ -976,11 +1001,11 @@ requestAnimationFrame(frame);
 <li><strong>Bis zum übernächsten Morgen, 31 Stunden nach dem ersten Commit:</strong> sechs vollständige Dashboards, ein zentrales Menü, eine Ampel-Färbung nach echtem Alarmstatus -- und mittendrin ein Moment, der die Sache auf den Punkt bringt: Ein automatischer "Beheben"-Knopf für einen vollen Arbeitsspeicher hatte den falschen Mechanismus benutzt (er leerte einen Cache, der mit dem eigentlichen Problem -- zu wenig Swap -- nichts zu tun hatte). Der Fehler wurde nicht von mir gefunden, sondern <strong>13 Minuten später im selben Lauf korrigiert</strong>, mit einem Commit, dessen Nachricht es selbst so benennt: "fixt eigenen Fehler".</li>
 </ul>
 
-<p>Das ist der eigentliche Befund dieser Woche, und er ist grösser als jedes einzelne Dashboard: Wenn ein System <strong>sich selbst beim Fehlermachen zusehen kann</strong> -- weil jeder Handgriff sofort als Metrik, Log-Zeile oder Alarm sichtbar wird -- dann muss ein Mensch nicht mehr jeden einzelnen Schritt kontrollieren. Kleinere Fehler fallen sofort auf und werden sofort behoben, oft bevor überhaupt jemand hinschaut. Genau dasselbe Muster zeigte sich diese Woche noch zweimal, in kleinerem Massstab: ein kurzzeitiger Cloudflare-API-Ausfall (sechs Minuten, danach von selbst wieder grün) und ein Wirtschaftskalender-Termin, der strukturell nie einen Wert bekommt und fälschlich als "überfällig" gemeldet wurde -- beides in derselben Sitzung gefunden und behoben, in der sie auffielen. Human-in-the-Loop wird damit nicht überflüssig -- aber für genau diese Klasse von Problemen, den kleinen, klar erkennbaren Fehlern, spürbar unwichtiger.</p>
+<p>Das ist der eigentliche Befund dieser Woche -- und er wiegt schwerer als jedes einzelne Dashboard: Wenn ein System <strong>sich selbst beim Fehlermachen zusehen kann</strong>, wird jeder Handgriff sofort als Metrik, Log-Zeile oder Alarm sichtbar. Ein Mensch muss dann nicht mehr jeden einzelnen Schritt kontrollieren. Kleinere Fehler fallen sofort auf und werden sofort behoben -- oft bevor überhaupt jemand hinschaut. Genau dasselbe Muster zeigte sich diese Woche noch zweimal, in kleinerem Massstab. Erstens: ein kurzzeitiger Cloudflare-API-Ausfall (sechs Minuten, danach von selbst wieder grün). Zweitens: ein Wirtschaftskalender-Termin, der strukturell nie einen Wert bekommt und fälschlich als "überfällig" gemeldet wurde. Beides fiel in derselben Sitzung auf und wurde sofort behoben. Human-in-the-Loop wird damit nicht überflüssig -- aber für genau diese Klasse von Problemen, den kleinen, klar erkennbaren Fehlern, spürbar unwichtiger.</p>
 
 <h2 id="teil-2-das-dashboard">Das neue Dashboard: alles auf einen Blick</h2>
 
-<p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch -- auf ausdrücklichen Wunsch jetzt komplett Englisch, bis in die Menüs und die von der KI selbst zusammengebauten Statustexte hinein, damit auch ein internationales Publikum sofort versteht, was da steht. Alle sechs Seiten im Wechsel, helles Design (der Standard der meisten Besucher hier im Blog), Ports/IP-Adresse/interne Subdomains anonymisiert -- bei den längeren Dashboards scrollt die Animation einmal von oben nach unten durch, statt einfach oben abzuschneiden:</p>
+<p><em>Nachtrag vom selben Abend:</em> Die komplette Oberfläche lief bis eben auf Deutsch. Auf ausdrücklichen Wunsch ist sie jetzt komplett auf Englisch -- bis in die Menüs und die von der KI zusammengebauten Statustexte hinein. So versteht auch ein internationales Publikum sofort, was da steht. Alle sechs Seiten wechseln im hellen Design (der Standard der meisten Besucher hier im Blog). Ports, IP-Adresse und interne Subdomains sind anonymisiert. Bei längeren Dashboards scrollt die Animation einmal von oben nach unten durch, statt einfach oben abzuschneiden:</p>
 
 <p>
 <img src="/static/img/monitoring2-dashboards-all-six-light.gif" alt="Animation: alle sechs Dashboards im Wechsel -- Gatekeeper, Ascent, Backup, System, Alerts, Connections" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
@@ -997,13 +1022,13 @@ requestAnimationFrame(frame);
 <li><strong>LLM-Wrapper</strong> -- die eigene, Claude-Abo-basierte OpenAI-kompatible Schnittstelle, über die sämtliche Analysen laufen.</li>
 </ul>
 
-<p>Das klingt nach viel -- und ist es auch. Das ganze Ökosystem ist über die Zeit gewachsen: mehrere Docker-Container, mehrere Host-systemd-Dienste, zwei getrennte öffentliche Zugänge, vier Broker-Verbindungen, ein Dutzend Subdomains. Unter der Haube stehen dafür heute weit über hundert einzelne Sensoren und Zusammenhänge. Der eigentliche Punkt ist aber nicht die Zahl, sondern dass sich all das mit einem kurzen Gespräch mit der KI durchsuchen, erklären und -- wie die beiden Fixes von heute Nachmittag zeigen -- auch korrigieren lässt, ohne dass ein Mensch selbst durch Log-Dateien, Cronjobs und Datenbanktabellen graben muss.</p>
+<p>Das klingt nach viel -- und ist es auch. Das ganze Ökosystem ist über die Zeit gewachsen: mehrere Docker-Container, mehrere Host-systemd-Dienste, zwei getrennte öffentliche Zugänge, vier Broker-Verbindungen, ein Dutzend Subdomains. Unter der Haube stehen dafür heute weit über hundert einzelne Sensoren und Zusammenhänge. Der eigentliche Punkt ist aber nicht die Zahl. Entscheidend ist, dass sich all das mit einem kurzen Gespräch mit der KI durchsuchen und erklären lässt. Wie die beiden Fixes von heute Nachmittag zeigen, lässt es sich auch korrigieren -- ohne dass ein Mensch selbst durch Log-Dateien, Cronjobs und Datenbanktabellen graben muss.</p>
 
 <h2 id="teil-3-das-grosse-bild">Das große Bild: zwei Wege ins System, eine Kontrolle</h2>
 
-<p>Der spannendere Teil ist aber, was hinter diesen grünen Punkten steckt -- speziell bei Cloudflare, wo öffentlich erreichbare Dienste am meisten Angriffsfläche bieten. Der Blick dorthin ist der erste Frame der Animation ganz oben: über 9'000 Anfragen in 24 Stunden, 25 automatisch blockiert, Verkehrsweg Internet → Cloudflare Proxy → Cloudflare Tunnel → internes Netzwerk, Ende-zu-Ende ausgehend, kein eingehender Port.</p>
+<p>Spannender ist, was hinter diesen grünen Punkten steckt -- speziell bei Cloudflare. Dort bieten öffentlich erreichbare Dienste die meiste Angriffsfläche. Der Blick dorthin ist der erste Frame der Animation ganz oben: über 9'000 Anfragen in 24 Stunden, 25 automatisch blockiert. Der Verkehrsweg lautet Internet → Cloudflare Proxy → Cloudflare Tunnel → internes Netzwerk. Er ist Ende-zu-Ende ausgehend, kein eingehender Port.</p>
 
-<p>Die kurze Fassung des Sicherheitsbilds: Es gibt zwei völlig unabhängige, öffentlich erreichbare Wege in dieses System hinein -- und keiner davon öffnet direkt einen Port am Server.</p>
+<p>Die kurze Fassung des Sicherheitsbilds: Zwei völlig unabhängige, öffentlich erreichbare Wege führen in dieses System. Keiner davon öffnet direkt einen Port am Server.</p>
 
 <figure class="bp-diagramm">
 <div class="bp-eingaenge">
@@ -1033,15 +1058,15 @@ requestAnimationFrame(frame);
 <li><strong>Weg 2, die eigene ts.net-Adresse:</strong> Tailscale Funnel, also ein VPN-Mesh mit einer eigenen, öffentlich freigeschalteten Ausnahme -- komplett getrennt von Cloudflare, eigenes Zertifikat, eigener Pfad, landet aber am Ende beim selben internen Caddy-Edge.</li>
 </ul>
 
-<p>Beide Wege laufen am Ende durch dieselbe lokale Infrastruktur auf demselben Server -- aber jeder Dienst dahinter hat seine eigene, unabhängige Zugriffskontrolle: die Trading-Oberfläche selbst mit einer dreistufigen Vertrauenslogik (lokales Netz / Tailnet / öffentlicher Funnel, mit Passwort und Einmalcode für die zwei strengeren Stufen), die Status- und Admin-Dashboards über echte Microsoft-Entra-ID-Anmeldung mit Multi-Faktor. Fällt einer der beiden äusseren Wege aus oder wird missbraucht, ist der andere davon komplett unberührt -- zwei unabhängige Frontends vor derselben, nach aussen portlosen Basis.</p>
+<p>Beide Wege laufen am Ende durch dieselbe lokale Infrastruktur auf demselben Server. Trotzdem hat jeder Dienst dahinter seine eigene, unabhängige Zugriffskontrolle. Die Trading-Oberfläche selbst nutzt eine dreistufige Vertrauenslogik (lokales Netz / Tailnet / öffentlicher Funnel, mit Passwort und Einmalcode für die zwei strengeren Stufen). Die Status- und Admin-Dashboards verlangen echte Microsoft-Entra-ID-Anmeldung mit Multi-Faktor. Fällt einer der beiden äusseren Wege aus oder wird missbraucht, ist der andere davon komplett unberührt -- zwei unabhängige Frontends vor derselben, nach aussen portlosen Basis.</p>
 
 <h2 id="nachtrag-prompt-injection">Nachtrag, einen Tag später: eine Lücke, die reines Perimeter-Denken nicht sieht</h2>
 
-<p>Alles bisher Beschriebene -- Firewall, Tunnel, Zugriffskontrolle -- dreht sich um die Frage, <em>wer</em> ins System hineinkommt. Es gibt eine zweite Frage, die genauso wichtig ist und die im Sicherheitsbild oben komplett fehlt: Was, wenn eine Anfrage ganz regulär durch alle Türen hereinkommt -- als Wirtschaftskalender-Termin, als Alarmtext, als ganz gewöhnlicher Text --, aber etwas enthält, das die KI dahinter als Anweisung statt als Daten liest? Genau das ist <strong>Prompt Injection</strong>, Platz eins der <a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 für LLM-Anwendungen</a>, und der Anstoss dazu kam von aussen: <a href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7432466152238362624/">einer LinkedIn-Folge von Volker Skwarek</a> (Hochschule für Angewandte Wissenschaften Hamburg) über genau dieses Thema. Ohne diesen Anstoss wäre das hier vermutlich nicht angeschaut worden -- danke dafür, Volker.</p>
+<p>Alles bisher Beschriebene -- Firewall, Tunnel, Zugriffskontrolle -- dreht sich um die Frage, <em>wer</em> ins System hineinkommt. Doch es gibt eine zweite, ebenso wichtige Frage. Im Sicherheitsbild oben fehlt sie komplett: Was, wenn eine Anfrage ganz regulär durch alle Türen hereinkommt? Als Wirtschaftskalender-Termin, als Alarmtext, als ganz gewöhnlicher Text -- aber mit Inhalt, den die KI dahinter als Anweisung statt als Daten liest? Genau das ist <strong>Prompt Injection</strong>, Platz eins der <a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 für LLM-Anwendungen</a>. Der Anstoss kam von aussen: <a href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7432466152238362624/">einer LinkedIn-Folge von Volker Skwarek</a> (Hochschule für Angewandte Wissenschaften Hamburg) über genau dieses Thema. Ohne diesen Anstoss wäre das hier vermutlich nicht angeschaut worden -- danke dafür, Volker.</p>
 
-<p>Der Check auf die eigene, in diesem Artikel beschriebene Infrastruktur brachte einen echten, wenn auch eingedämmten Fund: Kontors Analyse-Agent bekommt bei jeder Frage einen Kontext-Block mit aktuellen Marktdaten, dem eigenen Handelsplan -- und dem Titel des nächsten anstehenden Wirtschaftstermins. Dieser Titel stammt roh von externen Quellen (Trading Economics, Finnhub, ForexFactory) und landete bislang unverändert im Prompt. Ein böswillig formulierter Termintitel hätte also theoretisch versuchen können, sich als Anweisung an die KI auszugeben, statt als das gelesen zu werden, was er ist: ein Stück Text zum Anzeigen. Der Blast Radius war durch die bestehende Architektur schon vorher eng begrenzt -- derselbe Chat-Pfad schaltet Werkzeuge serverseitig komplett ab und erzwingt eine harte Ein-Zug-Grenze, eine erfolgreiche Injection hätte also nie mehr als die angezeigte Antwort verfälschen können. Trotzdem: eine offene Tür, die jetzt zu ist.</p>
+<p>Der Check der eigenen, in diesem Artikel beschriebenen Infrastruktur brachte einen echten, wenn auch eingedämmten Fund. Kontors Analyse-Agent bekommt bei jeder Frage einen Kontext-Block mit aktuellen Marktdaten, dem eigenen Handelsplan -- und dem Titel des nächsten anstehenden Wirtschaftstermins. Dieser Titel stammt roh von externen Quellen (Trading Economics, Finnhub, ForexFactory). Bislang landete er unverändert im Prompt. Ein böswillig formulierter Termintitel hätte sich theoretisch als Anweisung an die KI ausgeben können -- statt als das gelesen zu werden, was er ist: ein Stück Text zum Anzeigen. Der Blast Radius war durch die bestehende Architektur schon vorher eng begrenzt. Derselbe Chat-Pfad schaltet Werkzeuge serverseitig komplett ab und erzwingt eine harte Ein-Zug-Grenze. Eine erfolgreiche Injection hätte also nie mehr als die angezeigte Antwort verfälschen können. Trotzdem: eine offene Tür, die jetzt zu ist.</p>
 
-<p>Die Gegenmassnahme, wie im Rest dieses Artikels dokumentiert und überwacht statt nur einmalig gefixt: Freitext-Felder aus dem Kalender werden jetzt auf eine sinnvolle Länge begrenzt und von Steuerzeichen befreit, bevor sie den Prompt erreichen, und der System-Prompt selbst trennt jetzt explizit zwischen Datenmaterial und Anweisung -- ein Termintitel, der wie ein Befehl klingt, bleibt ein Termintitel. Und wie es zu diesem Ökosystem passt: ein neuer, alle 15 Minuten laufender Netdata-Sensor prüft seither, ob genau diese Absicherung im Quelltext noch steht, sichtbar als eigene "LLM Security"-Kachel auf der Connections-Seite von oben und als eigene Karte auf dem Gatekeeper-Dashboard -- derselbe Mechanismus, der schon den eigenen Fehler beim Arbeitsspeicher-Alarm 13 Minuten nach dem Auftreten fing, wacht jetzt auch hier mit:</p>
+<p>Die Gegenmassnahme ist -- wie im Rest dieses Artikels -- dokumentiert und überwacht, nicht nur einmalig gefixt. Freitext-Felder aus dem Kalender werden jetzt auf eine sinnvolle Länge begrenzt. Steuerzeichen werden entfernt, bevor sie den Prompt erreichen. Der System-Prompt selbst trennt jetzt explizit zwischen Datenmaterial und Anweisung. Ein Termintitel, der wie ein Befehl klingt, bleibt ein Termintitel. Wie es zu diesem Ökosystem passt: Ein neuer Netdata-Sensor läuft alle 15 Minuten. Er prüft, ob genau diese Absicherung im Quelltext noch steht. Er ist sichtbar als eigene "LLM Security"-Kachel auf der Connections-Seite von oben und als eigene Karte auf dem Gatekeeper-Dashboard. Derselbe Mechanismus fing den eigenen Fehler beim Arbeitsspeicher-Alarm 13 Minuten nach dem Auftreten. Er wacht jetzt auch hier mit.</p>
 
 <p>
 <img src="/static/img/monitoring2-llm-security-connections.png" alt="Connections-Dashboard mit rot eingekreister neuer 'LLM Security'-Kachel" style="max-width:100%;border-radius:12px;border:1px solid var(--border)">
@@ -1053,7 +1078,7 @@ requestAnimationFrame(frame);
 
 <h2 id="zusammengefasst">Zusammengefasst</h2>
 
-<p>Eine Woche, 35 Commits, sechs Dashboards, ein selbst gefundener und selbst behobener Fehler binnen 13 Minuten -- und ein Sicherheitsbild mit zwei unabhängigen, portlosen Zugangswegen zu derselben Infrastruktur. Der grösste Unterschied zur Realität von vorher ist nicht die Zahl der Sensoren, <strong>sondern dass kleine Fehler nicht mehr liegen bleiben, bis jemand zufällig draufschaut.</strong></p>
+<p>Eine Woche, 35 Commits, sechs Dashboards, ein selbst gefundener und selbst behobener Fehler binnen 13 Minuten. Dazu ein Sicherheitsbild mit zwei unabhängigen, portlosen Zugangswegen zu derselben Infrastruktur. Der grösste Unterschied zur Realität von vorher ist nicht die Zahl der Sensoren, <strong>sondern dass kleine Fehler nicht mehr liegen bleiben, bis jemand zufällig draufschaut.</strong></p>
     <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-10-01">2026-10-01</time> — Vorschaubild für Link-Vorschauen (Open Graph) ergänzt, Radar-Animation mit Textalternative und Ersatzbild für Browser ohne JavaScript.</li>
 <li><time datetime="2026-09-30">2026-09-30</time> — Einleitung zur mehrstufigen Absicherung neu geschrieben (Cloudflare, Link Maze Injection, CrowdSec, Bouncer), Bindeglied-Absatz ergänzt, Reihenfolge der Abschnitte überarbeitet, Radar-Animation mit Sternenhimmel statt Serverraum und im Laptop-Rahmen, Schlüsselbegriffe hervorgehoben.</li>
 <li><time datetime="2026-09-29">2026-09-29</time> — Nachtrag zur Prompt-Injection-Härtung ergänzt (Dank an Volker Skwarek), Dashboard-Animation heller und langsamer, mehrere Formulierungen präzisiert, Titel gestrafft.</li>
