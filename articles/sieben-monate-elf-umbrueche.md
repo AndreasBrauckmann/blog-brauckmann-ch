@@ -9,8 +9,8 @@ summary: >-
   Von November 2025 bis September 2026 gab es zwei KI-Schübe: eine Modell-Welle im November/Dezember 2025 mit vier neuen Flaggschiff-Modellen und dem Start der Agent-Frameworks, und eine Infrastruktur-Welle im Sommer 2026 mit riesigen Kontextfenstern und einem Preisverfall von 80 Prozent. Dazwischen verschob sich still die Ebene: Nicht mehr das beste Modell entscheidet, sondern das Werkzeug drumherum. Fünf Techniken helfen dabei — Isolieren, Kodifizieren, Übergeben, Priorisieren, Dirigieren. Wer sie beherrscht, profitiert von jedem neuen Modell sofort, statt bei jedem Wechsel wieder von null zu lernen.
 tags: [KI, Automatisierung, Skills]
 image: /static/img/00-eyecatcher-fuenf-techniken.png
-og_image: /static/img/og-sieben-monate-elf-umbrueche.jpg
-og_image_alt: "Infografik „KI-Tempo – fünf Techniken“: Isolieren, Kodifizieren, Übergeben, Priorisieren, Dirigieren."
+og_image: /static/img/og-sieben-monate-zwei-wellen.jpg
+og_image_alt: "Diagramm: Zwei Wellen, ein Ebenenwechsel. Welle 1 im Februar 2026 mit Modellsprüngen und Agenten, Konsolidierung im Mai 2026, Welle 2 im Juli 2026 mit Kontext und Preisverfall."
 thumb: /static/img/thumbs/sieben-monate-elf-umbrueche.jpg
 draft: false
 changelog:
