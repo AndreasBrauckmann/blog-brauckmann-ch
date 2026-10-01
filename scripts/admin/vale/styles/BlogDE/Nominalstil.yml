@@ -1,0 +1,6 @@
+extends: occurrence
+message: "Nominalstil: viele -ung/-heit/-keit-Wörter in einem Satz – Verben statt Substantive verwenden."
+level: suggestion
+scope: sentence
+max: 3
+token: '\b\w+(ung|heit|keit|ion)(en)?\b'

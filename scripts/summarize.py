@@ -120,7 +120,62 @@ def summarize_short(meta: dict, max_chars: int, with_hashtags: bool = False) -> 
     return text
 
 
-def summarize_linkedin(meta: dict, min_chars: int, max_chars: int) -> str:
+_SATZ_GRENZE = re.compile(r"(?<=[.!?…])[\"“”»)]*\s+(?=[„\"«(\[A-ZÄÖÜ0-9])")
+
+
+def _saetze(text: str) -> list[str]:
+    """Einfache Satzzerlegung (Abkuerzungen wie z. B. bleiben zusammen)."""
+    geschuetzt = re.sub(r"\b(z|d|u|v|o|i)\. ?(B|h|a|U|ä|d)\.", lambda m: m.group(0).replace(".", "\u2024"), text)
+    return [s.replace("\u2024", ".").strip() for s in _SATZ_GRENZE.split(geschuetzt) if s.strip()]
+
+
+def summarize_linkedin_kurz(meta: dict, canonical_url: str, min_chars: int = 150, max_chars: int = 300,
+                            max_hashtags: int = 2) -> str:
+    """Kurzform mit Karte (Standard): 2-3 kurze Saetze mit Haken (Slogan
+    zuerst, dann die Beschreibung), Leerzeile, hoechstens 2-3 Hashtags,
+    Artikel-URL als LETZTE Zeile. min_chars/max_chars gelten fuer den
+    ganzen Beitrag einschliesslich Hashtags und URL. Hintergrund: LinkedIn zeigt mobil ~140, am Desktop ~210
+    Zeichen vor "...mehr" - und bei langen Beitraegen erschien in der
+    Profil-Uebersicht keine Link-Karte."""
+    kandidaten: list[str] = []
+    for quelle in (meta.get("slogan"), meta.get("description")):
+        for s in _saetze(str(quelle or "")):
+            if s not in kandidaten:
+                kandidaten.append(s)
+    tags = [t for t in (meta.get("tags") or [])][:max(0, min(max_hashtags, 3))]
+    tag_zeile = hashtags(tags) if tags else ""
+    budget = max_chars - len(canonical_url) - 2 - (len(tag_zeile) + 2 if tag_zeile else 0)
+    min_chars = max(0, min_chars - (max_chars - budget))
+    gewaehlt: list[str] = []
+    laenge = 0
+    for s in kandidaten:
+        if len(gewaehlt) >= 3:
+            break
+        zusatz = len(s) + (1 if gewaehlt else 0)
+        if laenge + zusatz > budget:
+            if laenge >= min_chars or gewaehlt:
+                break
+            s = truncate(s, budget - laenge - (1 if gewaehlt else 0))
+            zusatz = len(s) + (1 if gewaehlt else 0)
+        gewaehlt.append(s)
+        laenge += zusatz
+        if laenge >= min_chars and len(gewaehlt) >= 2:
+            break
+    if not gewaehlt:
+        gewaehlt = [truncate(meta["title"], budget)]
+    text = " ".join(gewaehlt)
+    if tag_zeile:
+        text += f"\n\n{tag_zeile}"
+    return f"{text}\n\n{canonical_url}"
+
+
+def summarize_linkedin(meta: dict, min_chars: int, max_chars: int, *, canonical_url: str | None = None,
+                       format: str = "lang") -> str:
+    """format="kurz": siehe summarize_linkedin_kurz (Standard in config.yaml).
+    format="lang": Langform wie bisher (Haken + Absaetze bis min_chars,
+    hoechstens max_chars, Hashtags am Ende)."""
+    if format == "kurz" and canonical_url:
+        return summarize_linkedin_kurz(meta, canonical_url, min_chars, max_chars)
     paragraphs = strip_markdown(meta["body_md"])
     hook = f"{headline(meta)}\n\n{meta['description']}"
     parts = [hook]
@@ -137,6 +192,17 @@ def summarize_linkedin(meta: dict, min_chars: int, max_chars: int) -> str:
     if tags and len(text) + len(tags) + 2 <= max_chars:
         text += f"\n\n{tags}"
     return text[:max_chars]
+
+
+def linkedin_text(meta: dict, cfg: dict, format: str | None = None) -> str:
+    """LinkedIn-Text im gewuenschten Format (None = config.yaml, Standard kurz)."""
+    li = cfg["channels"]["linkedin"]
+    canonical_url = f"{cfg['site']['base_url']}/artikel/{meta['slug']}/"
+    fmt = format or li.get("format", "kurz")
+    if fmt == "kurz":
+        return summarize_linkedin(meta, li.get("min_chars", 150), li.get("max_chars", 300),
+                                  canonical_url=canonical_url, format="kurz")
+    return summarize_linkedin(meta, li.get("lang_min_chars", 1200), li.get("lang_max_chars", 1800), format="lang")
 
 
 def summarize_reddit(meta: dict, canonical_url: str) -> dict:
@@ -175,9 +241,7 @@ def summarize_all(meta: dict, cfg: dict) -> dict:
     if "x" in channels:
         result["x"] = summarize_short(meta, channels["x"]["max_chars"])
     if "linkedin" in channels:
-        result["linkedin"] = summarize_linkedin(
-            meta, channels["linkedin"].get("min_chars", 1200), channels["linkedin"]["max_chars"]
-        )
+        result["linkedin"] = linkedin_text(meta, cfg)
     if "reddit" in channels:
         result["reddit"] = summarize_reddit(meta, canonical_url)
     return result

@@ -24,6 +24,7 @@ import urllib.parse
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import ROOT, load_config, load_meta, parse_article, parse_html_article  # noqa: E402
 from envutil import load_dotenv  # noqa: E402
 from social import bluesky, linkedin, mastodon  # noqa: E402
@@ -31,11 +32,41 @@ from summarize import headline, summarize_all  # noqa: E402
 
 import re
 
-from flask import Flask, abort, redirect, render_template_string, request, url_for
+from flask import Flask, abort, redirect, render_template, request, url_for
 
 load_dotenv(ROOT / ".env")
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 6 * 1024 * 1024  # LinkedIn-Export-Upload im Ranking
+
+# Gemeinsame Vorlagen-Hilfen (Tabs, Artikel-Auswahl, Formular-Token)
+import gemeinsam  # noqa: E402
+
+gemeinsam.init_app(app)
+
+# Artikel-Ranking (/verwaltung/ranking), Deploy-Panel (/verwaltung/deploy),
+# Plattformseiten (/verwaltung/plattform/<name>): eigene Module
+from deploy_views import bp as deploy_bp  # noqa: E402
+from plattform_views import bp as plattform_bp  # noqa: E402
+from ranking_views import bp as ranking_bp  # noqa: E402
+
+app.register_blueprint(ranking_bp)
+app.register_blueprint(deploy_bp)
+app.register_blueprint(plattform_bp)
+
+
+@app.before_request
+def gleicher_ursprung() -> None:
+    """Schutz gegen Formular-Posts von fremden Seiten (CSRF): schickt der
+    Browser Origin oder Referer mit, muss der Host zu dieser Verwaltung
+    passen. Die Ranking-Formulare tragen zusaetzlich ein Token."""
+    if request.method != "POST":
+        return
+    herkunft = request.headers.get("Origin") or request.headers.get("Referer")
+    if herkunft:
+        netloc = urllib.parse.urlparse(herkunft).netloc
+        if netloc not in {request.host, request.headers.get("X-Forwarded-Host", "")}:
+            abort(403)
 
 ENV_VARS = {
     "mastodon": ["MASTODON_ACCESS_TOKEN"],
@@ -43,110 +74,6 @@ ENV_VARS = {
     "linkedin": ["LINKEDIN_ACCESS_TOKEN"],
     "x": ["X_BEARER_TOKEN"],
 }
-
-BASE_HTML = """
-<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blog-Verwaltung</title>
-<style>
-:root { --bg:#fff; --fg:#1a1a1a; --muted:#666; --border:#ddd; --ok:#1a7f37; --bad:#c0392b; --card:#f7f7f8; }
-@media (prefers-color-scheme: dark) {
-  :root { --bg:#121212; --fg:#e6e6e6; --muted:#999; --border:#333; --ok:#5fd17c; --bad:#ff6b6b; --card:#1c1c1e; }
-}
-* { box-sizing: border-box; }
-body { background:var(--bg); color:var(--fg); font-family:-apple-system,Segoe UI,Roboto,sans-serif; max-width:840px; margin:0 auto; padding:1.5rem; line-height:1.5; }
-h1 { font-size:1.4rem; }
-.card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1rem; margin-bottom:1rem; }
-.badge { display:inline-block; padding:0.1rem 0.6rem; border-radius:999px; font-size:0.8rem; }
-.badge.ok { background:var(--ok); color:#fff; }
-.badge.bad { background:var(--bad); color:#fff; }
-.badge.manual { background:var(--muted); color:#fff; }
-textarea { width:100%; min-height:6rem; background:var(--bg); color:var(--fg); border:1px solid var(--border); border-radius:6px; padding:0.5rem; font-family:inherit; }
-button, select, input[type=password] { font:inherit; padding:0.4rem 0.8rem; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--fg); }
-button { cursor:pointer; }
-button.primary { background:var(--ok); color:#fff; border:none; }
-a.deep-link { text-decoration:none; }
-.row { display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.5rem; }
-pre.log { white-space:pre-wrap; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:0.8rem; max-height:20rem; overflow-y:auto; }
-</style>
-</head>
-<body>
-{{ body|safe }}
-</body>
-</html>
-"""
-
-DASHBOARD_HTML = """
-<h1>Blog-Verwaltung</h1>
-
-<form method="get" class="row">
-  <label for="slug">Artikel:</label>
-  <select name="slug" id="slug" onchange="this.form.submit()">
-    {% for a in articles %}
-    <option value="{{ a.slug }}" {% if a.slug == slug %}selected{% endif %}>{{ a.date }} – {{ a.title }}</option>
-    {% endfor %}
-  </select>
-</form>
-
-{% if log %}<h2>Ergebnis</h2><pre class="log">{{ log }}</pre>{% endif %}
-
-<form method="post" action="{{ url_for('publish') }}">
-<input type="hidden" name="slug" value="{{ slug }}">
-
-{% for name, ch in channels.items() %}
-<div class="card">
-  <div class="row">
-    <strong>{{ name }}</strong>
-    {% if ch.manual %}
-      <span class="badge manual">manuell</span>
-    {% elif ch.connected %}
-      <span class="badge ok">verbunden</span>
-    {% else %}
-      <span class="badge bad">kein Token</span>
-    {% endif %}
-    {% if not ch.manual %}
-    <label><input type="checkbox" name="channels" value="{{ name }}" {% if ch.enabled %}checked{% endif %}> jetzt posten</label>
-    {% endif %}
-  </div>
-  {% if ch.note %}<p style="color:var(--muted); font-size:0.9rem">{{ ch.note }}</p>{% endif %}
-  {% if ch.text %}
-    <textarea readonly>{{ ch.text }}</textarea>
-    <div class="row">
-      <button type="button">In Zwischenablage kopieren</button>
-      {% if ch.deep_link %}<a class="deep-link" href="{{ ch.deep_link }}" target="_blank"><button type="button">Compose öffnen</button></a>{% endif %}
-    </div>
-  {% endif %}
-</div>
-{% endfor %}
-
-<button class="primary" type="submit">Ausgewählte Kanäle veröffentlichen</button>
-</form>
-
-<p style="color:var(--muted); font-size:0.9rem; margin-top:1.5rem">Dauerhaft als automatischen Kanal aktivieren/deaktivieren (unabhängig vom aktuellen Veröffentlichen):</p>
-<form method="post" action="{{ url_for('toggle') }}">
-<input type="hidden" name="slug" value="{{ slug }}">
-{% for name, ch in channels.items() %}
-  {% if not ch.manual %}
-  <label style="margin-right:1rem"><input type="checkbox" name="enabled_{{ name }}" {% if ch.enabled %}checked{% endif %} onchange="this.form.submit()"> {{ name }} dauerhaft aktiv</label>
-  {% endif %}
-{% endfor %}
-</form>
-
-<script>
-document.querySelectorAll('textarea[readonly]').forEach(function(ta, i) {
-  var btn = ta.nextElementSibling.querySelector('button');
-  if (btn) btn.addEventListener('click', function() {
-    navigator.clipboard.writeText(ta.value);
-    btn.textContent = 'Kopiert!';
-    setTimeout(function(){ btn.textContent = 'In Zwischenablage kopieren'; }, 1500);
-  });
-});
-</script>
-"""
-
 
 def require_internal() -> None:
     """Bricht mit 403 ab, wenn die Anfrage nicht ueber edge kam. Praktisch
@@ -194,11 +121,11 @@ def dashboard():
     require_internal()
 
     cfg = load_config()
-    articles = list_articles(cfg)
-    if not articles:
-        return render_template_string(BASE_HTML, body="<h1>Blog-Verwaltung</h1><p>Keine Artikel gefunden.</p>")
+    quellen = gemeinsam.artikel_quellen(cfg)
+    if not quellen:
+        return render_template("uebersicht.html", seite="uebersicht", auswahl=[], slug=None, channels={}, log="")
 
-    slug = request.args.get("slug", articles[0]["slug"])
+    slug = gemeinsam.gewaehlter_slug(quellen)
     meta = load_meta(cfg, slug)
     canonical_url = f"{cfg['site']['base_url']}/artikel/{slug}/"
     summaries = summarize_all(meta, cfg)
@@ -210,6 +137,7 @@ def dashboard():
             "enabled": ch_cfg.get("enabled", False),
             "note": ch_cfg.get("note"),
             "connected": all(os.environ.get(v) for v in ENV_VARS.get(name, [])) if ENV_VARS.get(name) else None,
+            "seite": name in gemeinsam.PLATTFORMEN,
         }
         text = summaries.get(name)
         if entry["manual"]:
@@ -223,12 +151,8 @@ def dashboard():
         channels[name] = entry
 
     log = request.args.get("log", "")
-    return render_template_string(
-        BASE_HTML,
-        body=render_template_string(
-            DASHBOARD_HTML, articles=articles, slug=slug, channels=channels, log=log
-        ),
-    )
+    return render_template("uebersicht.html", seite="uebersicht", auswahl=gemeinsam.artikel_auswahl(quellen),
+                           slug=slug, meta=meta, channels=channels, log=log, live_url=canonical_url)
 
 
 def set_channel_enabled(cfg_path: Path, name: str, enabled: bool) -> None:
@@ -246,7 +170,7 @@ def set_channel_enabled(cfg_path: Path, name: str, enabled: bool) -> None:
 
 @app.route("/verwaltung/toggle", methods=["POST"])
 def toggle():
-    require_internal()
+    gemeinsam.post_pruefen()
 
     cfg_path = ROOT / "config.yaml"
     cfg = load_config()
@@ -259,11 +183,13 @@ def toggle():
 
 @app.route("/verwaltung/publish", methods=["POST"])
 def publish():
-    require_internal()
+    gemeinsam.post_pruefen()
 
     slug = request.form["slug"]
-    selected = request.form.getlist("channels")
-    cmd = [sys.executable, str(ROOT / "scripts" / "publish.py"), slug, "--yes"]
+    if slug not in gemeinsam.artikel_quellen():
+        abort(404)
+    selected = [k for k in request.form.getlist("channels") if k in load_config()["channels"]]
+    cmd = [sys.executable, str(ROOT / "scripts" / "publish.py"), slug, "--yes", "--nur-posten"]
     if selected:
         cmd += ["--channels", ",".join(selected)]
     result = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=300)

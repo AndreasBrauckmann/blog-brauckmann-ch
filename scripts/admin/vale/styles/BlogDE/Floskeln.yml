@@ -1,0 +1,16 @@
+extends: existence
+message: "Floskel „%s“ – direkt zur Sache kommen."
+level: warning
+ignorecase: true
+tokens:
+  - in diesem artikel
+  - in diesem beitrag
+  - an dieser stelle
+  - im endeffekt
+  - last but not least
+  - nichtsdestotrotz
+  - es ist wichtig zu beachten
+  - es sei darauf hingewiesen
+  - wie bereits erwähnt
+  - im folgenden
+  - im großen und ganzen

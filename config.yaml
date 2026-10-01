@@ -43,9 +43,16 @@ channels:
   linkedin:
     enabled: false
     manual: true
-    note: "Manuell: eigene Company-Page/App-Verifizierung zu aufwendig für den Nutzen. Text kopieren, in \"Beitrag erstellen\" einfügen - Linkvorschau holt LinkedIn automatisch aus den og:-Tags des Artikels."
-    min_chars: 1200
-    max_chars: 1800
+    note: "Manuell: eigene Company-Page/App-Verifizierung zu aufwendig für den Nutzen. Text kopieren, in \"Beitrag erstellen\" einfügen - Linkvorschau holt LinkedIn automatisch aus den og:-Tags des Artikels. Kurzer Text, damit die Karte sichtbar bleibt; vorher Post Inspector."
+    # Kurz mit Karte (Standard): 2-3 Saetze mit Haken, Artikel-URL als letzte Zeile.
+    # Bei langen Texten zeigte LinkedIn in der Profil-Uebersicht keine Karte.
+    format: kurz
+    min_chars: 150
+    max_chars: 300
+    # Langform (Umschalter auf der LinkedIn-Seite), harte Grenze 3000
+    lang_min_chars: 1200
+    lang_max_chars: 1800
+    hard_limit: 3000
   x:
     enabled: false
     manual: false
@@ -54,20 +61,25 @@ channels:
   reddit:
     enabled: false
     manual: true
-    note: "Community-Normen sanktionieren automatisierte Eigenwerbung"
-    subreddits: ["sysadmin", "msp"]
+    note: "Community-Normen sanktionieren automatisierte Eigenwerbung. Subreddit-Regeln vorher lesen; r/sysadmin behandelt Blogartikel als Produkt - dort r/SysAdminBlogs nutzen."
+    subreddits: ["SysAdminBlogs", "sysadmin", "msp"]
+    title_max_chars: 300
+    max_chars: 40000
   facebook:
     enabled: false
     manual: true
-    note: "Persönliches Profil seit 2018 nicht per Graph API postbar, nur Pages"
+    note: "Persönliches Profil seit 2018 nicht per Graph API postbar, nur Pages. Link-Vorschau aus den og:-Tags; Cache per Sharing Debugger erneuern."
+    max_chars: 63206
   youtube_community:
     enabled: false
     manual: true
-    note: "Keine offizielle Schreib-API für Community Posts"
+    note: "YouTube Posts (früher Community): keine API für Posts, Text im Studio/App einfügen."
+    max_chars: 1000
   microsoft_tech_community:
     enabled: false
     manual: true
-    note: "Kein öffentlicher Schreibzugang für externe Autoren"
+    note: "Kein öffentlicher Schreibzugang. Links auf Inhalte, die nicht Microsoft gehören, sind unerwünscht - Diskussion/Frage mit Mehrwert statt Werbelink."
+    max_chars: 5000
 
 # Backlog: dokumentiert, nicht implementiert.
 backlog_channels:

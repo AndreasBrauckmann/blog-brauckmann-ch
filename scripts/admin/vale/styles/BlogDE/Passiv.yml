@@ -1,0 +1,6 @@
+extends: existence
+message: "Passiv („%s“) – aktiv formulieren, wer handelt?"
+level: suggestion
+ignorecase: true
+raw:
+  - '\b(wird|werden|wurde|wurden|worden)\s+(\w+\s+){0,3}ge\w+t\b'

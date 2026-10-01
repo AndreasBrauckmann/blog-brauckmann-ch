@@ -7,3 +7,7 @@ seo-log/*.json
 seo-log/verlauf.jsonl
 seo-log/.venv/
 logs/
+
+# Lokale Laufzeitdaten der Verwaltung (Ranking, Lektorat, LinkedIn-Kennzahlen,
+# Backups) - nie ins oeffentliche Repo
+data/

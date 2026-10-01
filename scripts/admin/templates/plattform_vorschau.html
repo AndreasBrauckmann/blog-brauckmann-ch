@@ -1,0 +1,18 @@
+{# Vorschau-Bausteine der Plattformseiten (Nachbauten zur Orientierung, kein Abbild der Plattform) #}
+{% macro text_gekuerzt(ok_teil, rest, ab) -%}
+<span class="pv-text-ok">{{ ok_teil }}</span>{% if rest %}<mark class="gekuerzt" title="gekürzt ab Zeichen {{ ab }}">{{ rest }}</mark>{% endif %}
+{%- endmacro %}
+
+{% macro karte(typ, bild_url, titel, beschr, domain, beschr_zeilen=2, domain_oben=False) -%}
+<div class="pv-karte {{ typ }}">
+  {% if typ != 'keine' %}
+  <div class="pv-bild">{% if bild_url %}<img src="{{ bild_url }}" alt="" loading="lazy">{% else %}<span class="hinweis klein">kein Bild</span>{% endif %}</div>
+  {% endif %}
+  <div class="pv-ktext">
+    {% if domain_oben %}<div class="pv-domain">{{ domain }}</div>{% endif %}
+    <div class="pv-titel">{{ titel }}</div>
+    {% if beschr %}<div class="pv-beschr" style="-webkit-line-clamp:{{ beschr_zeilen }}">{{ beschr }}</div>{% endif %}
+    {% if not domain_oben %}<div class="pv-domain">{{ domain }}</div>{% endif %}
+  </div>
+</div>
+{%- endmacro %}

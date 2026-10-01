@@ -1,0 +1,202 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block kopf %}
+<style>
+#rangliste th button { all:unset; cursor:pointer; display:inline-flex; gap:.25rem; align-items:center; color:var(--muted); font-weight:600; }
+#rangliste th button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+#rangliste th[aria-sort=ascending] button::after { content:"▲"; font-size:.65rem; }
+#rangliste th[aria-sort=descending] button::after { content:"▼"; font-size:.65rem; }
+#rangliste td.titel { min-width:14rem; max-width:22rem; }
+#rangliste td.titel a { color:var(--fg); font-weight:600; text-decoration:none; }
+#rangliste td.titel a:hover { text-decoration:underline; }
+#rangliste .links { display:flex; flex-wrap:wrap; gap:.3rem; }
+#rangliste .links form { display:inline; }
+#rangliste .links .knopf, #rangliste .links button { font-size:.78rem; padding:.2rem .5rem; }
+.sortwahl { display:none; }
+@media (max-width: 760px) {
+  .sortwahl { display:flex; }
+  #rangliste thead { display:none; }
+  #rangliste, #rangliste tbody, #rangliste tr, #rangliste td { display:block; width:100%; }
+  #rangliste tr { border:1px solid var(--border); border-radius:8px; padding:.6rem .7rem; margin-bottom:.8rem; background:var(--card); }
+  #rangliste td { border:none; padding:.18rem 0; display:flex; justify-content:space-between; gap:1rem; text-align:right !important; }
+  #rangliste td::before { content:attr(data-label); color:var(--muted); font-size:.8rem; text-align:left; flex:0 0 auto; }
+  #rangliste td.titel { max-width:none; display:block; text-align:left !important; font-size:1rem; padding-bottom:.35rem; }
+  #rangliste td.titel::before { content:none; }
+  #rangliste td .balken { display:none; }
+  #rangliste td.links-zelle { display:block; text-align:left !important; padding-top:.5rem; }
+  #rangliste td.links-zelle::before { content:none; }
+}
+.gewichte { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.6rem; }
+.gewichte .card { margin:0; }
+.gewichte ul { margin:.3rem 0 0; padding-left:1.1rem; font-size:.85rem; overflow-wrap:anywhere; }
+.flaggen { margin-top:.25rem; display:flex; flex-wrap:wrap; gap:.2rem; }
+.flagge { display:inline-block; padding:0 .4rem; border-radius:5px; font-size:.72rem; font-weight:600; border:1px solid var(--bad); color:var(--bad); }
+.flagge:empty { display:none; }
+.flagge.design { border-color:var(--warn); color:var(--warn); } .flagge.auffaellig { border-color:var(--border); color:var(--fg); font-weight:400; }
+.flagge .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+</style>
+{% endblock %}
+{% block inhalt %}
+<h1>Artikel-Ranking</h1>
+<p class="hinweis">Redaktionelle Bewertung aller {{ zeilen|length }} Artikel nach den Maßstäben von Lektorat, Redaktion, Content Strategy und Copy Editing. Die Punktzahl ist regelbasiert und reproduzierbar; das LLM-Lektorat ist eine zusätzliche, getrennte Meinung. Die LinkedIn-Wirkung fließt <strong>nicht</strong> in die Punktzahl ein.</p>
+{% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
+{% if not llm.aktiv %}<div class="meldung fehler klein">{{ llm.hinweis }}</div>{% endif %}
+
+<div class="row sortwahl">
+  <label for="sortwahl">Sortieren nach</label>
+  <select id="sortwahl">
+    <option value="2:desc">Gesamtscore</option>
+    <option value="3:desc">Vorschau/Meta</option>
+    <option value="4:desc">Lesbarkeit &amp; Fluss</option>
+    <option value="5:desc">Struktur</option>
+    <option value="6:desc">Grafiken/Auflockerung</option>
+    <option value="7:desc">SEO</option>
+    <option value="8:desc">Wörter</option>
+    <option value="9:desc">Aktualisiert</option>
+    <option value="12:desc">Wirkung (Impressions)</option>
+    <option value="1:asc">Titel</option>
+  </select>
+</div>
+
+<div class="tabwrap">
+<table class="daten" id="rangliste">
+<thead><tr>
+  <th class="zahl" data-typ="zahl" aria-sort="ascending"><button type="button">Rang</button></th>
+  <th data-typ="text"><button type="button">Titel</button></th>
+  <th class="zahl" data-typ="zahl"><button type="button" title="Gesamtscore 0–100">Score</button></th>
+  {% for k, kat in kategorien.items() %}
+  <th class="zahl" data-typ="zahl"><button type="button" title="{{ kat.name }} – Gewicht {{ kat.gewicht }} – {{ kat.rolle }}">{{ kat.name }}</button></th>
+  {% endfor %}
+  <th class="zahl" data-typ="zahl"><button type="button">Wörter</button></th>
+  <th data-typ="text"><button type="button">Veröff. / Aktual.</button></th>
+  <th data-typ="text"><button type="button" title="Die fünf Pflicht-Meta-Tags in dist/">Pflicht-Meta</button></th>
+  <th data-typ="text"><button type="button">Post Inspector</button></th>
+  <th class="zahl" data-typ="zahl"><button type="button" title="LinkedIn: Impressions und Interaktionsrate der letzten Messung – nicht Teil des Scores">Wirkung</button></th>
+  <th class="zahl" data-typ="zahl"><button type="button" title="Mittlere Note des LLM-Lektorats (1–5), falls ausgeführt">Lektorat</button></th>
+  <th>Links</th>
+</tr></thead>
+<tbody>
+{% for z in zeilen %}
+<tr>
+  <td class="zahl" data-label="Rang" data-wert="{{ z.rang }}">{{ z.rang }}</td>
+  <td class="titel" data-wert="{{ z.titel }}"><a href="{{ url_for('ranking.detail', slug=z.slug) }}">{{ z.titel }}</a>{% if z.auff %}<div class="flaggen">{% for f in z.auff %}{% if loop.index0 < 4 %}<span class="flagge {{ f.art }}" title="{{ f.text }}">{{ f.text|kurztitel(58) }}</span>{% endif %}{% endfor %}</div>{% endif %}</td>
+  <td class="zahl" data-label="Gesamtscore" data-wert="{{ z.gesamt }}"><span class="punkt {{ z.ampel }}" aria-hidden="true"></span><span class="score">{{ '%.0f'|format(z.gesamt) }}</span><span class="badge {{ z.ampel }}" style="margin-left:.3rem">{{ {'gruen':'gut','gelb':'mittel','rot':'schwach'}[z.ampel] }}</span></td>
+  {% for k, kat in kategorien.items() %}
+  {% set s = z.kat[k] %}{% set farbe = 'gruen' if s >= 80 else ('gelb' if s >= 60 else 'rot') %}
+  <td class="zahl" data-label="{{ kat.name }}" data-wert="{{ s }}">{{ '%.0f'|format(s) }}<div class="balken" aria-hidden="true"><span class="{{ farbe }}" style="width:{{ s }}%"></span></div></td>
+  {% endfor %}
+  <td class="zahl" data-label="Wörter" data-wert="{{ z.woerter }}">{{ z.woerter }}</td>
+  <td data-label="Veröff. / Aktual." data-wert="{{ z.updated }}"><span class="klein">{{ z.datum }}<br>{{ z.updated }}</span></td>
+  <td data-label="Pflicht-Meta" data-wert="{{ 1 if z.pflicht_ok else 0 }}">{% if z.pflicht_ok %}<span class="badge ok">ok</span>{% else %}<span class="badge bad">fehlt</span>{% endif %}</td>
+  <td data-label="Post Inspector" data-wert="{{ z.inspector.status }}">{% if z.live %}<span class="punkt {{ z.live.ampel }}" title="Eigener Live-Inspector {{ z.live.zeitpunkt }}"></span><span class="klein">live</span><br>{% endif %}<span class="badge {{ z.inspector.status }}" title="{{ z.inspector.text }}">{{ {'ok':'geprüft','veraltet':'erneut prüfen','offen':'offen'}[z.inspector.status] }}</span>{% if z.inspector.datum %}<br><span class="klein hinweis">{{ z.inspector.datum }}</span>{% endif %}</td>
+  <td class="zahl" data-label="Wirkung" data-wert="{{ z.wirkung.impressions if z.wirkung else -1 }}">{% if z.wirkung %}{{ '{:,}'.format(z.wirkung.impressions).replace(',', '’') }} Impr.{% if z.wirkung.rate is not none %}<br><span class="klein">{{ ('%.1f'|format(z.wirkung.rate)).replace('.', ',') }} % Interaktion</span>{% endif %}{% else %}<span class="hinweis">–</span>{% endif %}</td>
+  <td class="zahl" data-label="Lektorat" data-wert="{{ z.lektorat if z.lektorat is not none else -1 }}">{% if z.lektorat is not none %}{{ ('%.1f'|format(z.lektorat)).replace('.', ',') }}/5{% else %}<span class="hinweis">–</span>{% endif %}</td>
+  <td class="links-zelle"><div class="links">
+    <a class="knopf" href="{{ z.live_url }}" target="_blank" rel="noopener">Artikel ↗</a>
+    <a class="knopf" href="{{ z.inspector_url }}" target="_blank" rel="noopener" title="LinkedIn Post Inspector in neuem Tab">Post Inspector ↗</a>
+    <a class="knopf" href="{{ url_for('ranking.detail', slug=z.slug) }}">Detail</a>
+    <form method="post" action="{{ url_for('ranking.metas_erzeugen', slug=z.slug) }}" data-lang="läuft …">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <button type="submit" {% if not llm.aktiv %}disabled title="{{ llm.hinweis }}"{% endif %}>Metas optimieren</button>
+    </form>
+  </div></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<p class="hinweis klein">Ampel: grün ≥ 80, gelb 60–79, rot &lt; 60. Spaltenköpfe anklicken zum Sortieren.</p>
+
+<h2 id="gewichte">Bewertungssystem und Gewichte</h2>
+<p class="hinweis">Jede Kategorie hat ein Gewicht (Summe 100). Jedes Kriterium hat Punkte innerhalb seiner Kategorie und wird zu 0–100 % erfüllt; Gesamtscore = Summe Punkte × Erfüllung. Trifft ein Kriterium nicht zu (z. B. Video-Poster ohne Video), werden seine Punkte innerhalb der Kategorie umverteilt. „Flüssig, zusammenhängend und lesbar“ ist die Teilnote <em>Lesbarkeit &amp; Fluss</em>, „Grafiken lockern den Artikel auf“ die Teilnote <em>Grafiken/Auflockerung</em>.</p>
+<div class="gewichte">
+{% for k, kat in kategorien.items() %}
+<div class="card">
+  <strong>{{ k }} · {{ kat.name }}</strong> <span class="badge manual">Gewicht {{ kat.gewicht }}</span>
+  <div class="hinweis klein">{{ kat.rolle }}</div>
+  <ul>
+  {% for kid, kr in kriterien.items() if kr[0] == k %}
+    <li><strong>{{ kr[1] }}</strong> ({{ kr[2] }} P.): {{ kr[3] }}</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endfor %}
+</div>
+<p class="hinweis klein">Lesbarkeitsindex: Flesch für Deutsch nach Amstad, 180 − Satzlänge − 58,5 × Silben je Wort; Silben werden über Vokalgruppen geschätzt. Bildmaße werden aus dem Dateikopf gelesen (PNG, JPEG, GIF, WebP). Die Haken-Erkennung ist eine Heuristik; das LLM-Lektorat liefert dazu ein eigenes Urteil.</p>
+
+<h2 id="profil">LinkedIn: Profil-Übersicht</h2>
+<p class="hinweis">Werte aus „Übersicht/Performance messen“ in LinkedIn – nur lokal gespeichert (<code>data/ranking/</code>, nicht im Repo).</p>
+{% if profil %}
+<div class="tabwrap"><table class="daten">
+<thead><tr><th>Datum</th>{% for f, name in felder_profil.items() %}<th class="zahl">{{ name }}</th>{% endfor %}<th class="zahl">Impressions im Zeitraum</th><th>Quelle</th></tr></thead>
+<tbody>{% for p in profil|reverse %}<tr><td>{{ p.datum }}</td>{% for f in felder_profil %}<td class="zahl">{{ p[f] if p[f] is defined else '–' }}</td>{% endfor %}<td class="zahl">{{ p.impressions_zeitraum if p.impressions_zeitraum is defined else '–' }}{% if p.zeitraum %} <span class="klein hinweis">({{ p.zeitraum }})</span>{% endif %}</td><td class="klein">{{ p.quelle }}</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endif %}
+<details class="card"><summary>Profil-Werte erfassen</summary>
+<form method="post" action="{{ url_for('ranking.profil_erfassen') }}">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <div class="raster" style="margin-top:.6rem">
+    <label>Stand<input type="date" name="datum" value="{{ heute }}"></label>
+    {% for f, name in felder_profil.items() %}<label>{{ name }}<input type="text" inputmode="numeric" name="{{ f }}"></label>{% endfor %}
+  </div>
+  <div class="row" style="margin-top:.6rem"><button class="primary" type="submit">Speichern</button></div>
+</form>
+</details>
+
+<h2 id="import">LinkedIn-Export importieren</h2>
+<div class="card">
+<form method="post" action="{{ url_for('ranking.linkedin_import') }}" enctype="multipart/form-data">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <div class="row"><input type="file" name="datei" accept=".xlsx,.csv,.txt" required></div>
+  <div class="row"><label for="imp-slug">Einzelbeitrag-Export gehört zu</label>
+    <select name="slug" id="imp-slug"><option value="">– automatisch über den Beitrags-Link –</option>{% for z in zeilen|sort(attribute='titel') %}<option value="{{ z.slug }}">{{ z.titel }}</option>{% endfor %}</select></div>
+  <button class="primary" type="submit">Importieren</button>
+</form>
+<p class="hinweis klein">Angenommen werden: der Einzelbeitrag-Export (am Beitrag „Analysen anzeigen“ → „Exportieren“, .xlsx mit Bezeichnung/Wert-Paaren wie Impressions, Members reached, Reactions, Comments, Reposts, Saves, Sends), der Gesamt-Export (Analysen → Inhalte → „Exportieren“, Blätter DISCOVERY, ENGAGEMENT, TOP POSTS, FOLLOWERS, DEMOGRAPHICS – genutzt werden TOP POSTS, DISCOVERY und FOLLOWERS) und eigene CSV-Tabellen mit Kopfzeile (z. B. <code>slug;datum;impressions;reaktionen;kommentare;reposts</code>). Zuordnung zum Artikel über den beim Artikel hinterlegten LinkedIn-Beitrags-Link (Beitrags-ID). Die Spaltennamen sind von LinkedIn nicht offiziell dokumentiert; der Import erkennt deutsche und englische Bezeichnungen tolerant.</p>
+</div>
+
+<h2>Warum keine automatische Abfrage?</h2>
+<div class="card klein">
+<p>Für ein <strong>persönliches</strong> LinkedIn-Profil gibt es ohne Partnerstatus keinen offiziellen API-Weg zu den Beitragsanalysen. Die passenden Endpunkte existieren zwar (Community Management API: <code>memberCreatorPostAnalytics</code>, <code>memberFollowersCount</code>, Rechte <code>r_member_postAnalytics</code>/<code>r_member_profileAnalytics</code>), sind aber nur für eingetragene Organisationen mit Company Page, geschäftlicher E-Mail und App-Review zugänglich. <code>r_member_social</code> ist geschlossen, „Share on LinkedIn“ (<code>w_member_social</code>) kann nur schreiben, und die Member Data Portability API (EWR und Schweiz) enthält keine Analysewerte. Scraping oder Automatisierung der LinkedIn-Oberfläche kommt nicht in Frage. Deshalb: manuelle Erfassung und Import des „Exportieren“-Downloads.</p>
+<p>Quellen: <a href="https://learn.microsoft.com/en-us/linkedin/marketing/community-management/members/post-statistics" target="_blank" rel="noopener">Post Statistics</a>, <a href="https://learn.microsoft.com/en-us/linkedin/marketing/community-management-app-review" target="_blank" rel="noopener">App Review</a>, <a href="https://learn.microsoft.com/en-us/linkedin/marketing/community-management/community-management-overview" target="_blank" rel="noopener">Community Management Overview (FAQ)</a>, <a href="https://learn.microsoft.com/en-us/linkedin/dma/member-data-portability/shared/snapshot-domain" target="_blank" rel="noopener">DMA Snapshot-Domains</a>, <a href="https://www.linkedin.com/help/linkedin/answer/a701208" target="_blank" rel="noopener">LinkedIn-Hilfe: Export (.xlsx)</a>.</p>
+<p>Einordnung „Wirkung“: {{ benchmark.quelle }} <a href="{{ benchmark.url }}" target="_blank" rel="noopener">Quelle</a></p>
+</div>
+{% endblock %}
+{% block skript %}
+<script>
+(function () {
+  var tab = document.getElementById('rangliste');
+  var kopf = tab.querySelectorAll('thead th');
+  function wert(tr, i, typ) {
+    var td = tr.children[i];
+    var v = td ? (td.getAttribute('data-wert') || td.textContent.trim()) : '';
+    return typ === 'zahl' ? parseFloat(v) || 0 : v.toLocaleLowerCase('de');
+  }
+  function sortiere(i, richtung) {
+    var typ = kopf[i].getAttribute('data-typ') || 'text';
+    var body = tab.tBodies[0];
+    var zeilen = Array.prototype.slice.call(body.rows);
+    zeilen.sort(function (a, b) {
+      var x = wert(a, i, typ), y = wert(b, i, typ);
+      var r = typ === 'zahl' ? x - y : x.localeCompare(y, 'de');
+      return richtung === 'asc' ? r : -r;
+    });
+    zeilen.forEach(function (z) { body.appendChild(z); });
+    kopf.forEach(function (th, j) { if (j === i) th.setAttribute('aria-sort', richtung === 'asc' ? 'ascending' : 'descending'); else th.removeAttribute('aria-sort'); });
+  }
+  kopf.forEach(function (th, i) {
+    var b = th.querySelector('button');
+    if (!b) return;
+    b.addEventListener('click', function () {
+      var jetzt = th.getAttribute('aria-sort');
+      var typ = th.getAttribute('data-typ');
+      var r = jetzt === 'descending' ? 'asc' : jetzt === 'ascending' ? 'desc' : (typ === 'zahl' && i !== 0 ? 'desc' : 'asc');
+      sortiere(i, r);
+    });
+  });
+  var wahl = document.getElementById('sortwahl');
+  if (wahl) wahl.addEventListener('change', function () { var t = wahl.value.split(':'); sortiere(parseInt(t[0], 10), t[1]); });
+  window.__sortiere = sortiere;
+})();
+</script>
+{% endblock %}

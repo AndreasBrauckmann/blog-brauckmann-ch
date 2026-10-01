@@ -1,0 +1,27 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block titel %}LinkedIn-Import{% endblock %}
+{% block inhalt %}
+<p class="klein"><a href="{{ url_for('ranking.uebersicht') }}#import">← zurück zum Ranking</a></p>
+<h1>LinkedIn-Import</h1>
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+{% for h in hinweise %}<div class="meldung fehler">{{ h }}</div>{% endfor %}
+{% if zugeordnet %}
+<h2>Zugeordnet und gespeichert ({{ zugeordnet|length }})</h2>
+<div class="tabwrap"><table class="daten"><thead><tr><th>Artikel</th><th>Datum</th><th class="zahl">Impressions</th><th class="zahl">Reaktionen</th><th class="zahl">Kommentare</th><th class="zahl">Reposts</th><th class="zahl">Engagements</th></tr></thead><tbody>
+{% for slug, m in zugeordnet %}<tr><td><a href="{{ url_for('ranking.detail', slug=slug) }}#linkedin">{{ slug }}</a></td><td>{{ m.datum }}</td><td class="zahl">{{ m.impressions if m.impressions is defined else '–' }}</td><td class="zahl">{{ m.reaktionen if m.reaktionen is defined else '–' }}</td><td class="zahl">{{ m.kommentare if m.kommentare is defined else '–' }}</td><td class="zahl">{{ m.reposts if m.reposts is defined else '–' }}</td><td class="zahl">{{ m.interaktionen if m.interaktionen is defined else '–' }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+{% if offen %}
+<h2>Nicht zugeordnet ({{ offen|length }})</h2>
+<p class="hinweis">Diese Beiträge passen zu keinem hinterlegten Beitrags-Link. Beim Artikel unter „LinkedIn-Wirkung“ den Link zum Beitrag eintragen und die Datei erneut importieren. Nicht gespeichert.</p>
+<div class="tabwrap"><table class="daten"><thead><tr><th>Beitrag</th><th>Datum</th><th class="zahl">Impressions</th><th class="zahl">Engagements</th></tr></thead><tbody>
+{% for m in offen %}<tr><td class="klein" style="word-break:break-all">{{ m.beitrag_url or '–' }}</td><td>{{ m.datum or '–' }}</td><td class="zahl">{{ m.impressions if m.impressions is defined else '–' }}</td><td class="zahl">{{ m.interaktionen if m.interaktionen is defined else '–' }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+{% if profil %}
+<h2>Profil-Übersicht übernommen</h2>
+<ul>{% for k, v in profil.items() %}<li><code>{{ k }}</code>: {{ v }}</li>{% endfor %}</ul>
+{% endif %}
+{% if not zugeordnet and not offen and not profil and not fehler and not hinweise %}<p>Keine Daten gefunden.</p>{% endif %}
+{% endblock %}

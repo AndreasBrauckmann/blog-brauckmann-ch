@@ -6,12 +6,16 @@ Statischer Blog-Generator (`scripts/build.py`) + Verteilung an Social-Kanäle
 
 ## Social-Kanäle: Zeichenlimits
 
-- **LinkedIn**: harte Grenze **3.000 Zeichen** (seit Juni 2023 unverändert,
-  Stand September 2026). Nur die ersten ~210 Zeichen (Desktop) bzw. ~140
-  (Mobil) werden vor "…mehr" angezeigt — der erste Satz zählt am meisten.
-  Bestes Engagement laut Datenlage bei **1.300–1.900 Zeichen**.
-  `config.yaml` steht auf `min_chars: 1200, max_chars: 1800` — das liegt
-  bewusst in diesem Bereich, nicht am harten Limit.
+- **LinkedIn**: harte Grenze **3.000 Zeichen**. Standard ist seit 1.10.2026
+  die **Kurzform mit Karte**: `config.yaml` `format: kurz`, `min_chars: 150`,
+  `max_chars: 300` (ganzer Beitrag inkl. Hashtags und URL). Aufbau
+  (`summarize.summarize_linkedin_kurz`): 2–3 kurze Sätze mit Haken (Slogan
+  zuerst), Leerzeile, höchstens 2 Hashtags, **Artikel-URL als letzte Zeile**.
+  Begründung: vor „…mehr" sind nur die ersten ~140 Zeichen (mobil) bzw. ~210
+  (Desktop) sichtbar, und bei langen Beiträgen zeigte LinkedIn in der
+  Profil-Übersicht **keine Link-Karte** – die Karte ist nur bei kurzem Text
+  sichtbar. Die Langform (`lang_min_chars: 1200`, `lang_max_chars: 1800`)
+  bleibt über den Umschalter auf der LinkedIn-Seite der Verwaltung erreichbar.
 - **Mastodon**: `max_chars: 480` (mastodon.social-Standard), in
   `config.yaml` hinterlegt.
 - **Bluesky**: `max_chars: 290` (Sicherheitsabstand zum echten Limit von
@@ -61,3 +65,51 @@ Grenzen im Kopf behalten, bevor Inhalt ergänzt wird.
 - Das ist ein Schritt des Menschen und lässt sich nicht automatisieren.
   `scripts/publish.py` erinnert daran und schreibt eine Prüfzeile in
   `manual-posts.md`; abgehakt wird sie vom Autor.
+
+## Verwaltung (Redaktions-Cockpit) – `scripts/admin/`
+
+Flask-App, systemd-Dienst `blog-verwaltung` (127.0.0.1:5151), nur über den
+edge-Caddy erreichbar: LAN `http://<LAN-Adresse des Servers>:8090/verwaltung`, Tailnet
+`https://<Tailnet-Name des Servers>/verwaltung`. Neustart:
+`sudo -n systemctl restart blog-verwaltung` (Vorlagen werden gecacht).
+
+Tabs: Übersicht · Deploy · Ranking · mastodon · bluesky · linkedin · reddit ·
+facebook · youtube_community · microsoft_tech_community.
+
+- **Deploy** (`deploy.py`, `deploy_views.py`): Prüfen → Bauen → Diff ansehen →
+  Veröffentlichen → Live prüfen → Post Inspector abhaken. Commit/Push **nur auf
+  Knopfdruck mit Bestätigung**, nur ausgewählte Pfade (`git commit --only`).
+  Vorausgewählt: `articles/`, `dist/`, `templates/`, `config.yaml`,
+  `CLAUDE.md`, `publish-log.md`, Bilder unter `static/img/`, die ein
+  geänderter Artikel referenziert. Nur mit ausdrücklicher Auswahl: `scripts/`,
+  gelöschte Dateien, alles andere. **Nie**: `manual-posts.md`, `data/`, `.env*`,
+  `.secrets/`. Der geprüfte Stand wird per Fingerabdruck festgehalten; ändert
+  sich danach etwas, bricht das Veröffentlichen ab. Push nur, wenn der lokale
+  Stand nicht hinter `origin/master` liegt. Git-Identität/SSH-Schlüssel sind
+  die des Dienstnutzers. `scripts/publish.py` committet ebenfalls nur diese
+  Whitelist; die Verwaltung ruft es mit `--nur-posten` auf.
+- **Eigener Inspector** (`inspector.py`): Live-Abruf als LinkedInBot,
+  Pflicht-Tags, og:image (200, Typ, Größe, Maße), Canonical,
+  og:image:width/height, Cache, Live = Build. Ersetzt **nicht** den LinkedIn
+  Post Inspector (Menschen-Schritt, siehe oben).
+- **Ranking** (`bewertung.py`, `ranking_views.py`): regelbasiert, offline;
+  Kriterien und Gewichte stehen auf der Seite. Kennzeichnung „Thema verfehlt?",
+  „Design schwach", Auffälligkeiten. Fundstellen per **Vale** (Binary unter
+  `data/werkzeuge/vale`, Regeln in `scripts/admin/vale/styles/BlogDE`).
+  textstat wird bewusst nicht genutzt (zieht nltk nach; seine deutsche
+  Silbenzählung über pyphen zählt Trennstellen statt Sprechsilben) – die
+  Amstad-Formel ist selbst implementiert. LanguageTool ist nicht installiert.
+- **Plattformseiten** (`plattformen.py`, `plattform_views.py`,
+  `kennzahlen.py`): Vorschau-Nachbau, Pflicht-Tags, Vorschläge, Beitragstext,
+  Auto-Analyse (LLM), Prüfliste, Ranking je Plattform, Kennzahlen (Mastodon/
+  Bluesky öffentlich lesend, sonst Formular/CSV; kein Scraping).
+- **LLM** (`llm.py`): nur über `BLOG_LLM_API_KEY`/`BLOG_LLM_BASE_URL`/
+  `BLOG_LLM_MODEL` in `.env` (claude-wrapper). Nur auf Knopfdruck, ändert nie
+  selbst Artikel; „Metas übernehmen" schreibt erst nach Bestätigung mit Diff
+  und Backup ins Frontmatter, ohne zu bauen oder zu veröffentlichen.
+- **Daten nie ins Repo**: alle Laufzeitdaten (Kennzahlen, Prüflisten,
+  Inspector-Ergebnisse, Lektorat, Deploy-Verlauf, Backups, Vale-Binary) liegen
+  unter `data/` (in `.gitignore`). `publish-log.md` ist im Repo – dort nie
+  Kennzahlen eintragen.
+- Tests: `.venv/bin/python -m unittest discover -s tests` (Git-Tests nur in
+  Wegwerf-Repos unter tempfile, kein Netz).

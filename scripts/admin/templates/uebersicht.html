@@ -1,0 +1,63 @@
+{% extends "basis.html" %}
+{% from "_makros.html" import artikel_wahl %}
+{% set seite = 'uebersicht' %}
+{% block titel %}Übersicht{% endblock %}
+{% block kopf %}
+<style>
+.kanal-kopf { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+.kanal-kopf strong { min-width:7rem; }
+</style>
+{% endblock %}
+{% block inhalt %}
+<h1>Blog-Verwaltung</h1>
+{% if not auswahl %}<p>Keine Artikel gefunden.</p>{% else %}
+{{ artikel_wahl(auswahl, slug, '/verwaltung') }}
+<p class="hinweis klein"><a href="{{ live_url }}" target="_blank" rel="noopener">{{ live_url }} ↗</a> · <a href="{{ url_for('ranking.detail', slug=slug) }}">Bewertung</a> · <a href="/verwaltung/deploy">Deploy</a></p>
+
+{% if log %}<h2>Ergebnis</h2><pre class="log">{{ log }}</pre>{% endif %}
+
+<form method="post" action="{{ url_for('publish') }}" id="posten-form">
+<input type="hidden" name="slug" value="{{ slug }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
+{% for name, ch in channels.items() %}
+<div class="card">
+  <div class="kanal-kopf">
+    <strong>{% if ch.seite %}<a href="/verwaltung/plattform/{{ name }}?slug={{ slug }}">{{ name }}</a>{% else %}{{ name }}{% endif %}</strong>
+    {% if ch.manual %}<span class="badge manual">manuell</span>
+    {% elif ch.connected %}<span class="badge ok">verbunden</span>
+    {% else %}<span class="badge bad">kein Token</span>{% endif %}
+    {% if not ch.manual %}<label><input type="checkbox" name="channels" value="{{ name }}" {% if ch.enabled %}checked{% endif %}> jetzt posten</label>{% endif %}
+  </div>
+  {% if ch.note %}<p class="hinweis klein">{{ ch.note }}</p>{% endif %}
+  {% if ch.text %}
+    <textarea readonly id="text-{{ name }}" rows="5">{{ ch.text }}</textarea>
+    <div class="row" style="margin-top:.4rem">
+      <button type="button" data-kopieren="text-{{ name }}">In Zwischenablage kopieren</button>
+      <span class="klein hinweis">{{ ch.text|length }} Zeichen</span>
+      {% if ch.deep_link %}<a class="knopf" href="{{ ch.deep_link }}" target="_blank" rel="noopener">Compose öffnen ↗</a>{% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endfor %}
+<button class="primary" type="submit">Ausgewählte Kanäle jetzt posten</button>
+<p class="hinweis klein">Postet nur (Mastodon/Bluesky per API). Bauen und Veröffentlichen des Blogs läuft über <a href="/verwaltung/deploy">Deploy</a>.</p>
+</form>
+
+<p class="hinweis klein" style="margin-top:1.5rem">Dauerhaft als automatischen Kanal aktivieren/deaktivieren (unabhängig vom aktuellen Posten):</p>
+<form method="post" action="{{ url_for('toggle') }}">
+<input type="hidden" name="slug" value="{{ slug }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
+{% for name, ch in channels.items() if not ch.manual %}
+  <label style="margin-right:1rem"><input type="checkbox" name="enabled_{{ name }}" {% if ch.enabled %}checked{% endif %} onchange="this.form.submit()"> {{ name }} dauerhaft aktiv</label>
+{% endfor %}
+</form>
+{% endif %}
+{% endblock %}
+{% block skript %}
+<script>
+var pf = document.getElementById('posten-form');
+if (pf) pf.addEventListener('submit', function (ev) {
+  var k = Array.prototype.map.call(pf.querySelectorAll('input[name=channels]:checked'), function (b) { return b.value; });
+  if (!k.length) { ev.preventDefault(); alert('Kein Kanal ausgewählt.'); return; }
+  if (!confirm('Jetzt auf ' + k.join(', ') + ' posten?')) ev.preventDefault();
+});
+</script>
+{% endblock %}

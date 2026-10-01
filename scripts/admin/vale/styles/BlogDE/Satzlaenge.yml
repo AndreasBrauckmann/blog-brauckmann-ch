@@ -1,0 +1,6 @@
+extends: occurrence
+message: "Sehr langer Satz (mehr als 30 Wörter) – am Komma oder Gedankenstrich teilen."
+level: warning
+scope: sentence
+max: 30
+token: '[^\s]+'

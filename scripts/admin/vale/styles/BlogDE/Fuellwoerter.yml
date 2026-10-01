@@ -1,0 +1,20 @@
+extends: existence
+message: "Füllwort „%s“ – streichen, wenn der Satz ohne auskommt."
+level: suggestion
+ignorecase: true
+tokens:
+  - eigentlich
+  - quasi
+  - sozusagen
+  - irgendwie
+  - gewissermaßen
+  - letztendlich
+  - schlussendlich
+  - regelrecht
+  - überaus
+  - ungemein
+  - schlichtweg
+  - halt
+  - total
+  - ziemlich
+  - durchaus

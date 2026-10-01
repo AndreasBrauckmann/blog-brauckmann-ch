@@ -1,0 +1,335 @@
+{% extends "basis.html" %}
+{% import "_makros.html" as m %}
+{% import "plattform_vorschau.html" as pv %}
+{% block titel %}{{ plattform or 'Plattform' }}{% endblock %}
+{% block kopf %}
+<style>
+.pv-post { border:1px solid var(--border); border-radius:10px; background:var(--card); padding:.8rem .9rem; max-width:560px; width:100%; }
+.pv-post.schmal { max-width:340px; }
+.pv-post .pv-inhalt { white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; font-size:.93rem; }
+.pv-post .pv-kopf { font-size:.82rem; color:var(--muted); margin-bottom:.4rem; }
+mark.gekuerzt { background:transparent; color:var(--muted); text-decoration:line-through; text-decoration-color:var(--bad); opacity:.75; }
+.mehr { color:var(--muted); }
+.pv-karte { border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--bg); margin-top:.6rem; max-width:100%; }
+.pv-karte.gross .pv-bild { aspect-ratio:1.91 / 1; width:100%; background:var(--bar); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.pv-karte.klein { display:flex; }
+.pv-karte.klein .pv-bild { flex:0 0 28%; max-width:120px; aspect-ratio:1/1; background:var(--bar); overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.pv-karte .pv-bild img { width:100%; height:100%; object-fit:cover; display:block; }
+.pv-ktext { padding:.5rem .7rem .6rem; min-width:0; }
+.pv-titel { font-weight:600; font-size:.9rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.pv-beschr { color:var(--muted); font-size:.8rem; margin-top:.15rem; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.pv-domain { color:var(--muted); font-size:.74rem; margin-top:.2rem; }
+.vorschauen { display:flex; gap:1.2rem; flex-wrap:wrap; align-items:flex-start; }
+.vorschauen > div { min-width:0; max-width:100%; flex:1 1 300px; }
+.kartenlabel { font-size:.78rem; color:var(--muted); margin-bottom:.25rem; }
+.verdeckt { border:1px dashed var(--bad); border-radius:8px; padding:.5rem .7rem; margin-top:.6rem; color:var(--bad); font-size:.82rem; }
+.warnbox { border:2px solid var(--bad); background:var(--card); border-radius:8px; padding:.8rem 1rem; margin:.6rem 0 1rem; }
+.warnbox strong { color:var(--bad); }
+.umschalter { display:inline-flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+.umschalter a { padding:.3rem .7rem; text-decoration:none; color:var(--fg); font-size:.88rem; }
+.umschalter a[aria-current=true] { background:var(--fg); color:var(--bg); }
+.vorschlag { display:flex; gap:.5rem; padding:.3rem 0; border-bottom:1px dashed var(--border); align-items:flex-start; }
+.vorschlag:last-child { border-bottom:none; }
+.vorschlag .stufe { flex:0 0 auto; min-width:4.2rem; text-align:center; }
+.zaehler { font-size:.82rem; font-variant-numeric:tabular-nums; }
+.zaehler.zu-lang { color:var(--bad); font-weight:600; }
+.regeln { margin:.3rem 0 0; padding-left:1.1rem; } .regeln li { margin:.25rem 0; }
+.pruef li { list-style:none; padding:.3rem 0; border-bottom:1px dashed var(--border); } .pruef { padding:0; margin:0; }
+.pruef label { display:flex; gap:.5rem; align-items:flex-start; }
+.pruef input { margin-top:.3rem; flex:0 0 auto; }
+.formel { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:.6rem .9rem; font-size:.86rem; }
+td.kurz a { text-decoration:none; }
+.gescore { font-size:1.6rem; font-weight:800; font-variant-numeric:tabular-nums; }
+textarea.beitrag { min-height:9rem; font-size:.92rem; }
+.kopfzeile { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; }
+.klein-tab td, .klein-tab th { font-size:.84rem; }
+.meta-wert { overflow-wrap:break-word; min-width:13rem; }
+</style>
+{% endblock %}
+{% block inhalt %}
+<h1>{{ plattform or 'Plattform' }}</h1>
+{% if keine_artikel %}<p>Keine Artikel gefunden.</p>{% else %}
+{{ m.artikel_wahl(auswahl, slug, url_for('plattform.seite', name=name)) }}
+{% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+{% if pc.warnung %}<div class="warnbox" role="alert"><strong>Warnung:</strong> {{ pc.warnung }}</div>{% endif %}
+
+<div class="kopfzeile">
+  <div><span class="punkt {{ eignung.ampel }}"></span><span class="gescore">{{ '%.0f'|format(eignung.score) }}</span><span class="hinweis"> / 100 Eignung</span></div>
+  <div class="hinweis">{{ meta.title|kurztitel(70) }} · {{ ctx.woerter }} Wörter</div>
+  <a class="knopf" href="{{ ctx.live_url }}" target="_blank" rel="noopener">Artikel ↗</a>
+  <a class="knopf" href="{{ pc.post_url }}" target="_blank" rel="noopener">{{ plattform }} ↗</a>
+</div>
+
+{# ------------------------------------------------------------ 1. Vorschau #}
+<h2 id="vorschau">Vorschau</h2>
+{% if name == 'linkedin' %}
+<div class="row">
+  <span class="umschalter" role="group" aria-label="Format">
+    <a href="{{ url_for('plattform.seite', name=name, slug=slug, format='kurz') }}" {% if fmt == 'kurz' %}aria-current="true"{% endif %}>Kurz mit Karte (Standard)</a>
+    <a href="{{ url_for('plattform.seite', name=name, slug=slug, format='lang') }}" {% if fmt == 'lang' %}aria-current="true"{% endif %}>Lang</a>
+  </span>
+  <span class="hinweis klein">{{ z.n }} Zeichen</span>
+</div>
+{% endif %}
+<p class="hinweis klein">Nachbau zur Orientierung, kein Abbild der Plattform. Gekürzte Teile erscheinen <mark class="gekuerzt">grau und durchgestrichen</mark>. Bildkarte: <strong>{{ kartentext }}</strong>{% if bild.breite %} ({{ bild.breite }}×{{ bild.hoehe }} px){% endif %}.</p>
+
+{% if name == 'mastodon' %}
+<div class="pv-post">
+  <div class="pv-kopf">brauckmannblog · Mastodon</div>
+  <div class="pv-inhalt">{{ pv.text_gekuerzt(ok_teil, rest, z.schnitt) }}</div>
+  {{ pv.karte(kartentyp, bild_url, ctx.titel, ctx.beschreibung, ctx.domain, 2) }}
+  <div class="hinweis klein" style="margin-top:.4rem">Zählung: {{ z.n }} / 500 Zeichen, jeder Link = 23{% if z.schnitt is not none %} · <strong class="bad-text">gekürzt ab Zeichen {{ z.schnitt }}</strong>{% endif %}.
+    {% if ctx.fedi %}Autor in der Karte über <code>fediverse:creator</code>.{% elif ctx.fedi is sameas false %}<span class="warn-text">fediverse:creator fehlt – Karte ohne Autor.</span>{% endif %}</div>
+</div>
+{% elif name == 'bluesky' %}
+<div class="pv-post">
+  <div class="pv-kopf">brauckmannblog.bsky.social · Bluesky</div>
+  <div class="pv-inhalt">{{ pv.text_gekuerzt(ok_teil, rest, z.schnitt) }}</div>
+  {{ pv.karte(kartentyp if bild_url else 'keine', bild_url, ctx.titel, ctx.beschreibung, ctx.domain, 2) }}
+  <div class="hinweis klein" style="margin-top:.4rem">{{ z.n }} / 300 Grapheme (Näherung), {{ z.extra[0] }}{% if z.schnitt is not none %} · <strong class="bad-text">gekürzt ab Zeichen {{ z.schnitt }}</strong>{% endif %}.
+    Karte baut der Client; Bild = Frontmatter-Feld <code>image</code> ({% if bild.vorhanden %}{{ bild.kb }} KB{% else %}<span class="bad-text">fehlt</span>{% endif %}).
+    {% if bild.vorhanden and bild.bytes > 1000000 %}<strong class="bad-text">Thumb über 1 MB – Bluesky lehnt es ab.</strong>{% endif %}</div>
+</div>
+{% elif name == 'linkedin' %}
+<div class="vorschauen">
+  <div>
+    <div class="kartenlabel">Profil-Übersicht, Desktop (~{{ 210 }} Zeichen sichtbar)</div>
+    {% set kd = kachel.desktop %}
+    <div class="pv-post"><div class="pv-inhalt">{{ kd.sichtbar }}{% if kd.gekuerzt %}<span class="mehr"> …mehr</span>{% endif %}</div>
+      {% if kachel.karte_sichtbar %}{{ pv.karte(kartentyp, bild_url, ctx.titel, '', ctx.domain, 0) }}
+      {% elif kachel.karte_verdeckt %}<div class="verdeckt">Karte verdeckt – LinkedIn zeigte bei langen Beiträgen keine Karte in der Profil-Übersicht.</div>{% endif %}</div>
+    {% if kd.gekuerzt %}<p class="hinweis klein">gekürzt ab Zeichen {{ kd.ab }}. <details><summary>ausgeblendeter Teil</summary><mark class="gekuerzt" style="white-space:pre-wrap">{{ kd.rest }}</mark></details></p>{% endif %}
+  </div>
+  <div>
+    <div class="kartenlabel">Profil-Übersicht, mobil (~{{ 140 }} Zeichen sichtbar)</div>
+    {% set km = kachel.mobil %}
+    <div class="pv-post schmal"><div class="pv-inhalt">{{ km.sichtbar }}{% if km.gekuerzt %}<span class="mehr"> …mehr</span>{% endif %}</div>
+      {% if kachel.karte_sichtbar %}{{ pv.karte(kartentyp, bild_url, ctx.titel, '', ctx.domain, 0) }}
+      {% elif kachel.karte_verdeckt %}<div class="verdeckt">Karte verdeckt – LinkedIn zeigte bei langen Beiträgen keine Karte in der Profil-Übersicht.</div>{% endif %}</div>
+    {% if km.gekuerzt %}<p class="hinweis klein">gekürzt ab Zeichen {{ km.ab }}.</p>{% endif %}
+  </div>
+  <div>
+    <div class="kartenlabel">Feed-Karte (Link-Vorschau)</div>
+    <div class="pv-post">{{ pv.karte(kartentyp, bild_url, ctx.titel, ctx.beschreibung, ctx.domain, 0) }}</div>
+    <p class="hinweis klein">Titel nach zwei Zeilen abgeschnitten (am Desktop ~70–90 Zeichen, Telefon früher: {{ ctx.titel|length }} Zeichen). Die Beschreibung ({{ ctx.beschreibung|length }}) zeigt LinkedIn in der Karte meist nicht. Verbindlich ist nur der Post Inspector.</p>
+  </div>
+</div>
+{% elif name == 'reddit' %}
+<div class="pv-post">
+  <div class="pv-kopf">r/SysAdminBlogs · Text-Beitrag</div>
+  <div style="font-weight:700;margin-bottom:.4rem;overflow-wrap:anywhere">{{ titel[:300] }}{% if titel|length > 300 %}<mark class="gekuerzt">{{ titel[300:] }}</mark>{% endif %}</div>
+  <div class="pv-inhalt">{{ text[:600] }}{% if text|length > 600 %}<span class="mehr"> … (Vorschau gekürzt, Text vollständig unten)</span>{% endif %}</div>
+</div>
+<p class="hinweis klein">Titel: {{ zt }} / 300 Zeichen.</p>
+{% elif name == 'facebook' %}
+<div class="pv-post">
+  <div class="pv-kopf">Facebook · Link-Beitrag</div>
+  <div class="pv-inhalt">{{ pv.text_gekuerzt(ok_teil, rest, z.schnitt) }}</div>
+  {{ pv.karte(kartentyp, bild_url, ctx.titel, ctx.beschreibung, ctx.domain|upper, 2, true) }}
+  <div class="hinweis klein" style="margin-top:.4rem">Vorschau aus den og:-Tags. Wie viele Zeilen der Beschreibung Facebook zeigt, ist nicht dokumentiert.</div>
+</div>
+{% elif name == 'youtube_community' %}
+<div class="pv-post">
+  <div class="pv-kopf">YouTube Post</div>
+  <div class="pv-inhalt">{{ pv.text_gekuerzt(ok_teil, rest, z.schnitt) }}</div>
+  <div class="hinweis klein" style="margin-top:.4rem">Link-Darstellung unbelegt; ein Bild lässt sich im Studio anhängen ({% if ctx.og.vorhanden %}{{ ctx.og.breite }}×{{ ctx.og.hoehe }}{% else %}kein Bild{% endif %}).</div>
+</div>
+{% else %}
+<div class="pv-post">
+  <div class="pv-kopf">Tech Community · Diskussion</div>
+  <div class="pv-inhalt">{{ text }}</div>
+</div>
+{% endif %}
+
+{# ------------------------------------------------------------ Regeln #}
+<details {% if name != 'linkedin' %}open{% endif %} style="margin-top:.8rem"><summary><strong>Regeln und Grenzen der Plattform</strong></summary>
+  <ul class="regeln">
+  {% for art, t, q in pc.regeln %}<li>{{ m.etikett(art) }} {{ t }}{% if q %} <a href="{{ q }}" target="_blank" rel="noopener">Quelle ↗</a>{% endif %}</li>{% endfor %}
+  </ul>
+  <p class="hinweis klein">Stand der Recherche: 1.10.2026.</p>
+</details>
+
+{# ------------------------------------------------------------ 2. Metadaten #}
+<h2 id="meta">Metadaten</h2>
+<div class="card">
+  <h3 style="margin-top:0">Fünf Pflicht-Tags (aus dist/)</h3>
+  {% if not ctx.dist %}<p class="warn-text">Keine gebaute Seite in dist/ gefunden – erst bauen.</p>{% endif %}
+  <div class="tabwrap"><table class="daten">
+    <thead><tr><th>Tag</th><th>Wert</th><th class="zahl">Länge</th><th>Status</th></tr></thead>
+    <tbody>{% for k, v in ctx.pflicht.items() %}<tr><td><code>{{ k }}</code></td><td class="meta-wert">{{ v or '–' }}</td><td class="zahl">{% if v %}{{ v|length }}{% endif %}</td><td>{% if v %}<span class="badge ok">ok</span>{% else %}<span class="badge nein">fehlt</span>{% endif %}</td></tr>{% endfor %}</tbody>
+  </table></div>
+  <h3>Längen mit Soll</h3>
+  <div class="tabwrap"><table class="daten klein-tab">
+    <thead><tr><th>Feld</th><th class="zahl">Ist</th><th>Soll</th><th>Hinweis für {{ plattform }}</th></tr></thead>
+    <tbody>
+      <tr><td>Titel</td><td class="zahl">{{ ctx.titel|length }}</td><td>40–70</td><td>{% if name == 'linkedin' %}Karte: 2 Zeilen, ~70–90 Zeichen am Desktop{% elif name in ('mastodon','bluesky','facebook') %}wird in der Karte gekürzt{% else %}Karte nicht verwendet{% endif %}</td></tr>
+      <tr><td>Beschreibung</td><td class="zahl">{{ ctx.beschreibung|length }}</td><td>120–160</td><td>{% if name == 'linkedin' %}in der Feed-Karte meist nicht sichtbar{% elif pc.karte %}Karten zeigen wenige Zeilen{% else %}Karte nicht verwendet{% endif %}</td></tr>
+      <tr><td>Beitragstext</td><td class="zahl">{{ z.n }}</td><td>≤ {{ z.soll }}{% if z.limit != z.soll %} (hart {{ z.limit }}){% endif %}</td><td>{{ z.einheit }}</td></tr>
+    </tbody></table></div>
+  <h3>Bild</h3>
+  {% set b = ctx.image if name == 'bluesky' else ctx.og %}
+  {% if b.vorhanden %}
+  <p>{{ b.breite }}×{{ b.hoehe }} px{% if b.verhaeltnis %}, Verhältnis {{ b.verhaeltnis|string|replace('.', ',') }}:1{% endif %}, {{ b.kb }} KB, <strong>{{ kartentext }}</strong> · <code>{{ b.pfad }}</code>{% if name == 'bluesky' %} (Feld <code>image</code>){% endif %}</p>
+  {% else %}<p class="warn-text">Kein Bild{% if name == 'bluesky' %} im Feld <code>image</code>{% endif %} gefunden.</p>{% endif %}
+
+  <h3>Link-Vorschau prüfen</h3>
+  <div class="kopierbar"><input type="text" id="liveurl" readonly value="{{ ctx.live_url }}"><button type="button" data-kopieren="liveurl">Kopieren</button></div>
+  <div class="row" style="margin-top:.6rem">
+    {% if name == 'linkedin' %}<a class="knopf" href="{{ insp_url }}" target="_blank" rel="noopener">LinkedIn Post Inspector ↗</a>{% endif %}
+    {% if name == 'facebook' %}<a class="knopf" href="https://developers.facebook.com/tools/debug/" target="_blank" rel="noopener">Sharing Debugger ↗</a>{% endif %}
+    {% if inspector %}
+    <form method="post" action="/verwaltung/inspector/{{ slug }}" data-lang="prüft …" style="display:inline"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="zurueck" value="{{ zurueck }}#meta"><button type="submit">Live prüfen</button></form>
+    {% endif %}
+  </div>
+  {% if inspector %}
+    {% if insp_erg %}
+    <p><span class="punkt {{ insp_erg.ampel }}"></span><strong>Letzte Live-Prüfung:</strong> {{ insp_erg.zeitpunkt }} · Status {{ insp_erg.status }}{% if insp_erg.fehler %} · <span class="bad-text">{{ insp_erg.fehler }}</span>{% endif %}{% if insp_erg.gleich_build is not none %} · {{ 'identisch mit dem Build' if insp_erg.gleich_build else 'weicht vom Build ab' }}{% endif %}</p>
+    <ul class="regeln">{% for bf in insp_erg.befunde %}<li class="{{ {'ok':'ok-text','warn':'warn-text','fehler':'bad-text'}.get(bf.stufe, '') }}">{{ bf.text }}</li>{% endfor %}</ul>
+    {% else %}<p class="hinweis">Noch keine Live-Prüfung gespeichert.</p>{% endif %}
+  {% else %}<p class="hinweis klein">Die Live-Prüfung (Inspector) ist noch nicht eingerichtet.</p>{% endif %}
+</div>
+
+{# ------------------------------------------------------------ 3. Vorschlaege #}
+<h2 id="vorschlaege">Verbesserungsvorschläge für {{ plattform }}</h2>
+<div class="card">
+  {% for v in vorschlaege %}
+  <div class="vorschlag"><span class="stufe badge {{ {'ok':'ok','warn':'gelb','fehler':'nein','info':'na'}[v.stufe] }}">{{ {'ok':'ok','warn':'Hinweis','fehler':'Fehler','info':'Info'}[v.stufe] }}</span><span>{{ v.text }}</span></div>
+  {% else %}<p class="hinweis">Keine Auffälligkeiten.</p>{% endfor %}
+</div>
+
+{# ------------------------------------------------------------ 4. Beitragstext #}
+<h2 id="text">Beitragstext</h2>
+{% set modus = {'mastodon':'mastodon','bluesky':'bluesky'}.get(name, 'zeichen') %}
+{% if titel is not none %}
+<label for="beitragstitel">Titel</label>
+<textarea id="beitragstitel" class="beitrag" style="min-height:3.2rem" data-modus="zeichen" data-limit="300" data-zaehler="z-titel">{{ titel }}</textarea>
+<div class="row"><span class="zaehler" id="z-titel"></span><button type="button" data-kopieren="beitragstitel">Titel kopieren</button></div>
+{% endif %}
+<label for="beitragstext">{% if titel is not none %}Text{% else %}Beitragstext{% endif %}</label>
+<textarea id="beitragstext" class="beitrag" data-modus="{{ modus }}" data-limit="{{ z.limit }}" data-soll="{{ z.soll }}" data-zaehler="z-text">{{ text }}</textarea>
+<div class="row"><span class="zaehler" id="z-text"></span><button type="button" data-kopieren="beitragstext">Kopieren</button>
+  {% if pc.manuell and pc.post_url %}<a class="knopf" href="{{ pc.post_url }}" target="_blank" rel="noopener">{{ plattform }} öffnen ↗</a>{% endif %}</div>
+{% if name == 'linkedin' %}<p class="hinweis klein">Reihenfolge laut CLAUDE.md: bauen, deployen, Post Inspector ausführen, erst dann posten.</p>{% endif %}
+
+{# ------------------------------------------------------------ 5. Auto-Analyse #}
+<h2 id="analyse">Auto-Analyse (LLM)</h2>
+<p class="hinweis">Erzeugt einen Beitragstext für {{ plattform }} und bewertet die Eignung. Läuft nur auf Knopfdruck.
+  {% if not llm.aktiv %}<span class="warn-text">{{ llm.hinweis }}</span>{% else %}Modell: {{ llm.modell }}.{% endif %}</p>
+<form method="post" action="{{ url_for('plattform.analyse', name=name) }}" data-lang="läuft …">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}">{% if fmt %}<input type="hidden" name="format" value="{{ fmt }}">{% endif %}
+  <button type="submit" {% if not llm.aktiv %}disabled{% endif %}>Auto-Analyse</button>
+</form>
+{% if analyse %}
+<div class="card" style="margin-top:.8rem">
+  <div class="row"><strong>Eignung laut LLM:</strong> <span class="score">{{ analyse.e.eignung if analyse.e.eignung is not none else '–' }}</span> / 100 <span class="hinweis klein">{{ analyse.zeitpunkt[:16]|replace('T', ' ') }} · {{ analyse.modell }}</span></div>
+  <p>{{ analyse.e.begruendung }}</p>
+  {% if analyse.e.risiken %}<ul class="regeln">{% for r in analyse.e.risiken %}<li class="warn-text">{{ r }}</li>{% endfor %}</ul>{% endif %}
+  {% if analyse.e.titel %}<label for="analysetitel">Titelvorschlag</label>
+  <textarea id="analysetitel" class="beitrag" style="min-height:3.2rem" data-modus="zeichen" data-limit="300" data-zaehler="z-atitel">{{ analyse.e.titel }}</textarea>
+  <div class="row"><span class="zaehler" id="z-atitel"></span><button type="button" data-kopieren="analysetitel">Kopieren</button></div>{% endif %}
+  <label for="analysetext">Textvorschlag</label>
+  <textarea id="analysetext" class="beitrag" data-modus="{{ modus }}" data-limit="{{ z.limit }}" data-soll="{{ z.soll }}" data-zaehler="z-atext">{{ analyse.e.text }}</textarea>
+  <div class="row"><span class="zaehler" id="z-atext"></span><button type="button" data-kopieren="analysetext">Kopieren</button></div>
+</div>
+{% endif %}
+
+{# ------------------------------------------------------------ 6. Pruefliste #}
+<h2 id="pruefliste">Prüfliste</h2>
+<form method="post" action="{{ url_for('plattform.pruefliste_speichern', name=name) }}">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}">
+  <ul class="pruef">
+  {% for p in punkte %}
+    <li><label><input type="checkbox" name="punkt" value="{{ p.id }}" {% if p.datum %}checked{% endif %}>
+      <span>{{ p.text }}{% if p.link %} <a href="{{ p.link }}" target="_blank" rel="noopener">öffnen ↗</a>{% endif %}
+        {% if p.datum %}<span class="hinweis klein"> · erledigt {{ p.datum }}</span>{% endif %}
+        {% if p.extra %}<span class="klein {{ 'warn-text' if p.veraltet else 'hinweis' }}"> · {{ p.extra }}</span>{% endif %}</span></label></li>
+  {% endfor %}
+  </ul>
+  <div class="row" style="margin-top:.6rem"><button type="submit">Prüfliste speichern</button>
+    {% if name == 'linkedin' %}<span class="hinweis klein">Der Post-Inspector-Punkt ist mit dem Ranking synchron (gleiches Häkchen).</span>{% endif %}</div>
+</form>
+
+{# ------------------------------------------------------------ 7. Gepostet #}
+<h2 id="gepostet">Gepostet?</h2>
+{% if gepostet %}
+  <p><span class="badge ok">ja</span> {% if gepostet.datum %}am {{ gepostet.datum }}{% if gepostet.uhrzeit %} {{ gepostet.uhrzeit }} UTC{% endif %}{% endif %}
+    {% if gepostet.url %}· <a href="{{ gepostet.url }}" target="_blank" rel="noopener">Beitrag ↗</a>{% endif %}
+    <span class="hinweis klein"> · Quelle: {{ gepostet.quelle }}{% if gepostet.anzahl > 1 %}, {{ gepostet.anzahl }} Einträge im Log (jüngster gezeigt){% endif %}</span></p>
+  {% if gepostet.hinweis %}<p class="hinweis klein">Vermerk im Log: {{ gepostet.hinweis }}</p>{% endif %}
+{% else %}<p><span class="badge offen">nein</span> noch nicht gepostet</p>{% endif %}
+
+{% if not pc.manuell %}
+  <div class="row">
+    {% if token %}{% if token.verbunden %}<span class="badge ok">verbunden</span>{% else %}<span class="badge nein">kein Token</span> <span class="hinweis klein">fehlt: {{ token.fehlt|join(', ') }}</span>{% endif %}{% endif %}
+    <form method="post" action="/verwaltung/publish" onsubmit="return confirm('Jetzt auf {{ plattform }} posten? Das lässt sich nur durch Löschen auf der Plattform zurücknehmen.')">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}"><input type="hidden" name="channels" value="{{ name }}">
+      <button type="submit" class="primary" {% if token and not token.verbunden %}disabled{% endif %}>Jetzt posten</button>
+    </form>
+  </div>
+  <p class="hinweis klein">Ruft die bestehende Veröffentlichen-Funktion der Verwaltung für diesen Kanal auf (Text wie oben, Karte inklusive). Ergebnis siehe Übersicht und publish-log.md.</p>
+{% else %}
+  <form method="post" action="{{ url_for('plattform.gepostet_markieren', name=name) }}" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}">
+    <label>Datum <input type="date" name="datum" value="{{ heute }}"></label>
+    <label>Beitrags-URL <input type="url" name="url" placeholder="https://…" value="{{ gepostet.url if gepostet else '' }}" style="min-width:16rem"></label>
+    <button type="submit">Als gepostet markieren</button>
+    {% if gepostet and gepostet.quelle == 'manuell erfasst' %}<button type="submit" name="aktion" value="zuruecksetzen">Markierung entfernen</button>{% endif %}
+  </form>
+{% endif %}
+
+{% include "plattform_kennzahlen.html" %}
+
+{# ------------------------------------------------------------ 8. Ranking #}
+<h2 id="ranking">Ranking aller Artikel für {{ plattform }}</h2>
+<div class="tabwrap"><table class="daten">
+  <thead><tr><th class="zahl">Rang</th><th>Artikel</th><th>Eignung</th><th class="zahl">Wörter</th><th>Datum</th><th>Gepostet</th><th>Wirkung</th></tr></thead>
+  <tbody>
+  {% for r in zeilen %}
+    <tr {% if r.slug == slug %}style="background:var(--card)"{% endif %}>
+      <td class="zahl">{{ r.rang }}</td>
+      <td class="kurz"><a href="{{ url_for('plattform.seite', name=name, slug=r.slug, **({'format': fmt} if fmt else {})) }}" title="{{ r.titel }}">{{ r.titel|kurztitel(40) }}</a></td>
+      <td style="min-width:5.5rem"><span class="punkt {{ r.ampel }}"></span><span class="score">{{ '%.0f'|format(r.score) }}</span><div class="balken"><span class="{{ r.ampel }}" style="width:{{ r.score }}%"></span></div></td>
+      <td class="zahl">{{ r.woerter }}</td>
+      <td>{{ r.datum|kurzdatum }}</td>
+      <td>{% if r.gepostet %}<span class="badge ok">ja</span>{% if r.gepostet.datum %} <span class="klein">{{ r.gepostet.datum|kurzdatum }}</span>{% endif %}{% else %}<span class="badge offen">nein</span>{% endif %}</td>
+      <td class="klein">{% if r.wirkung.text %}{{ r.wirkung.text }}{% if r.wirkung.datum %} <span class="hinweis">({{ r.wirkung.datum|kurzdatum }})</span>{% endif %}{% else %}<span class="hinweis">–</span>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody></table></div>
+
+<details style="margin-top:.8rem" open><summary><strong>Wie der Eignungsscore entsteht</strong></summary>
+<div class="formel">
+  <p>Eignung = {{ (formel.g * 100)|round|int }} % Gesamtscore der Bewertung + {{ (formel.a * 100)|round|int }} % Teilscore A (Vorschau/Meta) + {{ (formel.p * 100)|round|int }} % Mittel der plattformspezifischen Prüfungen.
+    {% if name == 'microsoft_tech_community' %}Zusätzlich gilt ein Deckel von {{ formel.ms }}, weil Blog-Links dort unerwünscht sind.{% endif %}
+    Die gemessene Wirkung (Likes, Impressions …) fließt <strong>nicht</strong> ein. Ampel: ab 80 grün, ab 60 gelb, darunter rot.</p>
+  <p>Dieser Artikel: Gesamtscore {{ '%.0f'|format(eignung.gesamt) }}, Teilscore A {{ '%.0f'|format(eignung.meta_a) }}, Plattform-Mittel {{ '%.0f'|format(eignung.plattform_mittel) }}{% if eignung.deckel %} (gedeckelt auf {{ eignung.deckel }}){% endif %} → <strong>{{ '%.0f'|format(eignung.score) }}</strong>.</p>
+  <div class="tabwrap"><table class="daten klein-tab"><thead><tr><th>Plattformprüfung</th><th class="zahl">Score</th><th>Messwert</th></tr></thead>
+    <tbody>{% for t in eignung.teile %}<tr><td>{{ t.name }}</td><td class="zahl">{{ '%.0f'|format(t.score) }}</td><td>{{ t.hinweis }}</td></tr>{% endfor %}</tbody></table></div>
+  <p class="hinweis klein">Kartentyp: große Karte 100 (mindestens 1200×627, etwa 1,91:1), kleine Karte 55, keine 0. Längen: 100 im Soll, linear abfallend auf 0 weit darüber/darunter.</p>
+</div></details>
+{% endif %}
+{% endblock %}
+{% block skript %}
+<script>
+(function () {
+  var seg = (window.Intl && Intl.Segmenter) ? new Intl.Segmenter('de', { granularity: 'grapheme' }) : null;
+  function grapheme(t) { if (seg) { var n = 0; for (var s of seg.segment(t)) { n++; } return n; } return Array.from(t).length; }
+  function zaehle(modus, t) {
+    if (modus === 'mastodon') { return { n: t.replace(/https?:\/\/\S+/g, new Array(24).join('x')).length, einheit: 'Zeichen (Link = 23)' }; }
+    if (modus === 'bluesky') { return { n: grapheme(t), einheit: 'Grapheme (Näherung)', extra: new TextEncoder().encode(t).length + ' / 3000 Bytes', bytes: new TextEncoder().encode(t).length }; }
+    return { n: t.length, einheit: 'Zeichen' };
+  }
+  document.querySelectorAll('textarea[data-modus]').forEach(function (ta) {
+    var out = document.getElementById(ta.getAttribute('data-zaehler'));
+    function up() {
+      var r = zaehle(ta.getAttribute('data-modus'), ta.value), limit = +ta.getAttribute('data-limit'), soll = +ta.getAttribute('data-soll') || limit;
+      var zu = r.n > limit || (r.bytes && r.bytes > 3000);
+      out.textContent = r.n + ' / ' + limit + ' ' + r.einheit + (soll && soll !== limit ? ' · Soll ≤ ' + soll : '') + (r.extra ? ' · ' + r.extra : '');
+      out.className = 'zaehler' + (zu ? ' zu-lang' : '');
+    }
+    ta.addEventListener('input', up); up();
+  });
+})();
+</script>
+{% endblock %}

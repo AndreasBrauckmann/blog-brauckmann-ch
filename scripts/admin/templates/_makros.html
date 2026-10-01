@@ -1,0 +1,12 @@
+{% macro artikel_wahl(auswahl, slug, ziel) -%}
+<form method="get" action="{{ ziel }}" class="artikelwahl">
+  <label for="slug">Artikel</label>
+  <select name="slug" id="slug" onchange="this.form.submit()">
+    {% for a in auswahl %}<option value="{{ a.slug }}" title="{{ a.titel }}" {% if a.slug == slug %}selected{% endif %}>{{ a.kurz }}</option>{% endfor %}
+  </select>
+  <noscript><button type="submit">Anzeigen</button></noscript>
+</form>
+{%- endmacro %}
+{% macro etikett(art) -%}
+{% if art == 'belegt' %}<span class="etikett belegt" title="mit Quelle belegt">belegt</span>{% elif art == 'praxis' %}<span class="etikett praxis" title="Praxiswert, nicht offiziell dokumentiert">Praxis</span>{% else %}<span class="etikett ungeprueft" title="nicht geprüft">nicht geprüft</span>{% endif %}
+{%- endmacro %}

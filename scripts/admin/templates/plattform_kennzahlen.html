@@ -1,0 +1,70 @@
+{# Kennzahlen-Abschnitt; erwartet den Kontext von plattform.html #}
+<h2 id="kennzahlen">Gemessene Wirkung</h2>
+{% if ks_auto is not none %}
+  <p class="hinweis">Zähler werden ohne Login von öffentlichen Endpunkten gelesen (nur lesend). {{ keine_views }}.
+    {% if ks_auto.stand %}Stand: {{ ks_auto.stand[:16]|replace('T', ' ') }}{% else %}Noch nie abgerufen{% endif %}.</p>
+  {% set e = ks_auto.beitraege.get(slug) %}
+  <div class="tabwrap"><table class="daten">
+    <thead><tr><th>Artikel</th>{% for k, lbl in ks_anzeige %}<th class="zahl">{{ lbl }}</th>{% endfor %}<th>Stand</th></tr></thead>
+    <tbody>
+    {% for s, e in ks_auto.beitraege.items() %}
+      <tr><td>{{ s }}</td>{% for k, lbl in ks_anzeige %}<td class="zahl">{{ e.get(k) if e.get(k) is not none else '–' }}</td>{% endfor %}
+        <td class="klein">{{ (e.abgerufen or '')[:10] }}{% if e.fehler %} <span class="bad-text">{{ e.fehler }}</span>{% endif %}</td></tr>
+    {% else %}
+      <tr><td colspan="{{ ks_anzeige|length + 2 }}" class="hinweis">Keine Daten – Aktualisieren drücken.</td></tr>
+    {% endfor %}
+    </tbody></table></div>
+  <form method="post" action="{{ url_for('plattform.kennzahlen_aktion', name=name) }}" data-lang="ruft ab …" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}"><input type="hidden" name="aktion" value="aktualisieren">
+    <button type="submit">Aktualisieren</button><span class="hinweis klein">ruft die Zähler aller gepostete Beiträge von {{ plattform }} ab (je Beitrag höchstens 10 s)</span>
+  </form>
+{% elif name == 'linkedin' %}
+  <p class="hinweis">LinkedIn liefert keine Zähler per Schnittstelle: Werte aus den LinkedIn-Analysen eintragen oder den Export importieren. Gespeichert wird im bestehenden LinkedIn-System des Rankings (lokal).</p>
+  {% if li_messungen %}
+  <div class="tabwrap"><table class="daten">
+    <thead><tr><th>Datum</th><th class="zahl">Impressions</th><th class="zahl">Reaktionen</th><th class="zahl">Kommentare</th><th class="zahl">Reposts</th><th class="zahl">Interaktionsrate</th><th>Quelle</th></tr></thead>
+    <tbody>{% for r in li_messungen %}<tr><td>{{ r.m.datum }}</td><td class="zahl">{{ r.m.impressions if r.m.impressions is defined else '–' }}</td><td class="zahl">{{ r.m.reaktionen if r.m.reaktionen is defined else '–' }}</td><td class="zahl">{{ r.m.kommentare if r.m.kommentare is defined else '–' }}</td><td class="zahl">{{ r.m.reposts if r.m.reposts is defined else '–' }}</td><td class="zahl">{% if r.w and r.w.rate is not none %}{{ ('%.2f'|format(r.w.rate))|replace('.', ',') }} %{% else %}–{% endif %}</td><td class="klein">{{ r.m.quelle or '' }}</td></tr>{% endfor %}</tbody></table></div>
+  {% else %}<p class="hinweis">Noch keine Messung für diesen Artikel.</p>{% endif %}
+  <details><summary>Messung erfassen (Beitrag)</summary>
+    <form method="post" action="{{ url_for('ranking.linkedin_erfassen', slug=slug) }}" style="margin-top:.6rem">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <div class="row"><label>Beitrags-Link <input type="url" name="beitrag_url" value="{{ li_url }}" placeholder="https://www.linkedin.com/…" style="min-width:16rem"></label>
+        <label>Datum <input type="date" name="datum" value="{{ heute }}"></label></div>
+      <div class="raster">{% for k, lbl in felder.items() %}<label>{{ lbl }}<input type="text" name="{{ k }}" inputmode="decimal"></label>{% endfor %}</div>
+      <div class="row" style="margin-top:.6rem"><button type="submit" class="primary">Speichern</button><span class="hinweis klein">Danach öffnet sich die Detailseite des Rankings.</span></div>
+    </form></details>
+  <details><summary>LinkedIn-Export importieren (CSV/XLSX)</summary>
+    <form method="post" action="{{ url_for('ranking.linkedin_import') }}" enctype="multipart/form-data" style="margin-top:.6rem" class="row">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}">
+      <input type="file" name="datei" accept=".csv,.xlsx"><button type="submit">Importieren</button>
+    </form></details>
+  <details><summary>Profil-Übersicht erfassen</summary>
+    <form method="post" action="{{ url_for('ranking.profil_erfassen') }}" style="margin-top:.6rem">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <div class="raster">{% for k, lbl in felder_profil.items() %}<label>{{ lbl }}<input type="text" name="{{ k }}" inputmode="decimal"></label>{% endfor %}<label>Datum<input type="date" name="datum" value="{{ heute }}"></label></div>
+      <div class="row" style="margin-top:.6rem"><button type="submit">Speichern</button></div>
+    </form></details>
+{% else %}
+  <p class="hinweis">Für {{ plattform }} gibt es keine Schnittstelle ohne Freigabe – Kennzahlen werden von Hand erfasst (kein Scraping).</p>
+  {% if manuell and manuell.messungen %}
+  <div class="tabwrap"><table class="daten">
+    <thead><tr><th>Datum</th>{% for k, lbl in felder.items() %}<th class="zahl">{{ lbl }}</th>{% endfor %}<th></th></tr></thead>
+    <tbody>{% for m in manuell.messungen|sort(attribute='datum', reverse=True) %}{% set idx = manuell.messungen.index(m) %}
+      <tr><td>{{ m.datum }}</td>{% for k in felder %}<td class="zahl">{{ m[k] if m[k] is defined else '–' }}{% if k in prozent and m[k] is defined %} %{% endif %}</td>{% endfor %}
+      <td><form method="post" action="{{ url_for('plattform.kennzahlen_aktion', name=name) }}" onsubmit="return confirm('Messung löschen?')"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}"><input type="hidden" name="aktion" value="loeschen"><input type="hidden" name="index" value="{{ idx }}"><button type="submit" class="klein">Löschen</button></form></td></tr>{% endfor %}</tbody></table></div>
+  {% else %}<p class="hinweis">Noch keine Messung für diesen Artikel.</p>{% endif %}
+  <details open><summary>Messung erfassen</summary>
+    <form method="post" action="{{ url_for('plattform.kennzahlen_aktion', name=name) }}" style="margin-top:.6rem">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}"><input type="hidden" name="aktion" value="erfassen">
+      <div class="row"><label>Beitrags-URL <input type="url" name="beitrag_url" value="{{ manuell.beitrag_url if manuell else '' }}" placeholder="https://…" style="min-width:16rem"></label>
+        <label>Datum <input type="date" name="datum" value="{{ heute }}"></label></div>
+      <div class="raster">{% for k, lbl in felder.items() %}<label>{{ lbl }}<input type="text" name="{{ k }}" inputmode="decimal"></label>{% endfor %}</div>
+      <div class="row" style="margin-top:.6rem"><button type="submit" class="primary">Speichern</button></div>
+    </form></details>
+  <details><summary>CSV-Import</summary>
+    <p class="hinweis klein">Kopfzeile = Feldnamen plus <code>slug</code> (optional <code>datum</code>, <code>beitrag_url</code>): <code>slug,datum,{{ felder.keys()|join(',') }}</code></p>
+    <form method="post" action="{{ url_for('plattform.kennzahlen_import', name=name) }}" enctype="multipart/form-data" class="row">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="slug" value="{{ slug }}">
+      <input type="file" name="datei" accept=".csv,text/csv"><button type="submit">Importieren</button>
+    </form></details>
+{% endif %}

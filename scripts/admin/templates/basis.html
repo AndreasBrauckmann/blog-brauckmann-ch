@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>{% block titel %}Verwaltung{% endblock %} · Blog-Verwaltung</title>
+<style>
+:root { --bg:#fff; --fg:#1a1a1a; --muted:#666; --border:#ddd; --ok:#1a7f37; --bad:#c0392b; --warn:#9a6700; --card:#f7f7f8; --accent:#0a66c2; --bar:#e8e8ec; --code:#f0f0f3; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#121212; --fg:#e6e6e6; --muted:#a0a0a0; --border:#333; --ok:#5fd17c; --bad:#ff6b6b; --warn:#f0b429; --card:#1c1c1e; --accent:#70b5f9; --bar:#2c2c30; --code:#1f1f22; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { background:var(--bg); color:var(--fg); font-family:-apple-system,Segoe UI,Roboto,sans-serif; max-width:1280px; margin:0 auto; padding:1rem 1rem 3rem; line-height:1.5; }
+h1 { font-size:1.4rem; margin:.4rem 0 .8rem; }
+h2 { font-size:1.15rem; margin:1.8rem 0 .6rem; }
+h3 { font-size:1rem; margin:1.2rem 0 .4rem; }
+a { color:var(--accent); }
+.kopfnav { display:flex; gap:.35rem; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; align-items:center; border-bottom:1px solid var(--border); padding-bottom:.6rem; margin-bottom:.8rem; font-size:.9rem; }
+.kopfnav a { flex:0 0 auto; text-decoration:none; padding:.25rem .7rem; border-radius:999px; border:1px solid var(--border); color:var(--fg); white-space:nowrap; }
+.artikelwahl { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin:.2rem 0 .8rem; }
+.artikelwahl select { max-width:100%; min-width:0; flex:1 1 18rem; }
+.ampel-gruen { color:var(--ok); } .ampel-gelb { color:var(--warn); } .ampel-rot { color:var(--bad); }
+.etikett { display:inline-block; font-size:.72rem; padding:0 .4rem; border-radius:4px; border:1px solid var(--border); color:var(--muted); vertical-align:middle; }
+.etikett.belegt { border-color:var(--ok); color:var(--ok); } .etikett.praxis { border-color:var(--warn); color:var(--warn); } .etikett.ungeprueft { border-style:dashed; }
+pre.log { white-space:pre-wrap; word-break:break-word; background:var(--code); border:1px solid var(--border); border-radius:6px; padding:.7rem; max-height:24rem; overflow:auto; font-size:.82rem; }
+.kopfnav a[aria-current=page] { background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1rem; margin-bottom:1rem; }
+.hinweis { color:var(--muted); font-size:.88rem; }
+.meldung { border-left:4px solid var(--ok); background:var(--card); padding:.6rem .8rem; border-radius:6px; margin:.6rem 0; }
+.meldung.fehler { border-left-color:var(--bad); }
+.badge { display:inline-block; padding:.05rem .55rem; border-radius:999px; font-size:.78rem; white-space:nowrap; border:1px solid transparent; }
+.badge.ok, .badge.gruen { background:var(--ok); color:#fff; }
+.badge.bad, .badge.rot, .badge.nein { background:var(--bad); color:#fff; }
+.badge.gelb, .badge.teils, .badge.veraltet, .badge.eingeschraenkt { background:var(--warn); color:#fff; }
+.badge.manual, .badge.offen, .badge.na { background:transparent; color:var(--muted); border-color:var(--border); }
+@media (prefers-color-scheme: dark) { .badge.ok, .badge.gruen, .badge.gelb, .badge.teils, .badge.veraltet, .badge.eingeschraenkt, .badge.bad, .badge.rot, .badge.nein { color:#111; } }
+.score { font-weight:700; font-variant-numeric:tabular-nums; }
+.punkt { display:inline-block; width:.7rem; height:.7rem; border-radius:50%; margin-right:.35rem; vertical-align:baseline; }
+.punkt.gruen { background:var(--ok); } .punkt.gelb { background:var(--warn); } .punkt.rot { background:var(--bad); }
+.balken { height:.4rem; background:var(--bar); border-radius:999px; overflow:hidden; margin-top:.15rem; min-width:3rem; }
+.balken > span { display:block; height:100%; }
+.balken > span.gruen { background:var(--ok); } .balken > span.gelb { background:var(--warn); } .balken > span.rot { background:var(--bad); }
+button, select, input, textarea { font:inherit; color:var(--fg); }
+button, .knopf { padding:.35rem .75rem; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--fg); cursor:pointer; text-decoration:none; display:inline-block; font-size:.9rem; line-height:1.3; }
+button.primary, .knopf.primary { background:var(--ok); color:#fff; border-color:var(--ok); }
+@media (prefers-color-scheme: dark) { button.primary, .knopf.primary { color:#111; } }
+button:disabled { opacity:.5; cursor:not-allowed; }
+input[type=text], input[type=url], input[type=date], input[type=number], input[type=file], select, textarea { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:.35rem .5rem; max-width:100%; }
+textarea { width:100%; min-height:3.2rem; }
+.row { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-bottom:.5rem; }
+.raster { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:.6rem; }
+.raster label { display:flex; flex-direction:column; font-size:.85rem; gap:.15rem; }
+code, pre { background:var(--code); border-radius:4px; }
+code { padding:0 .25rem; font-size:.88em; overflow-wrap:break-word; }
+pre.diff { padding:.7rem; overflow-x:auto; font-size:.85rem; line-height:1.4; white-space:pre-wrap; word-break:break-word; }
+pre.diff .plus { color:var(--ok); } pre.diff .minus { color:var(--bad); } pre.diff .info { color:var(--muted); }
+table.daten { width:100%; border-collapse:collapse; font-size:.88rem; }
+table.daten th, table.daten td { border-bottom:1px solid var(--border); padding:.45rem .45rem; text-align:left; vertical-align:top; }
+table.daten th { font-weight:600; font-size:.8rem; color:var(--muted); white-space:nowrap; }
+table.daten td.zahl, table.daten th.zahl { text-align:right; font-variant-numeric:tabular-nums; }
+.tabwrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.kopierbar { display:flex; gap:.4rem; align-items:center; flex-wrap:wrap; }
+.kopierbar input { flex:1 1 16rem; min-width:0; }
+.klein { font-size:.82rem; }
+.ok-text { color:var(--ok); } .bad-text { color:var(--bad); } .warn-text { color:var(--warn); }
+details > summary { cursor:pointer; }
+@media (max-width: 640px) {
+  body { padding:.8rem 1rem 2rem; }
+  h1 { font-size:1.2rem; }
+}
+</style>
+{% block kopf %}{% endblock %}
+</head>
+<body>
+<nav class="kopfnav" aria-label="Verwaltung">
+  {% for tab in nav_tabs %}<a href="{{ tab.url }}{% if slug is defined and slug and tab.id not in ('deploy','ranking') %}?slug={{ slug }}{% endif %}" {% if seite == tab.id %}aria-current="page"{% endif %}>{{ tab.name }}</a>{% endfor %}
+</nav>
+{% block inhalt %}{% endblock %}
+<script>
+// Sendet-Knoepfe gegen Doppelklick sperren und waehrend laengerer LLM-Laeufe beschriften
+document.querySelectorAll('form[data-lang]').forEach(function (f) {
+  f.addEventListener('submit', function () {
+    var b = f.querySelector('button[type=submit]');
+    if (b) { b.disabled = true; b.textContent = f.getAttribute('data-lang'); }
+  });
+});
+document.querySelectorAll('[data-kopieren]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var el = document.getElementById(b.getAttribute('data-kopieren'));
+    var t = el.value || el.textContent;
+    var fertig = function () { var a = b.textContent; b.textContent = 'Kopiert'; setTimeout(function () { b.textContent = a; }, 1400); };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(t).then(fertig); }
+    else { el.select && el.select(); try { document.execCommand('copy'); fertig(); } catch (e) {} }
+  });
+});
+</script>
+{% block skript %}{% endblock %}
+</body>
+</html>

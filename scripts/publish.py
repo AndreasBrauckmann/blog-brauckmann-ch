@@ -6,6 +6,12 @@ Nutzung:
 
 --dry-run   führt alles ausser tatsächlichem Posten und Pushen aus.
 --yes       überspringt interaktive Bestätigungen (für die Verwaltungsseite/Cron).
+--nur-posten  überspringt Bauen/Committen/Pushen und postet nur (so ruft die
+            Verwaltung dieses Skript auf; veröffentlicht wird dort über das
+            Deploy-Panel mit Auswahl und Bestätigung).
+
+Committet wird auch hier nur die Whitelist aus scripts/admin/deploy.py
+(nie manual-posts.md, data/, .env, keine gelöschten Dateien).
 """
 
 import argparse
@@ -115,6 +121,7 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--channels", help="Kommagetrennt, z.B. mastodon,bluesky,linkedin")
     parser.add_argument("--yes", action="store_true", help="Bestätigungen überspringen")
+    parser.add_argument("--nur-posten", action="store_true", help="nicht bauen/committen/pushen, nur posten")
     args = parser.parse_args()
 
     cfg = load_config()
@@ -129,7 +136,9 @@ def main() -> int:
 
     requested_channels = set(args.channels.split(",")) if args.channels else None
 
-    if meta.get("is_html"):
+    if args.nur_posten:
+        print("1) Nur posten (Bauen/Veröffentlichen läuft über das Deploy-Panel der Verwaltung).")
+    elif meta.get("is_html"):
         # Eigenstaendiger HTML-Artikel (siehe build.parse_html_article):
         # nicht Teil dieser Pipeline, liegt schon fertig in dist/ und wird
         # von Hand synchron gehalten. Bauen/Committen/Pushen wuerde dist/
@@ -144,8 +153,14 @@ def main() -> int:
             return 1
 
         print("2) Zeige Diff ...")
-        run(["git", "add", "-A"])
-        diff_stat = run(["git", "diff", "--cached", "--stat"], capture_output=True)
+        # Nur die Whitelist (wie im Deploy-Panel), nie git add -A: sonst
+        # landeten manual-posts.md oder fremde Arbeitsstaende im Commit.
+        sys.path.insert(0, str(ROOT / "scripts" / "admin"))
+        import deploy as dp  # noqa: E402
+        auswahl = [a.pfad for a in dp.klassifiziere(ROOT, dp.status(ROOT)) if a.erlaubt and a.standard]
+        if auswahl:
+            run(["git", "add", "-A", "--", *auswahl])
+        diff_stat = run(["git", "diff", "--cached", "--stat", "--", *auswahl] if auswahl else ["true"], capture_output=True)
         print(diff_stat.stdout)
 
         problems = check_diff_for_secrets(cfg)
@@ -153,20 +168,20 @@ def main() -> int:
             print("ABBRUCH - verdächtiger Inhalt im Diff:", file=sys.stderr)
             for p in problems:
                 print(f"  - {p}", file=sys.stderr)
-            run(["git", "reset"])
+            run(["git", "reset", "-q", "--", *auswahl] if auswahl else ["git", "reset", "-q"])
             return 1
 
         if not diff_stat.stdout.strip():
             print("Keine Änderungen, nichts zu committen.")
         elif not confirm("3) Committen und pushen?", args.yes):
             print("Abgebrochen.")
-            run(["git", "reset"])
+            run(["git", "reset", "-q", "--", *auswahl])
             return 1
         elif args.dry_run:
             print("(--dry-run: kein Commit, kein Push)")
-            run(["git", "reset"])
+            run(["git", "reset", "-q", "--", *auswahl])
         else:
-            run(["git", "commit", "-m", f"Artikel: {meta['title']}"])
+            run(["git", "commit", "--only", "-m", f"Artikel: {meta['title']}", "--", *auswahl])
             push = run(["git", "push"])
             if push.returncode != 0:
                 return 1

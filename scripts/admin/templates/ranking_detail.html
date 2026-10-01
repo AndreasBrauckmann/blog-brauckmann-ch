@@ -1,0 +1,283 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block titel %}{{ meta.title }} – Bewertung{% endblock %}
+{% block kopf %}
+<style>
+.kopfzeile { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; }
+.gesamt { font-size:2.2rem; font-weight:800; line-height:1; font-variant-numeric:tabular-nums; }
+.teilnoten { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:.6rem; margin:.8rem 0; }
+.teilnoten .card { margin:0; padding:.7rem .8rem; }
+.teilnoten .wert { font-size:1.3rem; font-weight:700; }
+.leit { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:.6rem; }
+.leit .card { margin:0; border-left:4px solid var(--border); }
+.leit .card.gruen { border-left-color:var(--ok); } .leit .card.gelb { border-left-color:var(--warn); } .leit .card.rot { border-left-color:var(--bad); }
+table.kriterien td:first-child { width:5.5rem; }
+table.kriterien td.vorschlag { color:var(--fg); }
+@media (max-width: 760px) {
+  table.kriterien thead { display:none; }
+  table.kriterien, table.kriterien tbody, table.kriterien tr, table.kriterien td { display:block; width:100%; }
+  table.kriterien tr { border-bottom:1px solid var(--border); padding:.5rem 0; }
+  table.kriterien td { border:none; padding:.1rem 0; }
+  table.kriterien td[data-label]::before { content:attr(data-label) ": "; color:var(--muted); font-size:.8rem; }
+}
+/* LinkedIn-Link-Karte (Nachbau) */
+.karten { display:flex; gap:1.2rem; flex-wrap:wrap; align-items:flex-start; }
+.li-karte { width:100%; max-width:552px; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--card); }
+.li-karte.mobil { max-width:340px; }
+.li-karte .li-bild { aspect-ratio:1.91 / 1; width:100%; background:var(--bar); overflow:hidden; }
+.li-karte .li-bild img { width:100%; height:100%; object-fit:cover; display:block; }
+.li-karte .li-text { padding:.55rem .75rem .65rem; }
+.li-karte .li-titel { font-weight:600; font-size:.92rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.li-karte .li-domain { color:var(--muted); font-size:.75rem; margin-top:.2rem; }
+.kartenlabel { font-size:.78rem; color:var(--muted); margin-bottom:.25rem; }
+.vorschlag-gruppe { border:1px solid var(--border); border-radius:8px; padding:.6rem .8rem; margin-bottom:.8rem; }
+.vorschlag-gruppe legend { font-weight:600; padding:0 .3rem; }
+.variante { display:flex; gap:.5rem; align-items:flex-start; padding:.35rem 0; border-bottom:1px dashed var(--border); }
+.variante:last-child { border-bottom:none; }
+.variante input[type=radio] { margin-top:.35rem; }
+.zaehler { font-size:.78rem; font-variant-numeric:tabular-nums; }
+.lk-noten td.zahl { font-weight:700; }
+.flagge { display:inline-block; margin:.15rem .25rem .15rem 0; padding:.1rem .5rem; border-radius:6px; font-size:.82rem; border:1px solid var(--bad); color:var(--bad); }
+.flagge.design { border-color:var(--warn); color:var(--warn); } .flagge.auffaellig { border-color:var(--border); color:var(--fg); }
+</style>
+{% endblock %}
+{% block inhalt %}
+<p class="klein"><a href="{{ url_for('ranking.uebersicht') }}">← zurück zum Ranking</a></p>
+<h1>{{ meta.title }}</h1>
+{% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+
+<div class="kopfzeile">
+  <div><span class="punkt {{ b.ampel }}"></span><span class="gesamt">{{ '%.0f'|format(b.gesamt) }}</span><span class="hinweis"> / 100</span></div>
+  <div class="hinweis">Rang {{ rang }} von {{ anzahl }} · {{ b.kennzahlen.woerter }} Wörter Fliesstext · veröffentlicht {{ meta.date }}{% if meta.updated %}, aktualisiert {{ meta.updated }}{% endif %}</div>
+  <div class="row" style="margin:0">
+    <a class="knopf" href="{{ live_url }}" target="_blank" rel="noopener">Artikel ↗</a>
+    <a class="knopf" href="{{ inspector_url }}" target="_blank" rel="noopener">Post Inspector ↗</a>
+  </div>
+</div>
+
+{% if auff %}<div class="card" style="border-left:4px solid var(--bad)"><strong>Auffälligkeiten</strong><div style="margin-top:.3rem">{% for f in auff %}<span class="flagge {{ f.art }}">{{ {'thema':'Thema','design':'Design','auffaellig':'Hinweis'}[f.art] }}: {{ f.text }}</span>{% endfor %}</div></div>{% endif %}
+
+<div class="teilnoten">
+{% for k, kat in kategorien.items() %}
+  {% set s = b.kategorie_score(k) %}{% set farbe = 'gruen' if s >= 80 else ('gelb' if s >= 60 else 'rot') %}
+  <div class="card"><div class="klein hinweis">{{ k }} · {{ kat.name }} (Gewicht {{ kat.gewicht }})</div><div class="wert">{{ '%.0f'|format(s) }}</div><div class="balken"><span class="{{ farbe }}" style="width:{{ s }}%"></span></div></div>
+{% endfor %}
+</div>
+
+{% set lk = lektorat.ergebnis if lektorat and lektorat.ergebnis else none %}
+<div class="leit">
+  {% set s = b.kategorie_score('B') %}{% set farbe = 'gruen' if s >= 80 else ('gelb' if s >= 60 else 'rot') %}
+  <div class="card {{ farbe }}"><strong>Flüssig, zusammenhängend und lesbar</strong> – Teilnote <strong>{{ '%.0f'|format(s) }}</strong>/100
+    <div class="klein hinweis">Lesbarkeitsindex {{ ('%.1f'|format(b.kennzahlen.amstad.index)).replace('.', ',') }}, Ø {{ ('%.1f'|format(b.kennzahlen.amstad.asl)).replace('.', ',') }} Wörter je Satz, {{ b.kennzahlen.uebergaenge }} % verbundene Absätze{% if lk and lk.kriterien and lk.kriterien.fluss %} · Lektorat: Fluss {{ lk.kriterien.fluss.note }}/5{% endif %}{% if lk and lk.kriterien and lk.kriterien.lesbarkeit %}, Lesbarkeit {{ lk.kriterien.lesbarkeit.note }}/5{% endif %}</div></div>
+  {% set s = b.kategorie_score('D') %}{% set farbe = 'gruen' if s >= 80 else ('gelb' if s >= 60 else 'rot') %}
+  <div class="card {{ farbe }}"><strong>Grafiken lockern den Artikel auf</strong> – Teilnote <strong>{{ '%.0f'|format(s) }}</strong>/100
+    <div class="klein hinweis">{{ b.kennzahlen.visuell.values()|sum }} visuelle Elemente, größte Lücke {{ b.kennzahlen.groesster_abstand }} Wörter{% if lk and lk.kriterien and lk.kriterien.grafiken %} · Lektorat: {{ lk.kriterien.grafiken.note }}/5{% endif %}</div></div>
+</div>
+
+<h2 id="vorschau">Artikelvorschau und LinkedIn Post Inspector</h2>
+{% set u = b.vorschau_urteil %}
+<div class="card">
+  <strong>Hält die Artikelvorschau den hohen Ansprüchen der Leser stand?</strong>
+  <span class="badge {{ 'ok' if u.urteil == 'ja' else u.urteil }}">{{ {'ja':'ja','eingeschraenkt':'eingeschränkt','nein':'nein'}[u.urteil] }}</span>
+  <p style="margin:.4rem 0 0">{{ u.begruendung }}</p>
+  {% if lk and lk.vorschau_haelt_stand %}<p class="klein" style="margin:.4rem 0 0">Lektorat: <span class="badge {{ 'ok' if lk.vorschau_haelt_stand.urteil == 'ja' else lk.vorschau_haelt_stand.urteil }}">{{ lk.vorschau_haelt_stand.urteil }}</span> {{ lk.vorschau_haelt_stand.begruendung }}</p>{% endif %}
+</div>
+
+<div class="karten">
+  <div><div class="kartenlabel">LinkedIn-Feed, Desktop (Nachbau)</div>
+    <div class="li-karte">
+      <div class="li-bild">{% if karte.bild %}<img src="{{ url_for('ranking.bild', pfad=karte.bild.split('/static/img/', 1)[-1]) }}" alt="">{% endif %}</div>
+      <div class="li-text"><div class="li-titel">{{ karte.titel }}</div><div class="li-domain">{{ karte.domain }}</div></div>
+    </div></div>
+  <div><div class="kartenlabel">LinkedIn-App, Telefon (Nachbau)</div>
+    <div class="li-karte mobil">
+      <div class="li-bild">{% if karte.bild %}<img src="{{ url_for('ranking.bild', pfad=karte.bild.split('/static/img/', 1)[-1]) }}" alt="">{% endif %}</div>
+      <div class="li-text"><div class="li-titel">{{ karte.titel }}</div><div class="li-domain">{{ karte.domain }}</div></div>
+    </div></div>
+</div>
+<p class="hinweis klein">Nachbau zur Orientierung, kein Abbild von LinkedIn. Das Bild wird auf 1,91:1 beschnitten (hier: {% if b.kennzahlen.og_bild_masse %}{{ b.kennzahlen.og_bild_masse[0] }}×{{ b.kennzahlen.og_bild_masse[1] }} px{% else %}Maße unbekannt{% endif %}, Quelle <code>{{ karte.bild or '–' }}</code>). Der Titel wird nach zwei Zeilen abgeschnitten – am Desktop nach etwa 70–90 Zeichen, auf dem Telefon früher ({{ karte.titel|length }} Zeichen). Die Beschreibung ({{ karte.beschreibung|length }} Zeichen) zeigt LinkedIn in der Feed-Karte nach heutiger Beobachtung meist nicht; Google, Slack, Teams und Facebook nutzen sie, Google kürzt nach etwa 155–160 Zeichen: <em>„{{ karte.beschreibung[:157] }}{% if karte.beschreibung|length > 157 %} …{% endif %}“</em>. Verbindlich ist nur, was der Post Inspector zeigt.</p>
+
+<div class="card">
+  <strong>Post Inspector</strong> – Menschen-Schritt, erst nach Bauen und Deployen sinnvoll (LinkedIn liest nur die öffentliche Seite).
+  <div class="kopierbar" style="margin:.5rem 0">
+    <input type="text" id="live-url" value="{{ live_url }}" readonly aria-label="Live-URL">
+    <button type="button" data-kopieren="live-url">URL kopieren</button>
+    <a class="knopf primary" href="{{ inspector_url }}" target="_blank" rel="noopener">Post Inspector öffnen ↗</a>
+  </div>
+  <p class="hinweis klein" style="margin:.2rem 0 .6rem">Der Direktlink nutzt das gängige, aber von LinkedIn nicht offiziell dokumentierte Muster <code>…/post-inspector/inspect/&lt;URL&gt;</code>. Klappt es nicht: <a href="https://www.linkedin.com/post-inspector/" target="_blank" rel="noopener">Post Inspector</a> öffnen und die kopierte URL einfügen.</p>
+  <div class="row">Status: <span class="badge {{ inspector.status }}">{{ {'ok':'geprüft','veraltet':'erneut prüfen','offen':'offen'}[inspector.status] }}</span> <span class="klein">{{ inspector.text }}</span></div>
+  <form method="post" action="{{ url_for('ranking.inspector_setzen', slug=meta.slug) }}" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <label class="row" style="margin:0"><input type="checkbox" name="aktion" value="setzen" required> Post Inspector ausgeführt am</label>
+    <input type="date" name="datum" value="{{ heute }}" aria-label="Datum">
+    <button type="submit" class="primary">Vermerken</button>
+  </form>
+  {% if inspector.status != 'offen' %}
+  <form method="post" action="{{ url_for('ranking.inspector_setzen', slug=meta.slug) }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="aktion" value="zuruecksetzen">
+    <button type="submit" class="klein">Häkchen entfernen</button>
+  </form>
+  {% endif %}
+  <p class="hinweis klein">Gespeichert nur lokal. Ändern sich danach Titel, Beschreibung oder Bild in <code>dist/</code>, springt der Status auf „erneut prüfen“.</p>
+</div>
+
+<h2 id="inspector">Live-Inspector (eigene Prüfung)</h2>
+<div class="card">
+  <form method="post" action="/verwaltung/inspector/{{ meta.slug }}" class="row" data-lang="prüft …">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="zurueck" value="{{ url_for('ranking.detail', slug=meta.slug) }}#inspector">
+    <button type="submit">Live prüfen</button>
+    <span class="klein hinweis">Ruft {{ live_url }} wie LinkedInBot ab: Status, Pflicht-Tags, og:image (Erreichbarkeit, Größe, Maße), Canonical, Cache, Live = Build.</span>
+  </form>
+  {% if live %}
+  <div><span class="punkt {{ live.ampel }}"></span><strong>{{ {'gruen':'in Ordnung','gelb':'Hinweise','rot':'Fehler'}[live.ampel] }}</strong> <span class="klein hinweis">– {{ live.zeitpunkt.replace('T',' ') }}, HTTP {{ live.status }}{% if live.bild %}, Bild {{ live.bild.breite }}×{{ live.bild.hoehe }} → Karte {{ live.bild.kartentyp }}{% endif %}, Live = Build: {{ {True:'ja', False:'nein', None:'–'}[live.gleich_build] }}</span></div>
+  <ul class="klein" style="margin:.4rem 0 0;padding-left:1.1rem">{% for x in live.befunde %}<li class="{{ {'ok':'ok-text','warn':'warn-text','fehler':'bad-text'}[x.stufe] }}">{{ x.text }}</li>{% endfor %}</ul>
+  {% else %}<p class="hinweis klein">Noch nicht live geprüft.</p>{% endif %}
+</div>
+
+<h2 id="vale">Fundstellen (Vale)</h2>
+{% if not vale.verfuegbar %}<p class="hinweis klein">Vale nicht installiert (data/werkzeuge/vale fehlt).</p>
+{% elif vale.fehler %}<p class="hinweis klein">{{ vale.fehler }}</p>
+{% elif not vale.befunde %}<p class="hinweis klein">Keine Fundstellen.</p>
+{% else %}
+<details class="card"><summary>{{ vale.befunde|length }} Fundstellen in <code>articles/{{ meta.slug }}.md</code> ({% for r, n in vale_zaehler %}{{ n }}× {{ r }}{% if not loop.last %}, {% endif %}{% endfor %})</summary>
+<div class="tabwrap"><table class="daten"><thead><tr><th class="zahl">Zeile</th><th>Regel</th><th>Hinweis</th><th>Stelle</th></tr></thead><tbody>
+{% for f in vale.befunde %}<tr><td class="zahl">{{ f.zeile }}</td><td>{{ f.regel }}</td><td class="klein">{{ f.text }}</td><td class="klein">{{ f.auszug }}</td></tr>{% endfor %}
+</tbody></table></div>
+<p class="hinweis klein">Vale (Prosa-Linter, Markdown-bewusst) mit eigenen deutschen Regeln in <code>scripts/admin/vale/styles/BlogDE</code>: Sätze über 30 Wörter, Füllwörter, Floskeln, Passiv, Nominalstil. Ergänzt die Bewertung um Fundstellen, fließt nicht in die Punktzahl ein.</p>
+</details>
+{% endif %}
+
+<h2 id="kriterien">Alle Kriterien</h2>
+{% for k, kat in kategorien.items() %}
+<h3>{{ k }} · {{ kat.name }} – {{ '%.0f'|format(b.kategorie_score(k)) }}/100 <span class="hinweis klein">(Gewicht {{ kat.gewicht }}, {{ kat.rolle }})</span></h3>
+<div class="tabwrap"><table class="daten kriterien">
+<thead><tr><th>Status</th><th>Kriterium</th><th class="zahl">Punkte</th><th>Messwert</th><th>Soll</th><th>Verbesserungsvorschlag</th></tr></thead>
+<tbody>
+{% for kr in b.kriterien if kr.kategorie == k %}
+<tr>
+  <td><span class="badge {{ kr.status }}">{{ {'ok':'bestanden','teils':'teilweise','nein':'nicht bestanden','na':'entfällt'}[kr.status] }}</span></td>
+  <td><strong>{{ kr.name }}</strong></td>
+  <td class="zahl" data-label="Punkte">{% if kr.erfuellung is not none %}{{ ('%.1f'|format(kr.punkte * kr.erfuellung / 100)).replace('.', ',') }}/{{ kr.punkte }}{% else %}–{% endif %}</td>
+  <td data-label="Messwert">{{ kr.messwert }}</td>
+  <td data-label="Soll" class="hinweis">{{ kr.soll }}</td>
+  <td data-label="Vorschlag" class="vorschlag">{{ kr.vorschlag or '–' }}</td>
+</tr>
+{% endfor %}
+</tbody></table></div>
+{% endfor %}
+{% if b.kennzahlen.lange_saetze %}
+<details class="card" style="margin-top:1rem"><summary>Die längsten Sätze</summary>
+<ol class="klein">{% for s in b.kennzahlen.lange_saetze %}<li>{{ s }}{% if s|length >= 160 %} …{% endif %}</li>{% endfor %}</ol></details>
+{% endif %}
+
+<h2 id="lektorat">Lektorat (LLM, optional)</h2>
+<div class="card">
+  <form method="post" action="{{ url_for('ranking.lektorat', slug=meta.slug) }}" data-lang="Lektorat läuft … (bis zu 3 Minuten)" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button type="submit" class="primary" {% if not llm.aktiv %}disabled{% endif %}>Lektorat jetzt ausführen</button>
+    {% if lektorat %}<span class="hinweis klein">Letzter Lauf: {{ lektorat.zeitpunkt }} ({{ lektorat.modell }}){% if lektorat.text_hash and meta.body_md and lektorat.text_hash != (meta.body_md|hash16) %} – Text seither geändert{% endif %}</span>{% endif %}
+  </form>
+  {% if not llm.aktiv %}<p class="hinweis klein">{{ llm.hinweis }}</p>{% endif %}
+  <p class="hinweis klein">Qualitative Bewertung (1–5) je Kriterium mit Begründung und drei Verbesserungen. Läuft nur auf Knopfdruck, Ergebnis wird lokal zwischengespeichert. Fließt nicht in die Punktzahl ein.</p>
+  {% if lk %}
+  <div class="tabwrap"><table class="daten lk-noten">
+  <thead><tr><th>Kriterium</th><th class="zahl">Note</th><th>Begründung</th></tr></thead>
+  <tbody>
+  {% for key, name in lektorat_kriterien.items() %}{% set e = (lk.kriterien or {}).get(key) %}
+  {% if e %}<tr><td>{{ name }}</td><td class="zahl">{{ e.note }}/5</td><td>{{ e.begruendung }}</td></tr>{% endif %}
+  {% endfor %}
+  </tbody></table></div>
+  {% if lk.verbesserungen %}<h3>Drei Verbesserungen</h3><ol>{% for v in lk.verbesserungen %}<li>{{ v }}</li>{% endfor %}</ol>{% endif %}
+  {% endif %}
+</div>
+
+<h2 id="metas">Metas optimieren</h2>
+<div class="card">
+  <form method="post" action="{{ url_for('ranking.metas_erzeugen', slug=meta.slug) }}" data-lang="Vorschläge werden erzeugt …" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button type="submit" class="primary" {% if not llm.aktiv %}disabled{% endif %}>Metas optimieren</button>
+    {% if metas %}<span class="hinweis klein">Vorschläge vom {{ metas.zeitpunkt }} ({{ metas.modell }})</span>{% endif %}
+  </form>
+  {% if not llm.aktiv %}<p class="hinweis klein">{{ llm.hinweis }} Die Felder unten lassen sich trotzdem von Hand bearbeiten und übernehmen.</p>{% endif %}
+
+  <form method="post" action="{{ url_for('ranking.metas_pruefen', slug=meta.slug) }}" id="metas-form">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    {% set gruppen = [('title', 'Titel', 'titel', 40, 70), ('description', 'Beschreibung', 'beschreibung', 120, 160), ('og_image_alt', 'og:image:alt (Alternativtext Vorschaubild)', 'og_image_alt', 60, 160)] %}
+    {% for feld, name, vkey, lo, hi in gruppen %}
+    <fieldset class="vorschlag-gruppe">
+      <legend>{{ name }} <span class="hinweis klein">Soll {{ lo }}–{{ hi }} Zeichen</span></legend>
+      <div class="variante">
+        <input type="radio" name="wahl_{{ feld }}" value="__aktuell" id="{{ feld }}-akt" checked data-text="{{ meta.get(feld) or '' }}">
+        <label for="{{ feld }}-akt"><span class="hinweis klein">Aktuell:</span> {{ meta.get(feld) or '(leer)' }} <span class="zaehler">({{ (meta.get(feld) or '')|length }} Z.)</span></label>
+      </div>
+      {% if metas and metas.bewertet %}
+      {% for v in metas.bewertet[vkey] %}
+      <div class="variante">
+        <input type="radio" name="wahl_{{ feld }}" value="{{ loop.index }}" id="{{ feld }}-{{ loop.index }}" data-text="{{ v.text }}">
+        <label for="{{ feld }}-{{ loop.index }}">{{ v.text }}
+          <span class="zaehler {{ 'ok-text' if v.ok else 'warn-text' }}">({{ v.laenge }} Z., Soll {{ v.soll }}{% if v.haken is defined %}, {{ 'Haken vorn' if v.haken else 'kein klarer Haken' }}{% endif %})</span></label>
+      </div>
+      {% endfor %}
+      {% endif %}
+      <label class="klein" for="{{ feld }}-text" style="display:block;margin-top:.5rem">Text (anpassbar) – <span class="zaehler" data-zaehler="{{ feld }}" data-lo="{{ lo }}" data-hi="{{ hi }}"></span></label>
+      <textarea name="{{ feld }}" id="{{ feld }}-text" rows="2" data-feld="{{ feld }}">{{ meta.get(feld) or '' }}</textarea>
+      <label class="row klein" style="margin-top:.3rem"><input type="checkbox" name="uebernehmen_{{ feld }}" value="1"> diesen Text übernehmen</label>
+      {% if feld == 'og_image_alt' and not og_image_gesetzt %}<p class="warn-text klein" style="margin:.2rem 0 0">Hinweis: build.py gibt og:image:alt nur aus, wenn im Frontmatter auch <code>og_image</code> gesetzt ist. Dieser Artikel hat kein og_image – der Alternativtext wirkt erst mit einem eigenen Vorschaubild (1200×630).</p>{% endif %}
+      {% if feld == 'og_image_alt' %}<p class="hinweis klein" style="margin:.2rem 0 0">Das LLM sieht das Bild nicht – Vorschlag vor der Übernahme mit dem Bild abgleichen.</p>{% endif %}
+    </fieldset>
+    {% endfor %}
+    <button type="submit" class="primary">Änderungen prüfen (Diff anzeigen)</button>
+    <p class="hinweis klein">Nächster Schritt zeigt den Diff; geschrieben wird erst nach Bestätigung, mit Backup. Es wird nichts gebaut, committet oder veröffentlicht.</p>
+  </form>
+</div>
+
+<h2 id="linkedin">LinkedIn-Wirkung</h2>
+<div class="card">
+  <p class="hinweis klein" style="margin-top:0">Nur lokal gespeichert (<code>data/ranking/linkedin.json</code>, nicht im Repo). Fließt nicht in die Punktzahl ein. Interaktionsrate = (Reaktionen + Kommentare + Reposts) / Impressions.</p>
+  {% if wirkung %}
+  <p><strong>{{ '{:,}'.format(wirkung.impressions).replace(',', '’') }}</strong> Impressions{% if wirkung.rate is not none %}, Interaktionsrate <strong>{{ ('%.2f'|format(wirkung.rate)).replace('.', ',') }} %</strong> <span class="hinweis klein">({{ wirkung.basis }})</span>{% endif %} – {{ ('%.2f'|format(wirkung.x_median)).replace('.', ',') }} × Median <span class="hinweis klein">(Einordnung: {{ benchmark.quelle }} <a href="{{ benchmark.url }}" target="_blank" rel="noopener">Quelle</a>)</span></p>
+  {% endif %}
+  {% if messungen %}
+  <div class="tabwrap"><table class="daten">
+  <thead><tr><th>Datum</th>{% for f, n in felder.items() %}<th class="zahl">{{ n }}</th>{% endfor %}<th class="zahl">Engagements (Export)</th><th>Quelle</th><th></th></tr></thead>
+  <tbody>{% for m in messungen %}<tr><td>{{ m.datum }}</td>{% for f in felder %}<td class="zahl">{{ m[f] if m[f] is defined else '–' }}</td>{% endfor %}<td class="zahl">{{ m.interaktionen if m.interaktionen is defined else '–' }}</td><td class="klein">{{ m.quelle }}</td>
+  <td><form method="post" action="{{ url_for('ranking.linkedin_loeschen', slug=meta.slug) }}" onsubmit="return confirm('Diese Messung löschen?')"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="schluessel" value="{{ m.datum }}|{{ m.quelle }}|{{ m.impressions }}"><button type="submit" class="klein">Löschen</button></form></td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% endif %}
+  <form method="post" action="{{ url_for('ranking.linkedin_erfassen', slug=meta.slug) }}" style="margin-top:.8rem">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <div class="raster">
+      <label style="grid-column:1/-1">Link zum LinkedIn-Beitrag (ordnet Importe automatisch zu)<input type="url" name="beitrag_url" value="{{ beitrag_url }}" placeholder="https://www.linkedin.com/feed/update/urn:li:activity:…"></label>
+      <label>Stand (Datum)<input type="date" name="datum" value="{{ heute }}"></label>
+      {% for f, n in felder.items() %}<label>{{ n }}<input type="text" inputmode="decimal" name="{{ f }}"></label>{% endfor %}
+    </div>
+    <div class="row" style="margin-top:.6rem"><button type="submit" class="primary">Speichern</button>
+    {% if beitrag_url %}<a class="knopf" href="{{ beitrag_url }}" target="_blank" rel="noopener">Beitrag auf LinkedIn ↗</a>{% endif %}
+    <a class="knopf" href="{{ url_for('ranking.uebersicht') }}#import">Export importieren</a></div>
+  </form>
+</div>
+{% endblock %}
+{% block skript %}
+<script>
+(function () {
+  document.querySelectorAll('textarea[data-feld]').forEach(function (ta) {
+    var feld = ta.getAttribute('data-feld');
+    var z = document.querySelector('[data-zaehler="' + feld + '"]');
+    var lo = +z.getAttribute('data-lo'), hi = +z.getAttribute('data-hi');
+    var box = document.querySelector('input[name="uebernehmen_' + feld + '"]');
+    var start = ta.value;
+    function zaehle() {
+      var n = ta.value.trim().length;
+      z.textContent = n + ' Zeichen' + (n < lo ? ' – zu kurz' : n > hi ? ' – zu lang' : ' – im Soll');
+      z.className = 'zaehler ' + (n >= lo && n <= hi ? 'ok-text' : 'warn-text');
+    }
+    ta.addEventListener('input', function () { zaehle(); if (box) box.checked = ta.value.trim() !== start.trim(); });
+    document.querySelectorAll('input[name="wahl_' + feld + '"]').forEach(function (r) {
+      r.addEventListener('change', function () { ta.value = r.getAttribute('data-text'); zaehle(); if (box) box.checked = r.value !== '__aktuell'; });
+    });
+    zaehle();
+  });
+})();
+</script>
+{% endblock %}

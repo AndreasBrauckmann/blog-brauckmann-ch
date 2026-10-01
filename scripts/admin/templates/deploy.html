@@ -1,0 +1,212 @@
+{% extends "basis.html" %}
+{% set seite = 'deploy' %}
+{% block titel %}Deploy{% endblock %}
+{% block kopf %}
+<style>
+.schritte { display:flex; gap:.4rem; flex-wrap:wrap; margin:.2rem 0 1rem; padding:0; list-style:none; counter-reset:s; }
+.schritte li { counter-increment:s; font-size:.85rem; color:var(--muted); }
+.schritte li a { color:inherit; text-decoration:none; border:1px solid var(--border); border-radius:999px; padding:.15rem .6rem; display:inline-block; }
+.schritte li a::before { content:counter(s) " "; font-weight:700; }
+.schritt { border-top:1px solid var(--border); padding-top:.4rem; }
+.schritt h2 .nr { display:inline-grid; place-items:center; width:1.6rem; height:1.6rem; border-radius:50%; background:var(--fg); color:var(--bg); font-size:.85rem; margin-right:.4rem; }
+.pruefliste { list-style:none; margin:.4rem 0 0; padding:0; font-size:.88rem; }
+.pruefliste li { display:flex; gap:.5rem; padding:.15rem 0; align-items:baseline; }
+.pruefliste li .st { flex:0 0 1.2rem; text-align:center; font-weight:700; }
+.st.ok { color:var(--ok); } .st.warn { color:var(--warn); } .st.fehler { color:var(--bad); }
+.flagge { display:inline-block; margin:.15rem .25rem .15rem 0; padding:.1rem .5rem; border-radius:6px; font-size:.8rem; border:1px solid var(--bad); color:var(--bad); }
+.flagge.design { border-color:var(--warn); color:var(--warn); }
+.flagge.auffaellig { border-color:var(--border); color:var(--fg); }
+.dateien { list-style:none; padding:0; margin:.3rem 0; font-size:.85rem; }
+.dateien li { padding:.15rem 0; display:flex; gap:.5rem; align-items:baseline; flex-wrap:wrap; }
+.dateien li code { word-break:break-all; }
+.dateien li .grund { color:var(--muted); font-size:.78rem; }
+.dateien li.gesperrt { opacity:.6; }
+.art { font-size:.72rem; border-radius:4px; padding:0 .35rem; border:1px solid var(--border); }
+.art.neu { border-color:var(--ok); color:var(--ok); } .art.geloescht { border-color:var(--bad); color:var(--bad); }
+.lampe { display:inline-block; width:.9rem; height:.9rem; border-radius:50%; vertical-align:middle; margin-right:.35rem; background:var(--bar); }
+.lampe.gruen { background:var(--ok); } .lampe.gelb { background:var(--warn); } .lampe.rot { background:var(--bad); }
+.lampe.laeuft { background:var(--warn); animation:blink 1s infinite; }
+@keyframes blink { 50% { opacity:.3; } }
+@media (prefers-reduced-motion: reduce) { .lampe.laeuft { animation:none; } }
+</style>
+{% endblock %}
+{% block inhalt %}
+<h1>Deploy</h1>
+<p class="hinweis">Geführter Ablauf. Nichts wird ohne Klick und Bestätigung committet oder gepusht. Committet wird nur die Auswahl aus Schritt 3 – nie <code>manual-posts.md</code>, <code>data/</code> oder <code>.env</code>.</p>
+<ol class="schritte">
+  <li><a href="#pruefen">Prüfen</a></li><li><a href="#bauen">Bauen</a></li><li><a href="#diff">Diff ansehen</a></li><li><a href="#veroeffentlichen">Veröffentlichen</a></li><li><a href="#live">Live prüfen</a></li><li><a href="#linkedin">Post Inspector</a></li>
+</ol>
+{% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+
+<div class="card klein" id="verbindung">Zugang (Git/SSH als Dienstnutzer, GitHub CLI): <span id="verbindung-text">wird geprüft …</span></div>
+
+<section class="schritt" id="pruefen">
+<h2><span class="nr">1</span>Vorab-Prüfung {% if alle %}aller Artikel{% elif slugs %}der geänderten Artikel{% else %}(keine Artikel geändert – alle Artikel){% endif %}</h2>
+<p class="hinweis klein">{% if alle %}<a href="?">Nur geänderte Artikel</a>{% else %}<a href="?alle=1">Alle Artikel prüfen</a>{% endif %} · Prüft dist/ (also den letzten Build) – nach Änderungen erst bauen.</p>
+{% for z in pruefung %}
+<div class="card">
+  {% if z.fehlt %}<strong>{{ z.slug }}</strong> <span class="badge bad">nicht in articles/ (gelöscht oder Entwurf?)</span>{% else %}
+  <div class="row" style="justify-content:space-between">
+    <strong title="{{ z.titel }}">{{ z.titel|kurztitel(70) }}</strong>
+    <span><span class="lampe {{ z.ampel }}"></span><span class="score">{{ '%.0f'|format(z.gesamt) }}</span>/100 {% if z.blockiert %}<span class="badge bad">Fehler</span>{% endif %}</span>
+  </div>
+  {% if z.auffaelligkeiten %}<div>{% for f in z.auffaelligkeiten %}<span class="flagge {{ f.art }}">{{ f.text }}</span>{% endfor %}</div>{% endif %}
+  <ul class="pruefliste">
+  {% for p in z.pruefungen %}<li><span class="st {{ p.stufe }}">{{ {'ok':'✓','warn':'!','fehler':'✗'}[p.stufe] }}</span><span><strong>{{ p.name }}:</strong> {{ p.text }}</span></li>{% endfor %}
+  </ul>
+  <div class="row klein" style="margin-top:.4rem"><a href="{{ url_for('ranking.detail', slug=z.slug) }}">Bewertung im Detail</a> · <a href="/verwaltung/plattform/linkedin?slug={{ z.slug }}">LinkedIn-Vorschau</a></div>
+  {% endif %}
+</div>
+{% endfor %}
+</section>
+
+<section class="schritt" id="bauen">
+<h2><span class="nr">2</span>Bauen</h2>
+<form method="post" action="{{ url_for('deploy.bauen') }}" data-lang="baut …" class="row">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <button type="submit" class="primary">scripts/build.py ausführen</button>
+  {% if build %}<span class="klein">Letzter Build: {{ build.zeitpunkt.replace('T', ' ') }}, {{ build.dauer }} s, {% if build.ok %}<span class="ok-text">erfolgreich</span>{% else %}<span class="bad-text">fehlgeschlagen (Code {{ build.code }})</span>{% endif %}</span>{% endif %}
+</form>
+{% if build %}<details {% if not build.ok %}open{% endif %}><summary class="klein">Ausgabe des Builds</summary><pre class="log">{{ build.ausgabe }}</pre></details>{% endif %}
+</section>
+
+<form method="post" action="{{ url_for('deploy.veroeffentlichen') }}" id="veroeffentlichen-form">
+<input type="hidden" name="csrf" value="{{ csrf_token() }}">
+<input type="hidden" name="stand" value="{{ stand }}">
+<section class="schritt" id="diff">
+<h2><span class="nr">3</span>Änderungen ansehen und auswählen</h2>
+{% if not aenderungen %}<p>Keine Änderungen gegenüber dem letzten Commit.</p>{% else %}
+<p class="hinweis klein">{{ stat }} · Vorausgewählt ist die Whitelist (articles/, dist/, Bilder geänderter Artikel, templates/, config.yaml, CLAUDE.md). Skripte, gelöschte Dateien und alles andere nur mit ausdrücklicher Auswahl. <span id="auswahl-zahl"></span></p>
+{% for bereich, liste in gruppen.items() %}
+<details class="card" {% if bereich != 'dist' or liste|length < 12 %}open{% endif %}>
+  <summary><strong>{{ bereich }}</strong> <span class="hinweis klein">({{ liste|length }} Datei{{ 'en' if liste|length != 1 }})</span>
+  {% if liste|selectattr('erlaubt')|list %}<button type="button" class="klein" data-gruppe="{{ bereich }}" style="margin-left:.5rem;padding:.1rem .45rem">alle an/aus</button>{% endif %}</summary>
+  <ul class="dateien">
+  {% for a in liste %}
+  <li class="{{ '' if a.erlaubt else 'gesperrt' }}">
+    <label><input type="checkbox" name="pfad" value="{{ a.pfad }}" data-bereich="{{ bereich }}" {% if a.standard %}checked{% endif %} {% if not a.erlaubt %}disabled{% endif %}>
+    <span class="art {{ a.art }}">{{ a.art }}</span> <code>{{ a.pfad }}</code></label>
+    <span class="grund">{{ a.grund }}</span>
+    {% if diffs.get(a.pfad) %}<details style="flex-basis:100%"><summary class="klein">Diff anzeigen</summary><pre class="diff">{% for z in diffs[a.pfad].splitlines() %}<span class="{{ 'plus' if z.startswith('+') else ('minus' if z.startswith('-') else ('info' if z.startswith('@@') else '')) }}">{{ z }}</span>
+{% endfor %}</pre></details>{% endif %}
+  </li>
+  {% endfor %}
+  </ul>
+</details>
+{% endfor %}
+{% endif %}
+</section>
+
+<section class="schritt" id="veroeffentlichen">
+<h2><span class="nr">4</span>Veröffentlichen</h2>
+{% if aenderungen %}
+<label class="klein" for="nachricht">Commit-Meldung (editierbar)</label>
+<textarea name="nachricht" id="nachricht" rows="3">{{ meldung_vorschlag }}</textarea>
+<div style="margin:.5rem 0">
+  <label><input type="checkbox" name="bestaetigt" value="ja" required> Ich habe die Vorab-Prüfung und die Auswahl geprüft. Commit und <code>git push origin master</code> ausführen.</label><br>
+  {% if pruefung|selectattr('blockiert')|list %}<label class="bad-text"><input type="checkbox" name="trotzdem" value="ja"> Trotz Fehlern der Vorab-Prüfung veröffentlichen</label>{% endif %}
+</div>
+<button type="submit" class="primary" id="veroeffentlichen-knopf">Committen und pushen …</button>
+<p class="hinweis klein">Danach startet GitHub Pages (nur bei Änderungen unter dist/). Der Eintrag in <code>publish-log.md</code> wird mit committet (ohne Kennzahlen).</p>
+{% else %}<p class="hinweis">Nichts zu veröffentlichen.</p>{% endif %}
+</section>
+</form>
+
+<section class="schritt" id="live">
+<h2><span class="nr">5</span>Pages-Lauf und Live-Prüfung</h2>
+{% if letzter %}
+<div class="card">
+  <div><strong>Letzte Veröffentlichung:</strong> {{ letzter.zeitpunkt.replace('T',' ') }} · <code>{{ letzter.sha[:8] }}</code> · {{ letzter.meldung }} · {{ letzter.dateien }} Dateien
+  · Push: {% if letzter.push_ok %}<span class="ok-text">ok</span>{% else %}<span class="bad-text">fehlgeschlagen</span>{% endif %}</div>
+  <div style="margin-top:.4rem"><span class="lampe" id="lauf-lampe"></span><span id="lauf-text" class="klein">GitHub-Pages-Lauf wird abgefragt …</span> <a id="lauf-link" class="klein" href="#" target="_blank" rel="noopener" hidden>Lauf ansehen ↗</a></div>
+  <form method="post" action="{{ url_for('deploy.live', sha=letzter.sha) }}" id="live-form" data-lang="prüft …" style="margin-top:.5rem">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button type="submit">Live prüfen (eigener Inspector)</button>
+    <span class="hinweis klein">GitHub Pages cacht bis zu 10 Minuten (max-age=600) – bei Abweichungen später erneut prüfen.</span>
+  </form>
+  {% for s in letzter.slugs %}{% set e = live.get(s) %}
+  <div style="margin-top:.6rem">
+    <span class="lampe {{ e.ampel if e else '' }}"></span><strong title="{{ quellen[s].title if s in quellen else s }}">{{ (quellen[s].title if s in quellen else s)|kurztitel(60) }}</strong>
+    {% if e %}<span class="klein hinweis"> – geprüft {{ e.zeitpunkt.replace('T',' ') }}, HTTP {{ e.status }}, Live = Build: {{ {True:'ja', False:'nein', None:'–'}[e.gleich_build] }}</span>
+    <ul class="pruefliste">{% for b in e.befunde if b.stufe != 'ok' %}<li><span class="st {{ b.stufe }}">{{ {'warn':'!','fehler':'✗'}[b.stufe] }}</span><span>{{ b.text }}</span></li>{% else %}<li><span class="st ok">✓</span><span>Alles in Ordnung.</span></li>{% endfor %}</ul>
+    {% else %}<span class="klein hinweis"> – noch nicht live geprüft</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}<p class="hinweis">Noch keine Veröffentlichung über die Verwaltung.</p>{% endif %}
+</section>
+
+<section class="schritt" id="linkedin">
+<h2><span class="nr">6</span>LinkedIn Post Inspector (Menschen-Schritt)</h2>
+<p class="hinweis">Vor dem Posten auf LinkedIn: Live-URL im <a href="{{ post_inspector }}" target="_blank" rel="noopener">LinkedIn Post Inspector ↗</a> eingeben, <em>Inspect</em> drücken, Titel/Bild/Beschreibung prüfen. Das erneuert auch LinkedIns Zwischenspeicher. Danach hier abhaken.</p>
+{% set liste = letzter.slugs if letzter and letzter.slugs else slugs %}
+{% for s in liste if s in quellen %}{% set st = li_status.get(s) %}
+<div class="card">
+  <strong title="{{ quellen[s].title }}">{{ quellen[s].title|kurztitel(70) }}</strong>
+  <div class="kopierbar" style="margin:.4rem 0"><input type="text" readonly id="url-{{ loop.index }}" value="{{ live_url(s) }}"><button type="button" data-kopieren="url-{{ loop.index }}">URL kopieren</button><a class="knopf" href="{{ inspector_url(live_url(s)) }}" target="_blank" rel="noopener">Im Post Inspector öffnen ↗</a></div>
+  <form method="post" action="{{ url_for('ranking.inspector_setzen', slug=s) }}" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <label class="klein">Ausgeführt am <input type="date" name="datum" value="{{ heute }}"></label>
+    <button type="submit">✓ Post Inspector ausgeführt</button>
+    {% if st %}<span class="klein ok-text">zuletzt abgehakt: {{ st.datum }}</span>{% endif %}
+  </form>
+</div>
+{% else %}<p class="hinweis klein">Keine Artikel in der letzten Veröffentlichung.</p>{% endfor %}
+</section>
+
+{% if verlauf %}
+<details class="card" style="margin-top:1.5rem"><summary>Verlauf (lokal, data/)</summary>
+<div class="tabwrap"><table class="daten"><thead><tr><th>Zeit</th><th>Commit</th><th>Meldung</th><th class="zahl">Dateien</th><th>Push</th></tr></thead><tbody>
+{% for v in verlauf %}<tr><td>{{ v.zeitpunkt.replace('T',' ') }}</td><td><code>{{ v.sha[:8] }}</code></td><td>{{ v.meldung }}</td><td class="zahl">{{ v.dateien }}</td><td>{{ 'ok' if v.push_ok else 'Fehler' }}</td></tr>{% endfor %}
+</tbody></table></div></details>
+{% endif %}
+{% endblock %}
+{% block skript %}
+<script>
+(function () {
+  fetch('{{ url_for("deploy.verbindung") }}', {credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (d) {
+    document.getElementById('verbindung-text').innerHTML =
+      (d.git_ok ? '<span class="ok-text">git ls-remote ok</span>' : '<span class="bad-text">git ls-remote fehlgeschlagen</span>') +
+      ' · ' + (d.gh_ok ? '<span class="ok-text">gh ' + d.gh_text + '</span>' : '<span class="bad-text">gh ' + d.gh_text + '</span>') +
+      ' · Commit-Identität: ' + (d.identitaet || '–');
+  }).catch(function () { document.getElementById('verbindung-text').textContent = 'Prüfung fehlgeschlagen'; });
+
+  var boxen = document.querySelectorAll('input[name=pfad]');
+  function zaehlen() {
+    var n = 0; boxen.forEach(function (b) { if (b.checked) n++; });
+    var el = document.getElementById('auswahl-zahl'); if (el) el.textContent = n + ' ausgewählt.';
+    var k = document.getElementById('veroeffentlichen-knopf'); if (k) k.textContent = n + ' Datei' + (n === 1 ? '' : 'en') + ' committen und pushen …';
+  }
+  boxen.forEach(function (b) { b.addEventListener('change', zaehlen); }); zaehlen();
+  document.querySelectorAll('[data-gruppe]').forEach(function (k) {
+    k.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      var g = Array.prototype.filter.call(boxen, function (b) { return b.dataset.bereich === k.dataset.gruppe && !b.disabled; });
+      var an = g.some(function (b) { return !b.checked; });
+      g.forEach(function (b) { b.checked = an; }); zaehlen();
+    });
+  });
+  var f = document.getElementById('veroeffentlichen-form');
+  if (f) f.addEventListener('submit', function (ev) {
+    var n = 0; boxen.forEach(function (b) { if (b.checked) n++; });
+    if (!n) { ev.preventDefault(); alert('Keine Datei ausgewählt.'); return; }
+    if (!confirm(n + ' Datei(en) committen und nach origin/master pushen? Das veröffentlicht den Blog.')) { ev.preventDefault(); return; }
+    var k = document.getElementById('veroeffentlichen-knopf'); k.disabled = true; k.textContent = 'veröffentlicht …';
+  });
+
+  {% if letzter %}
+  var lampe = document.getElementById('lauf-lampe'), text = document.getElementById('lauf-text'), link = document.getElementById('lauf-link');
+  var versuche = 0;
+  function abfragen() {
+    fetch('{{ url_for("deploy.lauf", sha=letzter.sha) }}', {credentials: 'same-origin'}).then(function (r) { return r.json(); }).then(function (d) {
+      text.textContent = d.text; lampe.className = 'lampe ' + ({erfolg: 'gruen', fehler: 'rot', laeuft: 'laeuft', wartet: 'laeuft', kein_lauf: 'gelb'}[d.zustand] || '');
+      if (d.url) { link.href = d.url; link.hidden = false; }
+      if ((d.zustand === 'laeuft' || d.zustand === 'wartet') && versuche++ < 60) setTimeout(abfragen, 5000);
+    }).catch(function () { text.textContent = 'Abfrage fehlgeschlagen'; });
+  }
+  abfragen();
+  {% endif %}
+})();
+</script>
+{% endblock %}

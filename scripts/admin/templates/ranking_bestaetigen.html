@@ -1,0 +1,31 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block titel %}Änderung bestätigen{% endblock %}
+{% block inhalt %}
+<p class="klein"><a href="{{ url_for('ranking.detail', slug=slug) }}#metas">← abbrechen, zurück zum Artikel</a></p>
+<h1>Frontmatter-Änderung bestätigen</h1>
+<p><strong>{{ meta.title }}</strong> – Datei <code>articles/{{ slug }}.md</code></p>
+<div class="card">
+  <h3 style="margin-top:0">Neue Werte</h3>
+  <ul>
+  {% for f, v in felder.items() %}{% set e = bewertet[f] %}
+    <li><code>{{ f }}</code>: „{{ v }}“ <span class="zaehler {{ 'ok-text' if e.ok else 'warn-text' }}">({{ e.laenge }} Zeichen, Soll {{ e.soll }}{% if e.haken is defined %}, {{ 'Haken vorn' if e.haken else 'kein klarer Haken' }}{% endif %})</span></li>
+  {% endfor %}
+  </ul>
+  {% if 'og_image_alt' in felder and not og_image_gesetzt %}<p class="warn-text klein">og:image:alt wird erst ausgegeben, wenn der Artikel auch ein og_image hat.</p>{% endif %}
+  <h3>Diff</h3>
+  <pre class="diff">{% for z in diff %}<span class="{{ 'plus' if z.startswith('+') and not z.startswith('+++') else ('minus' if z.startswith('-') and not z.startswith('---') else 'info') }}">{{ z }}</span>
+{% endfor %}</pre>
+  <form method="post" action="{{ url_for('ranking.metas_uebernehmen', slug=slug) }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <input type="hidden" name="datei_hash" value="{{ datei_hash }}">
+    {% for f, v in felder.items() %}<input type="hidden" name="{{ f }}" value="{{ v }}"><input type="hidden" name="uebernehmen_{{ f }}" value="1">{% endfor %}
+    <label class="row"><input type="checkbox" name="bestaetigt" value="ja" required> Ich habe den Diff geprüft und will die Änderung in die Artikeldatei schreiben.</label>
+    <div class="row">
+      <button type="submit" class="primary">Übernehmen (mit Backup)</button>
+      <a class="knopf" href="{{ url_for('ranking.detail', slug=slug) }}#metas">Abbrechen</a>
+    </div>
+    <p class="hinweis klein">Vorher wird eine Sicherung unter <code>data/backups/artikel/</code> angelegt. Es wird nicht gebaut, nicht committet und nicht veröffentlicht. Danach: bauen und deployen, dann im LinkedIn Post Inspector prüfen.</p>
+  </form>
+</div>
+{% endblock %}
