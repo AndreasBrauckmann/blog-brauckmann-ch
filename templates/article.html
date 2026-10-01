@@ -68,6 +68,8 @@
 </div>
 <script>
 (function () {
+  // Bilder im Text erst hier laden (siehe build.py, bilder_nachladen)
+  document.querySelectorAll('img[data-src]').forEach(function (i) { i.src = i.getAttribute('data-src'); });
   var overlay = document.getElementById('lightbox-overlay');
   var overlayImg = document.getElementById('lightbox-img');
 

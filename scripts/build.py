@@ -23,6 +23,9 @@ from pygments.formatters import HtmlFormatter
 
 ROOT = Path(__file__).resolve().parent.parent
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from titel_beschreibung import ueberschneidung  # noqa: E402
+
 
 def load_config() -> dict:
     with open(ROOT / "config.yaml", encoding="utf-8") as f:
@@ -106,6 +109,57 @@ def load_meta(cfg: dict, slug: str) -> dict:
     if md_pfad.exists():
         return parse_article(md_pfad)
     return parse_html_article(articles_dir / f"{slug}.html")
+
+
+_PLATZHALTER = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+
+
+def _svg_info(url_pfad: str):
+    """Breite/Hoehe einer SVG aus viewBox oder width/height des Wurzelelements (Groesse reicht fuer das Seitenverhaeltnis)."""
+    if not url_pfad.lower().endswith(".svg"):
+        return None
+    try:
+        kopf = (ROOT / url_pfad.lstrip("/")).read_text(encoding="utf-8", errors="ignore")[:2000]
+    except OSError:
+        return None
+    m = re.search(r'viewBox="\s*[-\d.]+[ ,]+[-\d.]+[ ,]+([\d.]+)[ ,]+([\d.]+)"', kopf)
+    if m:
+        return round(float(m.group(1))), round(float(m.group(2))), "image/svg+xml"
+    w = re.search(r'<svg[^>]*\swidth="([\d.]+)', kopf)
+    h = re.search(r'<svg[^>]*\sheight="([\d.]+)', kopf)
+    return (round(float(w.group(1))), round(float(h.group(1))), "image/svg+xml") if w and h else None
+
+
+def bilder_nachladen(seite: str) -> str:
+    """Bilder im Artikelteil erst im Browser laden (Platzhalter + data-src + width/height).
+
+    Grund: LinkedIn bietet beim Teilen ausser dem Vorschaubild (og:image) weitere Bilder aus dem
+    Artikeltext zur Auswahl an. LinkedIn fuehrt kein JavaScript aus und sieht dann nur noch das
+    Vorschaubild. Besucher merken nichts; width/height verhindern Seitensprung. Nur eigene Bilder
+    mit bekannter Groesse; alles andere bleibt unveraendert. Ob LinkedIn wirklich nur das Vorschaubild
+    anbietet, ist Praxis und nicht belegt (Post Inspector pruefen)."""
+    k = seite.find("<body")
+    a = seite.find("<article", k if k >= 0 else 0)
+    b = seite.rfind("</article>")
+    if a < 0 or b < a:
+        return seite
+
+    def ersetze(m: re.Match) -> str:
+        tag = m.group(0)
+        if "data-src=" in tag:
+            return tag
+        q = re.search(r'\ssrc="(/static/[^"?#]+)"', tag)
+        if not q:
+            return tag
+        info = bild_info(q.group(1)) or _svg_info(q.group(1))
+        if not info:
+            return tag
+        neu = tag.replace(f' src="{q.group(1)}"', f' src="{_PLATZHALTER}" data-src="{q.group(1)}"', 1)
+        if " width=" not in neu:
+            neu = neu.replace("<img", f'<img width="{info[0]}" height="{info[1]}"', 1)
+        return neu
+
+    return seite[:a] + re.sub(r"<img\b[^>]*>", ersetze, seite[a:b]) + seite[b:]
 
 
 def render_markdown(body_md: str) -> str:
@@ -295,6 +349,10 @@ def pruefe_warnungen(meta: dict) -> list[str]:
             w.append(f"og:image {bw}x{bh} kleiner als 1200x627")
         if abs(bw / bh - 1.91) > 0.08:
             w.append(f"og:image {bw}x{bh}: Seitenverhaeltnis {bw / bh:.2f}, Soll ~1,91")
+    guss = ueberschneidung(titel, str(meta["description"]))
+    if not guss["ok"]:
+        w.append("Beschreibung wiederholt den Titel: " + ", ".join(f"‚{x}‘" for x in guss["wiederholt"][:4])
+                 + " (Regel „Titel und Beschreibung in einem Guss“, siehe CLAUDE.md)")
     body = meta["body_md"]
     for m in _IMG_MD.finditer(body):
         if not m.group(1).strip():
@@ -343,7 +401,7 @@ def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_sty
         "base_url": site["base_url"],
         "author": html.escape(site["author"]),
     }
-    seite = render(template, context)
+    seite = bilder_nachladen(render(template, context))
     pruefe_pflicht_meta(meta["slug"], seite[: seite.find("</head>")])
     return meta["slug"], seite
 

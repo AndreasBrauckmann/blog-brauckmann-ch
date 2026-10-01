@@ -9,8 +9,8 @@ summary: >-
   Netdata bringt seit Version 2.6 einen eigenen MCP-Server mit — ganz ohne Zusatzinstallation. Wer eine kleine Infrastruktur mit ein paar Nodes betreibt, hat in gut 15 Minuten ein vollständiges Monitoring mit Hunderten Metriken pro Sekunde, plus einen KI-Assistenten, der die Daten tatsächlich versteht: Claude fragt "Warum ist der Server langsam?" nicht mehr rhetorisch, sondern zieht sich die echten Zahlen. Installation, erste Ansicht, MCP-Anbindung, eine Beispielfrage — und ein Hinweis, worauf zu achten ist, sobald man das Ganze von außerhalb des eigenen Netzes erreichbar machen will.
 tags: [Monitoring, Netdata, Claude, Infrastruktur, MCP]
 image: /static/img/netdata-dashboard-uebersicht.png
-og_image: /static/img/og-netdata-homelab-monitoring-claude.jpg
-og_image_alt: "Netdata-Dashboard mit Kennzahlen zu CPU, Arbeitsspeicher, Netzwerk und Datenträgern eines Servers."
+og_image: /static/img/og-netdata-dashboard.jpg
+og_image_alt: "Netdata-Dashboard mit Kennzahlen zu Festplatte, CPU, Arbeitsspeicher und Netzwerk eines Servers, darunter das CPU-Diagramm."
 thumb: /static/img/thumbs/netdata-homelab-monitoring-claude.jpg
 draft: false
 changelog:
