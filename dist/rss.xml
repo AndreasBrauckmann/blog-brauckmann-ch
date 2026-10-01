@@ -14,28 +14,28 @@
     <title>„Hey Siri, Windows“: Samsung-Monitor mit eingebautem KVM-Switch per Sprache umschalten.</title>
     <link>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</link>
     <guid>https://blog.brauckmann.ch/artikel/kvm-switch-per-sprache/</guid>
-    <description>Videoschnitt auf dem Mac, PowerShell und Azure auf Windows: Für mein Zero-Trust-Assessment-Video wechsle ich dutzende Male pro Stunde das Notebook. Jetzt genügt ein Satz zu Siri – Bildschirm, Maus und Tastatur schalten um. So habe ich es gebaut.</description>
+    <description>Ein Satz zu Siri, und Bildschirm, Maus und Tastatur wechseln zwischen Mac und Windows-Notebook. So baue ich den KVM-Umschalter per Sprache, mit Gratis-Software.</description>
     <pubDate>Sun, 27 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
     <title>Monitoring für kleine Infrastrukturen in 15 Minuten: Netdata + Claude als MCP-Server (read &amp; write*)</title>
     <link>https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/</link>
     <guid>https://blog.brauckmann.ch/artikel/netdata-homelab-monitoring-claude/</guid>
-    <description>Netdata installieren, das eingebaute Dashboard nutzen und Claude per MCP direkt an die eigenen Metriken anschließen — für eine kleine Infrastruktur mit weniger als fünf Nodes, ohne Cloud-Konto und ohne Yaml-Wüste.</description>
+    <description>Netdata installieren, Claude per MCP an die eigenen Metriken anschließen: Monitoring für kleine Infrastrukturen in 15 Minuten, ohne Cloud-Konto und Yaml-Wüste.</description>
     <pubDate>Sun, 20 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
     <title>Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: über 84.000 Termine — modern, schnell, ohne Ballast und Kosten</title>
     <link>https://blog.brauckmann.ch/artikel/wirtschaftskalender-ohne-anmeldung/</link>
     <guid>https://blog.brauckmann.ch/artikel/wirtschaftskalender-ohne-anmeldung/</guid>
-    <description>Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle. Was er kann, warum er anders lizenziert ist als der Rest der Branche.</description>
+    <description>Über 84.000 Konjunkturtermine seit 2010, ohne Login: kostenlose API, sechs Download-Formate, KI-Recherche per Klick und Link zur Originalquelle jedes Termins.</description>
     <pubDate>Sun, 20 Sep 2026 00:00:00 +0000</pubDate>
   </item>
   <item>
     <title>KI-Tempo, Nov.25 – Sep.26: Elf Monate, zwei Wellen — warum jetzt andere Regeln gelten</title>
     <link>https://blog.brauckmann.ch/artikel/sieben-monate-elf-umbrueche/</link>
     <guid>https://blog.brauckmann.ch/artikel/sieben-monate-elf-umbrueche/</guid>
-    <description>Elf Monate, zwei Wellen, ein Ebenenwechsel: Bei monatlichen Modellsprüngen ist die Fähigkeit, Kontext sauber zu übergeben, wertvoller als die Beherrschung eines bestimmten Modells. Fünf Techniken dagegen.</description>
+    <description>Alle paar Wochen ein neues KI-Modell: Wichtiger als Modellkenntnis ist sauberer Kontext. Elf Monate, zwei Wellen und fünf Techniken, die den Wechsel überstehen.</description>
     <pubDate>Mon, 07 Sep 2026 00:00:00 +0000</pubDate>
   </item>
 </channel></rss>

@@ -10,6 +10,7 @@ import html
 import json
 import re
 import shutil
+import struct
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -141,6 +142,59 @@ def build_jsonld(meta: dict, cfg: dict, canonical_url: str) -> str:
     return json.dumps(data, ensure_ascii=False, indent=2)
 
 
+_MIME = {"png": "image/png", "jpeg": "image/jpeg", "gif": "image/gif", "webp": "image/webp"}
+
+
+def bild_info(url_pfad: str) -> tuple[int, int, str] | None:
+    """Breite, Hoehe und MIME-Typ eines Bildes aus static/ lesen (nur Dateikopf,
+    ohne Zusatzbibliothek). None, wenn Datei fehlt oder Format unbekannt."""
+    if not url_pfad or not url_pfad.startswith("/static/"):
+        return None
+    pfad = ROOT / url_pfad.lstrip("/")
+    try:
+        d = pfad.read_bytes()
+    except OSError:
+        return None
+    try:
+        if d[:8] == b"\x89PNG\r\n\x1a\n":
+            w, h = struct.unpack(">II", d[16:24])
+            return w, h, _MIME["png"]
+        if d[:6] in (b"GIF87a", b"GIF89a"):
+            w, h = struct.unpack("<HH", d[6:10])
+            return w, h, _MIME["gif"]
+        if d[:2] == b"\xff\xd8":
+            i = 2
+            while i + 9 < len(d):
+                if d[i] != 0xFF:
+                    i += 1
+                    continue
+                marker = d[i + 1]
+                if marker in (0xD8, 0x01) or 0xD0 <= marker <= 0xD7:
+                    i += 2
+                    continue
+                (laenge,) = struct.unpack(">H", d[i + 2:i + 4])
+                if marker in (0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF):
+                    h, w = struct.unpack(">HH", d[i + 5:i + 9])
+                    return w, h, _MIME["jpeg"]
+                i += 2 + laenge
+            return None
+        if d[:4] == b"RIFF" and d[8:12] == b"WEBP":
+            kind = d[12:16]
+            if kind == b"VP8X":
+                w = 1 + int.from_bytes(d[24:27], "little")
+                h = 1 + int.from_bytes(d[27:30], "little")
+                return w, h, _MIME["webp"]
+            if kind == b"VP8 ":
+                w, h = struct.unpack("<HH", d[26:30])
+                return w & 0x3FFF, h & 0x3FFF, _MIME["webp"]
+            if kind == b"VP8L":
+                b = struct.unpack("<I", d[21:25])[0]
+                return (b & 0x3FFF) + 1, ((b >> 14) & 0x3FFF) + 1, _MIME["webp"]
+    except struct.error:
+        return None
+    return None
+
+
 _LOCALES = {"de": "de_DE", "en": "en_US", "fr": "fr_FR"}
 
 
@@ -160,13 +214,24 @@ def article_head_extras(meta: dict, cfg: dict) -> dict:
         zeilen.append(f'<meta property="article:tag" content="{esc(t)}">')
     if meta.get("tags"):
         zeilen.append(f'<meta name="keywords" content="{esc(", ".join(meta["tags"]))}">')
+    bild_zeilen = ""
+    if og_bild:
+        bild_zeilen = f'<meta name="image" property="og:image" content="{esc(og_bild)}">'
+        info = bild_info(bild)
+        if info:
+            bild_zeilen += (
+                f'\n<meta property="og:image:type" content="{info[2]}">'
+                f'\n<meta property="og:image:width" content="{info[0]}">'
+                f'\n<meta property="og:image:height" content="{info[1]}">'
+            )
+        if meta.get("og_image"):
+            bild_zeilen += f'\n<meta property="og:image:alt" content="{esc(meta.get("og_image_alt") or meta["title"])}">'
+    fedi = site.get("fediverse_creator")
+    if fedi:
+        zeilen.append(f'<meta name="fediverse:creator" content="{esc(str(fedi))}">')
     return {
         "og_locale": _LOCALES.get(site["language"], site["language"]),
-        "og_image_tags": (
-            f'<meta name="image" property="og:image" content="{esc(og_bild)}">'
-            + (f'\n<meta property="og:image:alt" content="{esc(meta.get("og_image_alt") or meta["title"])}">' if meta.get("og_image") else "")
-            if og_bild else ""
-        ),
+        "og_image_tags": bild_zeilen,
         "twitter_image_tag": (f'<meta name="twitter:image" content="{esc(og_bild)}">' if og_bild else ""),
         "twitter_card": "summary_large_image" if (meta.get("og_image") or meta.get("image")) else "summary",
         "article_meta": "\n".join(zeilen),
@@ -204,6 +269,42 @@ def pruefe_pflicht_meta(slug: str, kopf: str) -> None:
             f"Build abgebrochen: Artikel '{slug}' ohne Pflicht-Meta-Tag(s): {', '.join(fehlt)}. "
             "Frontmatter pruefen (title, description, image oder thumb) -- siehe CLAUDE.md."
         )
+
+
+_IMG_MD = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)")
+_IMG_HTML = re.compile(r"<img\b[^>]*>", re.I)
+
+
+def pruefe_warnungen(meta: dict) -> list[str]:
+    """Weiche Qualitaetspruefung (kein Abbruch): Titel-/Beschreibungslaenge,
+    Vorschaubild-Groesse und -Format, fehlende Alt-Texte im Artikeltext."""
+    w = []
+    titel = str(meta["title"])
+    if len(titel) > 70:
+        w.append(f"Titel hat {len(titel)} Zeichen (> 70)")
+    n = len(str(meta["description"]))
+    if not 120 <= n <= 160:
+        w.append(f"Beschreibung hat {n} Zeichen (Soll 120-160)")
+    bild = meta.get("og_image") or meta.get("image") or meta.get("thumb")
+    info = bild_info(bild) if bild else None
+    if bild and not info:
+        w.append(f"og:image {bild}: Masse nicht lesbar")
+    elif info:
+        bw, bh = info[0], info[1]
+        if bw < 1200 or bh < 627:
+            w.append(f"og:image {bw}x{bh} kleiner als 1200x627")
+        if abs(bw / bh - 1.91) > 0.08:
+            w.append(f"og:image {bw}x{bh}: Seitenverhaeltnis {bw / bh:.2f}, Soll ~1,91")
+    body = meta["body_md"]
+    for m in _IMG_MD.finditer(body):
+        if not m.group(1).strip():
+            w.append(f"Bild ohne Alt-Text: {m.group(2)}")
+    for m in _IMG_HTML.finditer(body):
+        a = re.search(r'\balt\s*=\s*"([^"]*)"', m.group(0))
+        if not a or not a.group(1).strip():
+            src = re.search(r'src\s*=\s*"([^"]*)"', m.group(0))
+            w.append(f"Bild ohne Alt-Text: {src.group(1) if src else m.group(0)[:60]}")
+    return w
 
 
 def build_article(meta: dict, cfg: dict, template: str, style: str, pygments_style: str) -> tuple[str, str]:
@@ -450,8 +551,12 @@ def main() -> int:
     article_template = load_template("article.html")
     index_template = load_template("index.html")
 
+    warnungen = 0
     for meta in articles:
         slug, page_html = build_article(meta, cfg, article_template, style, pygments_style)
+        for hinweis in pruefe_warnungen(meta):
+            warnungen += 1
+            print(f"WARNUNG [{slug}]: {hinweis}")
         out_dir = dist_dir / "artikel" / slug
         out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "index.html").write_text(page_html, encoding="utf-8")
@@ -500,7 +605,7 @@ def main() -> int:
     if public_root_dir.exists():
         shutil.copytree(public_root_dir, dist_dir, dirs_exist_ok=True)
 
-    print(f"Gebaut: {len(articles)} Artikel -> {dist_dir}")
+    print(f"Gebaut: {len(articles)} Artikel -> {dist_dir} ({warnungen} Warnung(en))")
     return 0
 
 

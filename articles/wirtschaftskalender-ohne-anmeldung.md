@@ -5,11 +5,13 @@ short_title: "Der kostenlose, KI-gesteuerte Wirtschaftskalender von Kontor: übe
 slug: wirtschaftskalender-ohne-anmeldung
 date: 2026-09-20
 updated: 2026-09-29
-description: "Ein öffentlicher Wirtschaftskalender ohne Login: 16 Jahre Historie, sechs Downloadformate, eine kostenlose API, KI-Recherche per Klick und Links zu jeder Originalquelle. Was er kann, warum er anders lizenziert ist als der Rest der Branche."
+description: "Über 84.000 Konjunkturtermine seit 2010, ohne Login: kostenlose API, sechs Download-Formate, KI-Recherche per Klick und Link zur Originalquelle jedes Termins."
 summary: >-
   Der Wirtschaftskalender unter brauckmann.ch/kalender/ zeigt über 84.000 Konjunkturtermine seit 2010, ohne Login, ohne Bezahlschranke: JSON-API, sechs Downloadformate (CSV, Excel, SQLite, NDJSON, ICS), Sparkline-Verlauf pro Kennzahl, ein Recherche-Link direkt in Googles KI-Modus und für 98 Prozent aller Kennzahlen die amtliche Originalquelle verlinkt. Kostet nirgends etwas — die Zahlen sind ohnehin öffentlich, also bleiben sie hier frei zugänglich, ganz ohne Einschränkung.
 tags: [Kontor, Wirtschaftsdaten, Open Data, API]
 image: /static/img/wirtschaftskalender-eyecatcher-square.png
+og_image: /static/img/og-wirtschaftskalender-ohne-anmeldung.jpg
+og_image_alt: "Wirtschaftskalender von Kontor mit aufgeklapptem Termin und Sparkline-Verlauf der Arbeitslosenquote, im Hintergrund ein Kerzenchart."
 thumb: /static/img/thumbs/wirtschaftskalender-ohne-anmeldung.jpg
 draft: false
 changelog:
