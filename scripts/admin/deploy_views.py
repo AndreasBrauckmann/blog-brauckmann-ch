@@ -17,6 +17,7 @@ import bewertung as bw
 import deploy as dp
 import gemeinsam
 import inspector
+import versionen
 from build import ROOT, load_config
 from gemeinsam import speicher
 
@@ -88,6 +89,17 @@ def vorab_pruefung(slugs: list[str], cfg: dict, quellen: dict, bewertungen: dict
         pruef.append({"name": "Titellänge", "stufe": "ok" if ti.status == "ok" else "warn", "text": ti.messwert + " (Soll 40–70)"})
         pruef.append({"name": "Links", "stufe": "fehler" if links["kaputt"] else "ok",
                       "text": (f"kaputt: {', '.join(links['kaputt'][:4])}" if links["kaputt"] else "interne Links/Bilder vorhanden") + f"; {links['extern']} externe"})
+        km = b.kennzahlen.get("ki_muster")
+        if km:
+            import ki_muster
+            treffer = [(r["name"], km[r["id"]]["anzahl"]) for r in ki_muster.REGELN if r["gewicht"] and not km[r["id"]]["ok"]]
+            if treffer:
+                # Nur ein Hinweis (gelb), NIE ein Sperrgrund: stufe "warn" blockiert das Veroeffentlichen nicht
+                pruef.append({"name": "Klingt menschlich", "stufe": "warn",
+                              "text": f"{sum(n for _x, n in treffer)} Hinweise (" + ", ".join(f"{name} {n}" for name, n in treffer) + ")",
+                              "link": f"/verwaltung/ranking/{slug}#kriterien"})
+            else:
+                pruef.append({"name": "Klingt menschlich", "stufe": "ok", "text": "keine auffälligen KI-Muster"})
         stufe_s = "fehler" if b.gesamt < SCHWELLE_ROT else ("warn" if b.gesamt < schnitt else "ok")
         pruef.append({"name": "Bewertungsscore", "stufe": stufe_s,
                       "text": f"{b.gesamt:.0f}/100 (Schwelle {SCHWELLE_ROT}, Ø aller Artikel {schnitt:.0f})"
@@ -117,8 +129,17 @@ def seite():
     gemeinsam.require_intern()
     cfg = load_config()
     quellen = gemeinsam.artikel_quellen(cfg)
+    versionen.abgleich_alle(ROOT, [s for s, m in quellen.items() if not m.get("is_html")])
     aenderungen = dp.klassifiziere(ROOT, dp.status(ROOT))
+    # ?artikel=<slug>: Vorauswahl nur fuer diesen Artikel (Weiterleitung aus „Alles in Ordnung bringen“)
+    fokus = request.args.get("artikel") or ""
+    if fokus not in quellen:
+        fokus = ""
+    if fokus:
+        aenderungen = dp.fokus_auf_artikel(aenderungen, fokus)
     slugs = dp.geaenderte_slugs(aenderungen)
+    if fokus and fokus in slugs:
+        slugs = [fokus]
     alle = request.args.get("alle") == "1"
     bewertungen = _bewertungen(cfg, quellen)
     pruef_slugs = list(quellen) if alle or not slugs else slugs
@@ -149,6 +170,7 @@ def seite():
         li_status=li_status, post_inspector=inspector.POST_INSPECTOR, inspector_url=inspector.post_inspector_url,
         live_url=lambda s: gemeinsam.live_url(cfg, s), quellen=quellen, heute=date.today().isoformat(),
         meldung=request.args.get("meldung", ""), fehler=request.args.get("fehler", ""), schwelle=SCHWELLE_ROT,
+        fokus=fokus,
     )
 
 
@@ -163,7 +185,11 @@ def bauen():
     gemeinsam.post_pruefen()
     erg = dp.bauen(ROOT)
     speicher.schreiben(erg, "deploy", "build.json")
-    return redirect(url_for("deploy.seite", meldung="Build erfolgreich." if erg["ok"] else "", fehler="" if erg["ok"] else "Build fehlgeschlagen – Ausgabe prüfen.") + "#bauen")
+    fokus = request.form.get("artikel") or ""
+    if fokus not in gemeinsam.artikel_quellen(load_config()):
+        fokus = ""
+    return redirect(url_for("deploy.seite", meldung="Build erfolgreich." if erg["ok"] else "", fehler="" if erg["ok"] else "Build fehlgeschlagen – Ausgabe prüfen.",
+                            **({"artikel": fokus} if fokus else {})) + "#bauen")
 
 
 @bp.route("/verwaltung/deploy/veroeffentlichen", methods=["POST"])

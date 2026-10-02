@@ -1,0 +1,37 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block titel %}Version – {{ meta.title }}{% endblock %}
+{% block kopf %}
+<style>
+pre.vdiff { max-height:34rem; overflow:auto; font-size:.84rem; line-height:1.5; padding:.7rem; white-space:pre-wrap; word-break:break-word; }
+pre.vdiff .plus { background:color-mix(in srgb, var(--ok) 20%, transparent); color:var(--fg); display:block; }
+pre.vdiff .minus { background:color-mix(in srgb, var(--bad) 20%, transparent); color:var(--fg); display:block; }
+pre.vdiff .info { color:var(--muted); display:block; }
+</style>
+{% endblock %}
+{% block inhalt %}
+<p class="klein"><a href="{{ url_for('ranking.detail', slug=slug) }}#versionen">← zurück zum Versionsverlauf</a></p>
+<h1>{{ 'Version wiederherstellen' if bestaetigen else 'Version ansehen' }}</h1>
+<p><strong>{{ meta.title }}</strong> <span class="hinweis klein">· <code>articles/{{ slug }}.md</code></span></p>
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+<div class="card">
+  <p style="margin-top:0"><strong>{{ z.zeit.replace('T', ' ')[:16] }}</strong> · {{ z.label }}{% if z.commit %} · Commit: {{ z.commit.meldung }} <code>{{ z.commit.sha[:8] }}</code>{% endif %}{% if z.aktuell %} · <em>aktuelle Fassung</em>{% endif %}</p>
+  {% if gleich %}<p class="hinweis">Diese Version ist identisch mit der aktuellen Fassung.</p>
+  {% else %}
+  <p class="hinweis klein" style="margin-top:0">Diff von der aktuellen Fassung (rot) zur gewählten Version (grün). Frontmatter und Text.</p>
+  <pre class="vdiff">{% for l in diff %}<span class="{{ 'plus' if l.startswith('+') and not l.startswith('+++') else ('minus' if l.startswith('-') and not l.startswith('---') else 'info') }}">{{ l }}</span>{% endfor %}</pre>
+  {% endif %}
+  {% if ungueltig %}<p class="bad-text klein">Nicht wiederherstellbar: {{ ungueltig }}.</p>{% endif %}
+  {% if bestaetigen and not gleich and not ungueltig %}
+  <form method="post" action="{{ url_for('versionen.ausfuehren', slug=slug, vid=z.vid) }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <label class="row"><input type="checkbox" name="bestaetigt" value="ja" required> Ich habe den Diff geprüft und will diese Version in <code>articles/{{ slug }}.md</code> schreiben.</label>
+    <div class="row"><button type="submit" class="primary" data-lang="stellt wieder her und baut …">Diese Version wiederherstellen</button>
+      <a class="knopf" href="{{ url_for('ranking.detail', slug=slug) }}#versionen">Abbrechen</a></div>
+    <p class="hinweis klein">Ablauf: die aktuelle Fassung wird zuerst als Version gesichert (das Wiederherstellen lässt sich so selbst zurücknehmen) → schreiben → <code>scripts/build.py</code>. Bei Build-Fehler oder fehlendem Pflicht-Meta-Tag wird automatisch zurückgespielt. Danach wird neu bewertet. Es wird nichts committet oder veröffentlicht. Bilddateien werden nicht versioniert (siehe Git).</p>
+  </form>
+  {% elif not bestaetigen and not gleich and not ungueltig %}
+  <div class="row"><a class="knopf primary" href="{{ url_for('versionen.bestaetigen', slug=slug, vid=z.vid) }}">Diese Version wiederherstellen …</a></div>
+  {% endif %}
+</div>
+{% endblock %}

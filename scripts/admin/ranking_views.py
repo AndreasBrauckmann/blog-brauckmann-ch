@@ -21,11 +21,16 @@ import urllib.parse
 from datetime import date, datetime
 from pathlib import Path
 
-from flask import Blueprint, abort, redirect, render_template, request, send_from_directory, url_for
+from flask import Blueprint, abort, jsonify, redirect, render_template, request, send_from_directory, url_for
 
 import bewertung as bw
 import linkedin_import as li
 import llm
+import metas_auswahl as ma_mod
+import in_ordnung
+import ki_muster
+import satzmessung
+import versionen
 from build import ROOT, load_config
 import gemeinsam
 import inspector as live_inspector
@@ -80,7 +85,8 @@ def _bewerte_alle(cfg: dict, quellen: dict) -> list[tuple[dict, bw.Bewertung]]:
     erg = []
     for slug, meta in quellen.items():
         b = bw.bewerte(meta, _koerper_html(meta), base_url=cfg["site"]["base_url"], static_dir=ROOT / "static",
-                       dist_dir=ROOT / cfg["paths"]["dist_dir"], heute=heute, alle_slugs=list(quellen))
+                       dist_dir=ROOT / cfg["paths"]["dist_dir"], heute=heute, alle_slugs=list(quellen),
+                       satz=None if meta.get("is_html") else satzmessung.gespeichert(ROOT, slug))
         erg.append((meta, b))
     return erg
 
@@ -134,11 +140,64 @@ def bewerte_vorschlag(art: str, text: str) -> dict:
 # --------------------------------------------------------------------------
 
 
+def _gutachten_lesen(slug: str):
+    g = speicher.lesen("gutachten", f"{slug}.json")
+    if g:
+        from markdown.extensions.toc import slugify
+        import re as _re
+        for b in g.get("befunde", []):
+            m = _re.search(r"Abschnitt\s*[„\"](.+?)[“\"]", b.get("fundstelle") or "")
+            b["link"] = slugify(m.group(1), "-") if m else ""
+    return g
+
+
+def _gutachten_lauf(slug: str):
+    import gutachten as gt
+    from in_ordnung_views import kontext
+    return gt.zustand(kontext(), slug)
+
+
+def _behebbar_ids(b: bw.Bewertung) -> list[str]:
+    import ordnung_engine
+    return ordnung_engine.behebbar(in_ordnung.schnappschuss(b), True)
+
+
+def _ordnung_kurz(slug: str) -> dict | None:
+    """Zustand des letzten „Alles in Ordnung bringen“-Durchlaufs fuer die Ranking-Tabelle."""
+    z = speicher.lesen("inordnung", f"{slug}.json")
+    if not z:
+        return None
+    erw = (z.get("erwartet") or {}).get("gesamt")
+    return {"status": z.get("status"), "erwartet": erw, "warteplatz": z.get("warteplatz")}
+
+
+@bp.route("/verwaltung/ranking/alle-durchgehen", methods=["POST"])
+def alle_durchgehen():
+    """Reiht fuer jeden Artikel mit behebbaren roten Kriterien einen Durchlauf ein (nur Vorschlaege, nichts wird geschrieben)."""
+    _post_pruefen()
+    from in_ordnung_views import kontext
+    cfg = load_config()
+    quellen = artikel_quellen(cfg)
+    ctx = kontext()
+    eingereiht, uebersprungen = [], []
+    for meta, b in _bewerte_alle(cfg, quellen):
+        if meta.get("is_html") or not _behebbar_ids(b):
+            continue
+        ok, info = in_ordnung.starte(ctx, b.slug)
+        (eingereiht if ok else uebersprungen).append(b.slug)
+    text = f"{len(eingereiht)} Artikel in der Warteschlange (einer nach dem anderen, nur Vorschläge – nichts wird geschrieben)."
+    if uebersprungen:
+        text += f" {len(uebersprungen)} übersprungen (läuft schon oder LLM nicht verfügbar)."
+    return redirect(url_for("ranking.uebersicht", meldung=text))
+
+
 @bp.route("/verwaltung/ranking", methods=["GET"])
 def uebersicht():
     _intern()
     cfg = load_config()
     quellen = artikel_quellen(cfg)
+    versionen.abgleich_alle(ROOT, [s for s, m in quellen.items() if not m.get("is_html")])
+    satzmessung.im_hintergrund(ROOT, [s for s, m in quellen.items() if not m.get("is_html")])
     alle = _bewerte_alle(cfg, quellen)
     inspector = speicher.inspector()
     lidaten = speicher.linkedin()
@@ -165,6 +224,8 @@ def uebersicht():
             "lektorat": _lektorat_mittel(speicher.lektorat(b.slug)),
             "auff": bw.auffaelligkeiten(b, schnitt),
             "live": live_inspector.letztes_ergebnis(b.slug),
+            "ordnung": _ordnung_kurz(b.slug),
+            "behebbar": bool(_behebbar_ids(b)),
         })
     zeilen.sort(key=lambda z: -z["gesamt"])
     for i, z in enumerate(zeilen, 1):
@@ -181,6 +242,9 @@ def detail(slug):
     cfg = load_config()
     quellen = artikel_quellen(cfg)
     meta = _slug_oder_404(slug, quellen)
+    if not meta.get("is_html"):
+        versionen.abgleich(ROOT, slug)
+        satzmessung.im_hintergrund(ROOT, [slug])
     alle = dict((b.slug, (m, b)) for m, b in _bewerte_alle(cfg, quellen))
     b = alle[slug][1]
     rang = 1 + sum(1 for _m, x in alle.values() if x.gesamt > b.gesamt)
@@ -194,13 +258,16 @@ def detail(slug):
     pf = kopf.get("pflicht", {}) if kopf else {}
     og_bild = b.kennzahlen.get("og_bild")
     metas = speicher.metas(slug)
-    if metas and metas.get("vorschlaege"):
-        v = metas["vorschlaege"]
-        metas["bewertet"] = {
-            "titel": [bewerte_vorschlag("titel", t) for t in v.get("titel", [])],
-            "beschreibung": [bewerte_vorschlag("beschreibung", t) for t in v.get("beschreibung", [])],
-            "og_image_alt": [bewerte_vorschlag("alt", v["og_image_alt"])] if v.get("og_image_alt") else [],
-        }
+    ma = None
+    ma_bild_rel = ""
+    if not meta.get("is_html"):
+        ma = ma_mod.auswahl(ROOT, meta, _metas_normalisiert(metas), None)
+        aktuell = next((x for x in ma["bilder"] if x["aktuell"]), None)
+        ma_bild_rel = aktuell["rel"] if aktuell else ""
+    sicherung = speicher.letzte_sicherung(Path(meta["source"])) if meta.get("source") and not meta.get("is_html") else None
+    inordnung = {"offen": in_ordnung.offene_punkte(b), "ist_html": bool(meta.get("is_html"))}
+    from in_ordnung_views import kurz_zustand
+    inordnung["zustand"] = kurz_zustand(slug)
     return render_template(
         "ranking_detail.html",
         meta=meta, b=b, rang=rang, anzahl=len(alle), kategorien=bw.KATEGORIEN,
@@ -214,7 +281,27 @@ def detail(slug):
         meldung=request.args.get("meldung", ""), fehler=request.args.get("fehler", ""),
         heute=date.today().isoformat(), og_image_gesetzt=bool(meta.get("og_image")),
         auff=bw.auffaelligkeiten(b, schnitt), live=live_inspector.letztes_ergebnis(slug), vale=vale, vale_zaehler=vale_zaehler,
+        ma=ma, ma_domain=urllib.parse.urlparse(cfg["site"]["base_url"]).hostname, ma_bild_rel=ma_bild_rel,
+        sicherung=sicherung.name if sicherung else "", inordnung=inordnung,
+        vz=versionen.alle(ROOT, slug) if not meta.get("is_html") else None,
+        satz_gemessen=bool(b.kennzahlen.get("satz")), satz_laeuft=satzmessung.wird_gemessen(slug),
+        satz_alle=satzmessung.uebersicht(ROOT, [x for x, m in quellen.items() if not m.get("is_html")]),
+        ki_regeln=ki_muster.REGELN, ki_quelle=ki_muster.QUELLE, ki_messung=b.kennzahlen.get('ki_muster'),
+        ki_funde=(ki_muster.funde(in_ordnung.finde_bloecke(Path(meta['source']).read_text(encoding='utf-8'))) if not meta.get('is_html') else []),
+        kategorie_f=bw.KATEGORIE_F, gewichte=b.gewichte(),
+        kategorien_alle=list({**bw.KATEGORIEN, **({'F': bw.KATEGORIE_F} if b.kennzahlen.get('satz') else {})}.items()), gutachten=_gutachten_lesen(slug), gutachten_lauf=_gutachten_lauf(slug),
     )
+
+
+@bp.route("/verwaltung/ranking/ueberschneidung", methods=["GET"])
+def ueberschneidung_api():
+    """Nur lesend: Regel „Titel und Beschreibung in einem Guss“ fuer die gewaehlte Kombination (Live-Anzeige der Auswahl)."""
+    _intern()
+    import titel_beschreibung as tb
+    titel = (request.args.get("titel") or "")[:400]
+    erg = tb.ueberschneidung(titel, (request.args.get("beschreibung") or "")[:600])
+    erg["titel_zeilen"] = ma_mod.titel_zeilen(titel)
+    return jsonify(erg)
 
 
 @bp.route("/verwaltung/ranking/bild/<path:pfad>", methods=["GET"])
@@ -237,7 +324,7 @@ def inspector_setzen(slug):
     meta = _slug_oder_404(slug, quellen)
     if request.form.get("aktion") == "zuruecksetzen":
         speicher.inspector_setzen(slug, None, "")
-        return redirect(url_for("ranking.detail", slug=slug, meldung="Post-Inspector-Häkchen entfernt.") + "#vorschau")
+        return redirect(url_for("ranking.detail", slug=slug, meldung="Post-Inspector-Häkchen entfernt.") + "#postinspector")
     datum = request.form.get("datum") or date.today().isoformat()
     try:
         date.fromisoformat(datum)
@@ -246,7 +333,7 @@ def inspector_setzen(slug):
     b = bw.bewerte(meta, _koerper_html(meta), base_url=cfg["site"]["base_url"], static_dir=ROOT / "static",
                    dist_dir=ROOT / cfg["paths"]["dist_dir"], heute=date.today())
     speicher.inspector_setzen(slug, datum, _inspector_status(slug, b, {})["hash"])
-    return redirect(url_for("ranking.detail", slug=slug, meldung=f"Post Inspector als ausgeführt am {datum} vermerkt.") + "#vorschau")
+    return redirect(url_for("ranking.detail", slug=slug, meldung=f"Post Inspector als ausgeführt am {datum} vermerkt.") + "#postinspector")
 
 
 @bp.route("/verwaltung/ranking/<slug>/lektorat", methods=["POST"])
@@ -259,17 +346,28 @@ def lektorat(slug):
     b = bw.bewerte(meta, koerper, base_url=cfg["site"]["base_url"], static_dir=ROOT / "static",
                    dist_dir=ROOT / cfg["paths"]["dist_dir"], heute=date.today())
     try:
-        antwort = llm.chat(llm.LEKTORAT_SYSTEM, llm.lektorat_prompt(meta, bw.lesetext(koerper, meta), _kennzahlen_text(b)))
-        ergebnis = llm.json_aus_text(antwort)
+        ergebnis = llm.chat_json(llm.LEKTORAT_SYSTEM, llm.lektorat_prompt(meta, bw.lesetext(koerper, meta), _kennzahlen_text(b)), aufgabe="lektorat", timeout=300)
     except llm.LLMFehler as exc:
         return redirect(url_for("ranking.detail", slug=slug, fehler=f"Lektorat fehlgeschlagen: {exc}") + "#lektorat")
     speicher.lektorat_speichern(slug, {
         "zeitpunkt": datetime.now().isoformat(timespec="seconds"),
-        "modell": llm.llm_status()["modell"],
+        "modell": llm.modell_fuer("lektorat"),
         "text_hash": hashlib.sha256(meta["body_md"].encode()).hexdigest()[:16],
         "ergebnis": ergebnis,
     })
     return redirect(url_for("ranking.detail", slug=slug, meldung="Lektorat aktualisiert.") + "#lektorat")
+
+
+def _metas_normalisiert(metas: dict | None) -> dict | None:
+    """Alte Speicherform (vorschlaege: titel/beschreibung/og_image_alt) in die neue (felder: texte) uebersetzen."""
+    if not metas:
+        return None
+    if "felder" in metas:
+        return metas
+    v = metas.get("vorschlaege") or {}
+    return {"felder": {"title": {"texte": list(v.get("titel") or [])}, "description": {"texte": list(v.get("beschreibung") or [])},
+                       "og_image_alt": {"texte": [v["og_image_alt"]] if v.get("og_image_alt") else []}},
+            "abgewiesen": [], "nachgefragt": False}
 
 
 @bp.route("/verwaltung/ranking/<slug>/metas", methods=["POST"])
@@ -278,34 +376,61 @@ def metas_erzeugen(slug):
     cfg = load_config()
     quellen = artikel_quellen(cfg)
     meta = _slug_oder_404(slug, quellen)
+    if meta.get("is_html"):
+        abort(400, "HTML-Artikel haben kein Frontmatter")
     koerper = _koerper_html(meta)
+    felder = {"title", "description", "og_image_alt"}
     try:
-        antwort = llm.chat(llm.METAS_SYSTEM, llm.metas_prompt(meta, bw.lesetext(koerper, meta), str(meta.get("og_image_alt") or "")), max_tokens=1500)
-        v = llm.json_aus_text(antwort)
+        erg = ma_mod.anfordern(llm.chat, meta, bw.lesetext(koerper, meta), felder)
     except llm.LLMFehler as exc:
         return redirect(url_for("ranking.detail", slug=slug, fehler=f"Meta-Vorschläge fehlgeschlagen: {exc}") + "#metas")
-    vorschlaege = {
-        "titel": [str(t).strip() for t in (v.get("titel") or [])][:3],
-        "beschreibung": [str(t).strip() for t in (v.get("beschreibung") or [])][:3],
-        "og_image_alt": str(v.get("og_image_alt") or "").strip(),
-    }
     speicher.metas_speichern(slug, {"zeitpunkt": datetime.now().isoformat(timespec="seconds"),
-                                    "modell": llm.llm_status()["modell"], "vorschlaege": vorschlaege})
-    return redirect(url_for("ranking.detail", slug=slug, meldung="Neue Meta-Vorschläge erzeugt.") + "#metas")
+                                    "modell": erg.get("modell") or llm.modell_fuer("metas"), **erg})
+    return redirect(url_for("ranking.detail", slug=slug, meldung="Neue Meta-Vorschläge erzeugt (Grenzen programmatisch geprüft)." + (" Einmal mit Rückmeldung nachgefragt." if erg["nachgefragt"] else "")) + "#metas")
 
 
 def _gewaehlte_felder(meta: dict) -> dict[str, str]:
+    """Kombinationsmodus (kombi=1, Auswahl-Seite): jedes Feld, das vom aktuellen Wert abweicht, zaehlt als gewaehlt.
+    Alter Modus: nur Felder mit gesetztem Haken uebernehmen_<feld>."""
+    kombi = request.form.get("kombi") == "1"
     felder = {}
     for f in ERLAUBTE_FELDER:
-        if request.form.get(f"uebernehmen_{f}"):
-            wert = (request.form.get(f) or "").strip()
+        if kombi or request.form.get(f"uebernehmen_{f}"):
+            wert = " ".join((request.form.get(f) or "").split())
             if not wert:
+                if kombi:
+                    continue
                 abort(400, f"{f}: leerer Wert")
             if len(wert) > 400:
                 abort(400, f"{f}: zu lang")
+            if f == "og_image":
+                if wert != str(meta.get(f) or ""):
+                    grund = in_ordnung._pruefe_bild(ROOT, wert)
+                    if grund:
+                        abort(400, f"og_image: {grund}")
+                    felder[f] = wert
+                continue
+            grund = ma_mod.pruefe_wert_hart(f, wert)
+            if grund:
+                abort(400, f"{f}: {grund}")
             if wert != str(meta.get(f) or ""):
                 felder[f] = wert
     return felder
+
+
+def _bewertet(feld: str, wert: str, meta: dict) -> dict:
+    if feld == "og_image":
+        masse = bw.bildmasse(ROOT / wert.lstrip("/"))
+        gut = bool(masse and masse[0] >= 1200 and abs(masse[0] / masse[1] - 1.91) <= 0.08)
+        return {"laenge": len(wert), "soll": "≥ 1200 px, ≈ 1,91:1", "ampel": "gruen" if gut else "gelb", "ok": gut,
+                "info": f"{masse[0]}×{masse[1]} px" if masse else "Maße unbekannt"}
+    lo, hi = ma_mod.META_GRENZEN[feld]
+    erg = {"laenge": len(wert), "soll": f"{lo}–{hi}", "ampel": ma_mod.grenze_ampel(feld, len(wert)), "info": ""}
+    erg["ok"] = erg["ampel"] == "gruen"
+    if feld == "description":
+        erg["haken"], erg["haken_grund"] = bw.haken_in(wert[:ma_mod.HAKEN_ZEICHEN])
+        erg["ok"] = erg["ok"] and erg["haken"]
+    return erg
 
 
 @bp.route("/verwaltung/ranking/<slug>/metas/pruefen", methods=["POST"])
@@ -329,7 +454,7 @@ def metas_pruefen(slug):
     diff = list(difflib.unified_diff(alt.splitlines(), neu.splitlines(), f"articles/{quelle.name} (bisher)",
                                      f"articles/{quelle.name} (neu)", lineterm="", n=1))
     return render_template("ranking_bestaetigen.html", slug=slug, meta=meta, felder=felder, diff=diff,
-                           bewertet={k: bewerte_vorschlag({"title": "titel", "description": "beschreibung"}.get(k, "alt"), v) for k, v in felder.items()},
+                           bewertet={k: _bewertet(k, v, meta) for k, v in felder.items()}, kombi=request.form.get("kombi") == "1",
                            datei_hash=hashlib.sha256(alt.encode()).hexdigest(), og_image_gesetzt=bool(meta.get("og_image")))
 
 
@@ -351,13 +476,49 @@ def metas_uebernehmen(slug):
         neu = setze_felder(alt, felder)
     except FrontmatterFehler as exc:
         return redirect(url_for("ranking.detail", slug=slug, fehler=str(exc)) + "#metas")
-    sicherung = speicher.artikel_sichern(quelle)
-    quelle.write_text(neu, encoding="utf-8")
+    if not in_ordnung.sperre_nehmen(slug):
+        return redirect(url_for("ranking.detail", slug=slug, fehler="Für diesen Artikel läuft gerade ein Auftrag.") + "#metas")
+    try:
+        versionen.vor_schreiben(ROOT, slug)
+        sicherung = speicher.artikel_sichern(quelle)
+        quelle.write_text(neu, encoding="utf-8")
+        versionen.nach_schreiben(ROOT, slug, "metas", ", ".join(felder))
+    finally:
+        in_ordnung.sperre_freigeben(slug)
     namen = ", ".join(felder)
     return redirect(url_for("ranking.detail", slug=slug, meldung=(
         f"Übernommen ({namen}). Backup: {sicherung.relative_to(ROOT)}. "
         "Nicht gebaut, nicht committet, nicht veröffentlicht. Nächste Schritte: bauen und deployen, "
         "dann im LinkedIn Post Inspector prüfen.")) + "#metas")
+
+
+@bp.route("/verwaltung/ranking/<slug>/metas/rueckgaengig", methods=["POST"])
+def metas_rueckgaengig(slug):
+    """Stellt die letzte Sicherung des Artikels wieder her (vorher wird der jetzige Stand gesichert). Kein Build."""
+    _post_pruefen()
+    cfg = load_config()
+    meta = _slug_oder_404(slug, artikel_quellen(cfg))
+    if meta.get("is_html"):
+        abort(400, "HTML-Artikel haben kein Frontmatter")
+    if request.form.get("bestaetigt") != "ja":
+        return redirect(url_for("ranking.detail", slug=slug, fehler="Nicht bestätigt – nichts geändert.") + "#metas")
+    if not in_ordnung.sperre_nehmen(slug):
+        return redirect(url_for("ranking.detail", slug=slug, fehler="Für diesen Artikel läuft gerade ein Auftrag.") + "#metas")
+    try:
+        quelle = Path(meta["source"])
+        sicherung = speicher.letzte_sicherung(quelle)
+        if not sicherung:
+            return redirect(url_for("ranking.detail", slug=slug, fehler="Keine Sicherung gefunden.") + "#metas")
+        inhalt = sicherung.read_bytes()
+        versionen.vor_schreiben(ROOT, slug)
+        aktuell = speicher.artikel_sichern(quelle)
+        quelle.write_bytes(inhalt)
+        versionen.nach_schreiben(ROOT, slug, "rueckgaengig", "Metas")
+    finally:
+        in_ordnung.sperre_freigeben(slug)
+    return redirect(url_for("ranking.detail", slug=slug, meldung=(
+        f"Rückgängig: {sicherung.name} zurückgespielt (der vorherige Stand liegt unter {aktuell.relative_to(ROOT)}). "
+        "Nicht gebaut, nicht committet, nicht veröffentlicht.")) + "#metas")
 
 
 @bp.route("/verwaltung/ranking/<slug>/linkedin", methods=["POST"])

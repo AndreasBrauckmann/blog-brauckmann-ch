@@ -1,0 +1,65 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block titel %}Satz & Layout{% endblock %}
+{% block kopf %}
+<style>
+.sz td.k, .sz th.k { min-width:9rem; }
+.sz td { font-size:.85rem; vertical-align:top; }
+.vgl { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:.8rem; }
+.vgl figure { margin:0; } .vgl img { width:100%; border:1px solid var(--border); border-radius:6px; }
+.vgl figcaption { font-size:.78rem; color:var(--muted); }
+</style>
+{% endblock %}
+{% block inhalt %}
+<p class="klein"><a href="{{ url_for('ranking.uebersicht') }}">← zurück zum Ranking</a></p>
+<h1>Satz &amp; Layout</h1>
+<p class="hinweis">Kriterium F, ganz ohne KI gemessen (Playwright an der gebauten Seite; Desktop 1280 und Handy 393, hell und dunkel). Gemessen wird nur der Satz der Artikel. Die meisten Mängel liegen in der gemeinsamen <code>static/style.css</code> und betreffen alle Artikel.</p>
+{% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+<div class="row">
+  <form method="post" action="{{ url_for('satz.messen') }}" data-lang="startet …"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit">Alle neu messen</button></form>
+  {% if laeuft %}<span class="klein warn-text">wird gemessen: {{ laeuft|join(', ') }} – Seite nach einigen Sekunden neu laden</span>{% endif %}
+</div>
+
+<div class="tabwrap"><table class="daten sz">
+<thead><tr><th class="k">Kriterium</th><th>Soll</th>{% for s in slugs %}<th title="{{ quellen[s].title }}">{{ s[:18] }}</th>{% endfor %}<th>betrifft</th></tr></thead>
+<tbody>
+{% for kid, e in uebersicht.items() %}
+<tr><td class="k"><strong>{{ e.name }}</strong></td><td class="hinweis">{{ e.soll }}</td>
+  {% for s in slugs %}{% set a = e.artikel.get(s) %}<td>{% if a %}<span class="badge {{ a.status }}">{{ {'ok':'ok','teils':'teilweise','nein':'nicht ok','na':'–'}[a.status] }}</span><br><span class="klein">{{ a.messwert }}</span>{% else %}<span class="hinweis klein">nicht gemessen</span>{% endif %}</td>{% endfor %}
+  <td>{% if e.gemessen %}{{ e.betroffen }} von {{ e.gemessen }}{% if e.gemessen >= 2 and e.betroffen == e.gemessen %}<br><span class="klein warn-text">alle: style.css</span>{% endif %}{% else %}–{% endif %}</td></tr>
+{% endfor %}
+</tbody></table></div>
+
+<h2 id="entwurf">Entwurf ansehen</h2>
+<div class="card">
+  {% if not entwurf_da %}<p class="hinweis">Kein Entwurfs-CSS vorhanden (<code>data/ranking/satz/entwurf.css</code>).</p>{% else %}
+  <form method="post" action="{{ url_for('satz.entwurf_ansehen') }}" class="row" data-lang="rendert und misst … (etwa 20 s)">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <select name="slug">{% for s in slugs %}<option value="{{ s }}" {% if s == wahl %}selected{% endif %}>{{ quellen[s].title|kurztitel(60) }}</option>{% endfor %}</select>
+    <button type="submit" class="primary">Entwurf ansehen</button>
+    <span class="hinweis klein">Legt den Entwurf nur über die Seite (die echte CSS bleibt unverändert) und misst F neu.</span>
+  </form>
+  {% if entwurf %}
+  <h3>So würde F danach aussehen – {{ quellen[wahl].title|kurztitel(70) }}</h3>
+  <div class="tabwrap"><table class="daten sz"><thead><tr><th class="k">Kriterium</th><th>Jetzt</th><th>Mit Entwurf</th></tr></thead><tbody>
+  {% for kid, e in uebersicht.items() %}{% set a = e.artikel.get(wahl) %}{% set n = nachher.get(kid) %}
+  <tr><td class="k">{{ e.name }}</td><td>{% if a %}<span class="badge {{ a.status }}">{{ {'ok':'ok','teils':'teilweise','nein':'nicht ok','na':'–'}[a.status] }}</span> <span class="klein">{{ a.messwert }}</span>{% endif %}</td>
+    <td>{% if n %}<span class="badge {{ n.status }}">{{ {'ok':'ok','teils':'teilweise','nein':'nicht ok','na':'–'}[n.status] }}</span> <span class="klein">{{ n.messwert }}</span>{% endif %}</td></tr>
+  {% endfor %}</tbody></table></div>
+  {% if bilder %}
+  <h3>Vorher / Nachher</h3>
+  {% for geraet in ('desktop', 'handy') %}{% for schema in ('hell', 'dunkel') %}
+  <p class="klein hinweis" style="margin:.8rem 0 .2rem">{{ geraet|capitalize }}, {{ schema }} – Textstelle</p>
+  <div class="vgl">{% for v in ('vorher', 'nachher') %}{% set f = v ~ '-' ~ schema ~ '-' ~ geraet ~ '-text.png' %}{% if f in bilder %}<figure><img src="{{ url_for('satz.bild', slug=wahl, datei=f) }}" alt="{{ v }} {{ geraet }} {{ schema }}" loading="lazy"><figcaption>{{ v|capitalize }}</figcaption></figure>{% endif %}{% endfor %}</div>
+  {% endfor %}{% endfor %}
+  {% endif %}
+  <div class="row" style="margin-top:1rem"><a class="knopf primary" href="{{ url_for('satz.bestaetigen') }}">Entwurf in static/style.css übernehmen …</a><span class="hinweis klein">zeigt zuerst den Diff; nach Bestätigung mit Backup und Build, bei Fehler automatisch zurück.</span></div>
+  {% endif %}
+  {% endif %}
+  {% if css_stand %}
+  <form method="post" action="{{ url_for('satz.rueckgaengig') }}" class="row" style="margin-top:.8rem"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <label class="row klein"><input type="checkbox" name="bestaetigt" value="ja" required> Rückgängig: <code>static/style.css</code> aus dem Backup vom {{ css_stand.zeit.replace('T', ' ') }} zurückspielen und bauen</label><button type="submit" class="klein">Rückgängig</button></form>
+  {% endif %}
+</div>
+{% endblock %}

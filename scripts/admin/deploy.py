@@ -154,6 +154,24 @@ def geaenderte_slugs(aenderungen: list[Aenderung]) -> list[str]:
     return slugs
 
 
+def fokus_auf_artikel(aenderungen: list[Aenderung], slug: str) -> list[Aenderung]:
+    """Vorauswahl fuer genau einen Artikel (Sprung aus „Alles in Ordnung bringen“):
+    nur dessen Quelle, dessen dist-Seite, die gemeinsam gebauten dist-Dateien (Startseite, Tag-Seiten,
+    Sitemap, RSS) und die von ihm referenzierten Bilder bleiben vorausgewaehlt. Alles andere (andere
+    Artikel, Templates, Skripte ...) bleibt sichtbar, aber nicht angehakt. Gesperrtes bleibt gesperrt."""
+    eigene = (f"articles/{slug}.md", f"articles/{slug}.html")
+    for a in aenderungen:
+        if not a.standard:
+            continue
+        p = a.pfad
+        behalten = (p in eigene or p.startswith(f"dist/artikel/{slug}/")
+                    or (p.startswith("dist/") and not p.startswith("dist/artikel/"))
+                    or slug in a.referenziert_von)
+        if not behalten:
+            a.standard, a.grund = False, "nicht Teil dieses Artikels – nur mit ausdrücklicher Auswahl"
+    return aenderungen
+
+
 # --------------------------------------------------------------------------
 # Fingerabdruck des geprueften Stands
 # --------------------------------------------------------------------------

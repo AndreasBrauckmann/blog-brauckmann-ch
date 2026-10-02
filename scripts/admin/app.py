@@ -47,12 +47,26 @@ gemeinsam.init_app(app)
 # Artikel-Ranking (/verwaltung/ranking), Deploy-Panel (/verwaltung/deploy),
 # Plattformseiten (/verwaltung/plattform/<name>): eigene Module
 from deploy_views import bp as deploy_bp  # noqa: E402
+from in_ordnung_views import bp as inordnung_bp  # noqa: E402
+from versionen_views import bp as versionen_bp  # noqa: E402
+from satz_views import bp as satz_bp  # noqa: E402
 from plattform_views import bp as plattform_bp  # noqa: E402
 from ranking_views import bp as ranking_bp  # noqa: E402
 
 app.register_blueprint(ranking_bp)
 app.register_blueprint(deploy_bp)
+app.register_blueprint(inordnung_bp)
+app.register_blueprint(versionen_bp)
+app.register_blueprint(satz_bp)
 app.register_blueprint(plattform_bp)
+
+# Quick-Redaktor (redaktor_views.py): eigene Seite fuer Kollegen, getrennt von der Verwaltung.
+# Intern ueber den bestehenden edge-Weg unter /verwaltung/redaktor, fuer eine spaetere Freigabe zusaetzlich
+# unter /redaktor (Caddy routet /redaktor derzeit NICHT; Vorschlag: docs-intern/redaktor-freigabe.md).
+from redaktor_views import bp as redaktor_bp  # noqa: E402
+
+app.register_blueprint(redaktor_bp)
+app.register_blueprint(redaktor_bp, url_prefix="/verwaltung", name="redaktor_intern")
 
 
 @app.before_request

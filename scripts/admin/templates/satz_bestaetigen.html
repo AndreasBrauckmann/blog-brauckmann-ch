@@ -1,0 +1,19 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block titel %}CSS-Entwurf übernehmen{% endblock %}
+{% block inhalt %}
+<p class="klein"><a href="{{ url_for('satz.seite') }}#entwurf">← abbrechen</a></p>
+<h1>Entwurf in static/style.css übernehmen</h1>
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+<div class="card">
+  <p style="margin-top:0">Der Entwurf wird als abgegrenzter Block ans Ende der gemeinsamen <code>static/style.css</code> angehängt und gilt danach für <strong>alle Artikel</strong>. Diff:</p>
+  <pre class="diff">{% for z in diff %}<span class="{{ 'plus' if z.startswith('+') and not z.startswith('+++') else ('minus' if z.startswith('-') and not z.startswith('---') else 'info') }}">{{ z }}</span>
+{% endfor %}</pre>
+  <form method="post" action="{{ url_for('satz.uebernehmen') }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <label class="row"><input type="checkbox" name="bestaetigt" value="ja" required> Ich habe den Diff geprüft und will <code>static/style.css</code> ändern.</label>
+    <div class="row"><button type="submit" class="primary" data-lang="schreibt und baut …">Übernehmen (Backup, schreiben, bauen)</button><a class="knopf" href="{{ url_for('satz.seite') }}#entwurf">Abbrechen</a></div>
+    <p class="hinweis klein">Vorher Backup unter <code>data/backups/css/</code>; schlägt der Build fehl, wird automatisch zurückgespielt. Es wird nichts committet oder veröffentlicht (<code>static/style.css</code> liegt außerhalb der Deploy-Vorauswahl und muss dort ausdrücklich gewählt werden).</p>
+  </form>
+</div>
+{% endblock %}

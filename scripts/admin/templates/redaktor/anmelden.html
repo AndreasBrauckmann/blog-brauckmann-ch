@@ -1,0 +1,17 @@
+{% extends "redaktor/basis.html" %}
+{% block titel %}Anmelden · Quick-Redaktor{% endblock %}
+{% block inhalt %}
+<div class="card" style="max-width:28rem">
+  {% if fehler %}<div class="meldung fehler" role="alert">{{ fehler }}</div>{% endif %}
+  {% if code_fehlt %}
+  <p>Der Zugang ist noch nicht eingerichtet.</p>
+  {% else %}
+  <form method="post" action="{{ basis }}/anmelden">
+    <label for="code"><strong>Zugangscode</strong></label>
+    <div class="row"><input type="password" id="code" name="code" autocomplete="current-password" required style="flex:1 1 12rem">
+      <button type="submit" class="primary">Anmelden</button></div>
+    <p class="hinweis klein">Den Code bekommst du vom Betreiber. Die Anmeldung gilt 12 Stunden in diesem Browser.</p>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

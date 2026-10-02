@@ -36,6 +36,7 @@
 <ol class="schritte">
   <li><a href="#pruefen">Prüfen</a></li><li><a href="#bauen">Bauen</a></li><li><a href="#diff">Diff ansehen</a></li><li><a href="#veroeffentlichen">Veröffentlichen</a></li><li><a href="#live">Live prüfen</a></li><li><a href="#linkedin">Post Inspector</a></li>
 </ol>
+{% if fokus %}<div class="meldung"><strong>Vorauswahl für diesen Artikel:</strong> {{ quellen[fokus].title }}. Angehakt sind nur die Quelle, die gebaute Seite, die gemeinsam gebauten dist-Dateien (Startseite, Tags, Sitemap, RSS) und die Bilder dieses Artikels. Alles andere bleibt unangehakt. <a href="{{ url_for('deploy.seite') }}">Vorauswahl aufheben</a></div>{% endif %}
 {% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
 {% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
 
@@ -53,7 +54,7 @@
   </div>
   {% if z.auffaelligkeiten %}<div>{% for f in z.auffaelligkeiten %}<span class="flagge {{ f.art }}">{{ f.text }}</span>{% endfor %}</div>{% endif %}
   <ul class="pruefliste">
-  {% for p in z.pruefungen %}<li><span class="st {{ p.stufe }}">{{ {'ok':'✓','warn':'!','fehler':'✗'}[p.stufe] }}</span><span><strong>{{ p.name }}:</strong> {{ p.text }}</span></li>{% endfor %}
+  {% for p in z.pruefungen %}<li><span class="st {{ p.stufe }}">{{ {'ok':'✓','warn':'!','fehler':'✗'}[p.stufe] }}</span><span><strong>{{ p.name }}:</strong> {{ p.text }}{% if p.link %} · <a href="{{ p.link }}" target="_blank" rel="noopener">Details ansehen ↗</a>{% endif %}</span></li>{% endfor %}
   </ul>
   <div class="row klein" style="margin-top:.4rem"><a href="{{ url_for('ranking.detail', slug=z.slug) }}">Bewertung im Detail</a> · <a href="/verwaltung/plattform/linkedin?slug={{ z.slug }}">LinkedIn-Vorschau</a></div>
   {% endif %}
@@ -64,6 +65,7 @@
 <section class="schritt" id="bauen">
 <h2><span class="nr">2</span>Bauen</h2>
 <form method="post" action="{{ url_for('deploy.bauen') }}" data-lang="baut …" class="row">
+  {% if fokus %}<input type="hidden" name="artikel" value="{{ fokus }}">{% endif %}
   <input type="hidden" name="csrf" value="{{ csrf_token() }}">
   <button type="submit" class="primary">scripts/build.py ausführen</button>
   {% if build %}<span class="klein">Letzter Build: {{ build.zeitpunkt.replace('T', ' ') }}, {{ build.dauer }} s, {% if build.ok %}<span class="ok-text">erfolgreich</span>{% else %}<span class="bad-text">fehlgeschlagen (Code {{ build.code }})</span>{% endif %}</span>{% endif %}

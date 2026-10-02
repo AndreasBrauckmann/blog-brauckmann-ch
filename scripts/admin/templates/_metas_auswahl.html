@@ -1,0 +1,219 @@
+{# Gemeinsame Metas-Auswahl: links je Gruppe nur die gewaehlte Variante, rechts sticky EINE Vorschau mit Reitern.
+   Erwartet im Kontext: ma (metas_auswahl.auswahl), ma_domain, ma_bild_rel, meta. Die umgebende <form> stellt der Aufrufer. #}
+{% import "plattform_vorschau.html" as pv %}
+{% set bild_start = url_for('ranking.bild', pfad=ma_bild_rel) if ma_bild_rel else '' %}
+<div class="mk-grid" id="mk">
+  <div class="mk-links">
+  {% for feld, g in ma.felder.items() %}
+    {% set gueltige = g.karten|selectattr('ok')|list %}
+    {% set abgew = g.karten|rejectattr('ok')|list %}
+    {% set vg = (ma_vorgabe or {}).get(feld) %}
+    {% set start_text = vg if vg else (g.karten[g.empfohlen].text if g.empfohlen is not none else g.aktuell.text) %}
+    {% set andere = 1 + gueltige|length - 1 %}
+    <fieldset class="mk-gruppe" data-feld="{{ feld }}" data-lo="{{ g.lo }}" data-hi="{{ g.hi }}">
+      <legend>{{ g.name }} <span class="hinweis klein">Soll {{ g.lo }}–{{ g.hi }} Zeichen</span></legend>
+      <div class="mk-sel">
+        <span class="mk-sel-text" data-sel-text></span>
+        <span class="mk-sel-meta"><span class="punkt" data-sel-punkt></span><span data-zaehler="{{ feld }}"></span></span>
+      </div>
+      {% if feld == 'title' %}<p class="klein" id="titel-zeilen" style="margin:.25rem 0 0"></p>{% endif %}
+      <div class="mk-aktionen">
+        <button type="button" class="linkknopf" data-toggle="editor" aria-expanded="false">Text anpassen</button>
+        {% if gueltige or abgew %}<button type="button" class="linkknopf" data-toggle="alt" aria-expanded="false">Andere Varianten ({{ gueltige|length + abgew|length }})</button>{% endif %}
+      </div>
+      <div class="mk-editor" data-editor="{{ feld }}" hidden>
+        <label class="klein hinweis" for="ed-{{ feld }}">Gewählten Text anpassen (eine Zeile)</label>
+        <textarea name="{{ feld }}" id="ed-{{ feld }}" rows="2" maxlength="400">{{ start_text }}</textarea>
+      </div>
+      <div class="mk-alt" data-alt hidden>
+        <label class="mk-zeile"><input type="radio" name="wahl_{{ feld }}" value="akt" data-text="{{ g.aktuell.text }}" {% if start_text == g.aktuell.text %}checked{% endif %}>
+          <span class="mk-zt">{{ g.aktuell.text or '(leer)' }}</span>
+          <span class="mk-zm"><span class="punkt {{ g.aktuell.ampel }}"></span>{{ g.aktuell.laenge }} Z.{% if g.aktuell.zeilen %} · <span class="punkt {{ g.aktuell.zeilen.ampel }}"></span>≈ {{ g.aktuell.zeilen.handy }} Zeilen Handy, {{ g.aktuell.zeilen.desktop }} Desktop{% endif %}<span class="tag" style="color:var(--muted)">aktuell</span></span></label>
+        {% for k in g.karten if k.ok %}
+        <label class="mk-zeile"><input type="radio" name="wahl_{{ feld }}" value="{{ loop.index0 }}" data-text="{{ k.text }}" {% if start_text == k.text %}checked{% endif %}>
+          <span class="mk-zt">{{ k.text }}</span>
+          <span class="mk-zm" title="{{ k.begruendung }}"><span class="punkt {{ k.ampel }}"></span>{{ k.laenge }} Z.{% if k.zeilen %} · <span class="punkt {{ k.zeilen.ampel }}"></span>≈ {{ k.zeilen.handy }} Zeilen Handy, {{ k.zeilen.desktop }} Desktop{% endif %}{% if g.empfohlen is not none and g.karten[g.empfohlen].text == k.text %}<span class="tag">empfohlen</span>{% endif %}</span></label>
+        {% endfor %}
+        {% if abgew %}
+        <details class="mk-aus"><summary>außerhalb Soll ({{ abgew|length }})</summary>
+          {% for k in abgew %}
+          <label class="mk-zeile"><input type="radio" name="wahl_{{ feld }}" value="x{{ loop.index0 }}" data-text="{{ k.text }}">
+            <span class="mk-zt">{{ k.text }}<span class="grund">{{ k.grund }}</span></span>
+            <span class="mk-zm"><span class="punkt {{ k.ampel }}"></span>{{ k.laenge }} Z.</span></label>
+          {% endfor %}
+        </details>
+        {% endif %}
+      </div>
+      {% if feld == 'description' %}<p class="klein guss-zeile" id="guss-zeile" style="margin:.4rem 0 0"></p>
+        {% if not g.aktuell.guss.ok %}<p class="klein hinweis" style="margin:.2rem 0 0">Aktuell: wiederholt aus dem Titel – {{ g.aktuell.guss.hinweis }}</p>{% endif %}{% endif %}
+      {% if not g.karten and g.benoetigt %}<p class="klein hinweis" style="margin:.4rem 0 0">Kein Vorschlag im Soll – von Hand anpassen oder neu erzeugen.</p>{% endif %}
+      {% if feld == 'og_image_alt' and not meta.get('og_image') %}<p class="warn-text klein" style="margin:.4rem 0 0">Wird nur ausgegeben, wenn der Artikel ein <code>og_image</code> hat.</p>{% endif %}
+      {% if feld == 'og_image_alt' %}<p class="hinweis klein" style="margin:.3rem 0 0">Das Modell sieht das Bild nicht – vor der Übernahme abgleichen.</p>{% endif %}
+    </fieldset>
+  {% endfor %}
+
+    <fieldset class="mk-gruppe" id="mk-bild">
+      <legend>Vorschaubild <span class="hinweis klein">die KI erzeugt keine Bilder</span></legend>
+      {% set aktuelles = ma.bilder|selectattr('aktuell')|first %}
+      {% set gute = ma.bilder|rejectattr('aktuell')|selectattr('ampel', 'equalto', 'gruen')|list %}
+      {% set weitere = ma.bilder|rejectattr('aktuell')|rejectattr('ampel', 'equalto', 'gruen')|list %}
+      <div class="mk-streifen">
+        <label class="mk-thumb gewaehlt" title="{{ aktuelles.pfad if aktuelles else '' }}">
+          <input type="radio" name="og_image" value="" data-url="{{ bild_start }}" checked>
+          {% if aktuelles %}<img src="{{ url_for('ranking.bild', pfad=aktuelles.rel) }}" alt="Behalten">{% else %}<img alt="Kein Bild" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">{% endif %}
+          <small><span class="punkt {{ aktuelles.ampel if aktuelles else 'rot' }}"></span>behalten{% if aktuelles and aktuelles.masse %} · {{ aktuelles.masse[0] }}×{{ aktuelles.masse[1] }}{% endif %}</small>
+        </label>
+        {% for b in gute %}
+        <label class="mk-thumb" title="{{ b.pfad }}"><input type="radio" name="og_image" value="{{ b.pfad }}" data-url="{{ url_for('ranking.bild', pfad=b.rel) }}">
+          <img src="{{ url_for('ranking.bild', pfad=b.rel) }}" alt="" loading="lazy"><small><span class="punkt gruen"></span>{{ b.masse[0] }}×{{ b.masse[1] }}</small></label>
+        {% endfor %}
+      </div>
+      {% if weitere %}
+      <details class="mk-aus"><summary>weitere Bilder aus dem Artikel ({{ weitere|length }}) – nicht ideal für die Link-Vorschau</summary>
+        <div class="mk-streifen">
+        {% for b in weitere %}
+        <label class="mk-thumb" title="{{ b.pfad }}"><input type="radio" name="og_image" value="{{ b.pfad }}" data-url="{{ url_for('ranking.bild', pfad=b.rel) }}">
+          <img src="{{ url_for('ranking.bild', pfad=b.rel) }}" alt="" loading="lazy"><small><span class="punkt {{ b.ampel }}"></span>{% if b.masse %}{{ b.masse[0] }}×{{ b.masse[1] }}{% else %}?{% endif %}</small></label>
+        {% endfor %}
+        </div></details>
+      {% elif not gute %}<p class="hinweis klein" style="margin:0">Der Artikel verwendet kein weiteres Bild aus <code>static/img</code>.</p>{% endif %}
+    </fieldset>
+  </div>
+
+  <aside class="mk-rechts" aria-label="Vorschau" id="mk-vorschau">
+    <div class="mk-vk">
+      <div class="mk-tabs" role="tablist">
+        <button type="button" role="tab" aria-selected="true" data-tab="beschr">Link-Karte</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="desktop">LinkedIn Desktop</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="mobil">LinkedIn Telefon</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="google">Google</button>
+      </div>
+      <div class="mk-panel" role="tabpanel" data-panel="beschr"><div class="pv-post" data-pv="beschr">{{ pv.karte('gross', bild_start, meta.title, meta.description, ma_domain, 2) }}</div>
+        <p class="hinweis klein" style="margin:.5rem 0 0">So etwa zeigen Slack, Teams und Facebook die Karte.</p></div>
+      <div class="mk-panel" role="tabpanel" data-panel="desktop" hidden><div class="pv-post" data-pv="desktop">{{ pv.karte('gross', bild_start, meta.title, '', ma_domain, 0) }}</div></div>
+      <div class="mk-panel" role="tabpanel" data-panel="mobil" hidden><div class="pv-post schmal" data-pv="mobil">{{ pv.karte('gross', bild_start, meta.title, '', ma_domain, 0) }}</div></div>
+      <div class="mk-panel" role="tabpanel" data-panel="google" hidden><div class="gt"><div class="gt-url">{{ ma_domain }} › artikel › {{ meta.slug }}</div>
+        <div class="gt-titel" id="gt-titel"></div><div class="gt-beschr" id="gt-beschr"></div></div>
+        <p class="klein" style="margin:.6rem 0 0"><span class="hinweis">In einem Zug gelesen:</span> <strong id="gelesen-titel"></strong> <span id="gelesen-beschr"></span></p>
+        <p class="hinweis klein" style="margin:.5rem 0 0">Durchgestrichen = Google kürzt (Titel ab ~60, Beschreibung ab ~155 Zeichen).</p></div>
+    </div>
+    <table class="mk-zaehler" aria-label="Zeichenzähler">
+      <tr data-zeile="guss"><td>Titel + Beschreibung</td><td><span class="punkt"></span></td><td class="klein status"></td></tr>
+      {% for feld, g in ma.felder.items() %}<tr data-zeile="{{ feld }}"><td>{{ g.name.split(' (')[0] }}</td><td><span class="punkt"></span><span class="zahl"></span></td><td class="klein status"></td></tr>{% endfor %}
+    </table>
+    <p class="hinweis klein" style="margin:.4rem 0 0">Nachbau zur Orientierung, kein Abbild der Plattformen.</p>
+  </aside>
+</div>
+<script>
+(function () {
+  var wurzel = document.getElementById('mk');
+  if (!wurzel) return;
+  function ampel(n, lo, hi) { return (n >= lo && n <= hi) ? 'gruen' : (n >= lo - 10 && n <= hi + 10) ? 'gelb' : 'rot'; }
+  var werte = {};
+  function gekuerzt(el, text, ab) {
+    el.textContent = '';
+    if (text.length <= ab) { el.appendChild(document.createTextNode(text)); return; }
+    var m = document.createElement('mark'); m.className = 'gekuerzt'; m.title = 'gekürzt ab Zeichen ' + ab;
+    el.appendChild(document.createTextNode(text.slice(0, ab)));
+    m.textContent = text.slice(ab); el.appendChild(m);
+  }
+  function aktualisiere() {
+    var t = werte.title || '', d = werte.description || '';
+    wurzel.querySelectorAll('[data-pv] .pv-titel').forEach(function (e) { e.textContent = t; });
+    wurzel.querySelectorAll('[data-pv="beschr"] .pv-beschr').forEach(function (e) { e.textContent = d; });
+    gekuerzt(document.getElementById('gt-titel'), t, 60);
+    gekuerzt(document.getElementById('gt-beschr'), d, 155);
+    wurzel.querySelectorAll('.mk-gruppe[data-feld]').forEach(function (fs) {
+      var f = fs.getAttribute('data-feld'), lo = +fs.getAttribute('data-lo'), hi = +fs.getAttribute('data-hi');
+      var w = (werte[f] || '').trim(), n = w.length, a = ampel(n, lo, hi);
+      fs.querySelector('[data-sel-text]').textContent = w || '(leer)';
+      fs.querySelector('[data-sel-punkt]').className = 'punkt ' + a;
+      var z = fs.querySelector('[data-zaehler]');
+      z.textContent = n + ' Z.' + (a === 'gruen' ? '' : (n < lo ? ' · zu kurz um ' + (lo - n) : ' · zu lang um ' + (n - hi)));
+      z.style.color = a === 'gruen' ? '' : (a === 'gelb' ? 'var(--warn)' : 'var(--bad)');
+      var zeile = wurzel.querySelector('tr[data-zeile="' + f + '"]');
+      if (zeile) {
+        zeile.querySelector('.punkt').className = 'punkt ' + a;
+        zeile.querySelector('.zahl').textContent = n + ' / ' + lo + '–' + hi;
+        zeile.querySelector('.status').textContent = a === 'gruen' ? 'im Soll' : (n < lo ? 'zu kurz um ' + (lo - n) : 'zu lang um ' + (n - hi));
+      }
+    });
+  }
+  wurzel.querySelectorAll('.mk-gruppe[data-feld]').forEach(function (fs) {
+    var f = fs.getAttribute('data-feld');
+    var ta = fs.querySelector('textarea');
+    werte[f] = ta.value;
+    fs.querySelectorAll('input[type=radio]').forEach(function (r) {
+      r.addEventListener('change', function () { ta.value = r.getAttribute('data-text'); werte[f] = ta.value; aktualisiere(); });
+    });
+    ta.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
+    ta.addEventListener('input', function () { werte[f] = ta.value.replace(/\s+/g, ' '); aktualisiere(); });
+    fs.querySelectorAll('[data-toggle]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var ziel = b.getAttribute('data-toggle') === 'editor' ? fs.querySelector('.mk-editor') : fs.querySelector('[data-alt]');
+        var offen = ziel.hasAttribute('hidden');
+        if (offen) { ziel.removeAttribute('hidden'); } else { ziel.setAttribute('hidden', ''); }
+        b.setAttribute('aria-expanded', offen ? 'true' : 'false');
+        if (offen && ziel.contains(ta)) ta.focus();
+      });
+    });
+  });
+  var bildGruppe = document.getElementById('mk-bild');
+  if (bildGruppe) bildGruppe.querySelectorAll('input[type=radio]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      bildGruppe.querySelectorAll('.mk-thumb').forEach(function (k) { k.classList.remove('gewaehlt'); });
+      r.closest('.mk-thumb').classList.add('gewaehlt');
+      var url = r.getAttribute('data-url');
+      wurzel.querySelectorAll('.pv-bild').forEach(function (b) {
+        var img = b.querySelector('img');
+        if (!img) { img = document.createElement('img'); img.alt = ''; b.textContent = ''; b.appendChild(img); }
+        if (url) img.src = url;
+      });
+    });
+  });
+  var tabs = wurzel.querySelectorAll('.mk-tabs button');
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (x) { x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
+      wurzel.querySelectorAll('[data-panel]').forEach(function (p) {
+        if (p.getAttribute('data-panel') === t.getAttribute('data-tab')) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+      });
+    });
+  });
+  var gussTimer = null, gussAnfrage = 0;
+  function pruefeGuss() {
+    clearTimeout(gussTimer);
+    gussTimer = setTimeout(function () {
+      var nr = ++gussAnfrage;
+      fetch('{{ url_for("ranking.ueberschneidung_api") }}?titel=' + encodeURIComponent(werte.title || '') + '&beschreibung=' + encodeURIComponent(werte.description || ''), {credentials: 'same-origin'})
+        .then(function (r) { return r.json(); }).then(function (u) {
+          if (nr !== gussAnfrage) return;
+          var tz = document.getElementById('titel-zeilen');
+          if (tz && u.titel_zeilen) {
+            var zl = u.titel_zeilen;
+            tz.textContent = '≈ ' + zl.handy + ' Zeilen am Handy, ' + zl.desktop + ' am Desktop' + (zl.ampel === 'gruen' ? '' : (zl.ampel === 'gelb' ? ' – etwas lang für das Handy' : ' – zu lang für das Handy'));
+            tz.style.color = zl.ampel === 'gruen' ? 'var(--ok)' : (zl.ampel === 'gelb' ? 'var(--warn)' : 'var(--bad)');
+          }
+          var z = document.getElementById('guss-zeile');
+          if (z) {
+            z.textContent = u.ok ? 'Liest sich in einem Guss.' : 'Wiederholt aus dem Titel: ' + u.hinweis.replace(/ stehen? schon im Titel\.$/, '');
+            z.style.color = u.ok ? 'var(--ok)' : 'var(--warn)';
+          }
+          var zeile = wurzel.querySelector('tr[data-zeile="guss"]');
+          if (zeile) {
+            zeile.querySelector('.punkt').className = 'punkt ' + (u.ok ? 'gruen' : 'gelb');
+            zeile.querySelector('.status').textContent = u.ok ? 'in einem Guss' : u.hinweis;
+          }
+        }).catch(function () {});
+    }, 250);
+  }
+  var alteAktualisiere = aktualisiere;
+  aktualisiere = function () {
+    alteAktualisiere();
+    var a = document.getElementById('gelesen-titel'), b = document.getElementById('gelesen-beschr');
+    if (a) { a.textContent = werte.title || ''; b.textContent = werte.description || ''; }
+    pruefeGuss();
+  };
+  aktualisiere();
+})();
+</script>

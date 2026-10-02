@@ -10,6 +10,7 @@ Laufzeitdaten liegen ausschliesslich unter data/ (in .gitignore).
 
 from __future__ import annotations
 
+import os
 import urllib.parse
 from datetime import date
 from pathlib import Path
@@ -113,12 +114,36 @@ def gewaehlter_slug(quellen: dict[str, dict]) -> str | None:
     return auswahl[0]["slug"] if auswahl else None
 
 
+_KANAL_ENV = {
+    "mastodon": ["MASTODON_ACCESS_TOKEN"],
+    "bluesky": ["BLUESKY_HANDLE", "BLUESKY_APP_PASSWORD"],
+    "linkedin": ["LINKEDIN_ACCESS_TOKEN"],
+}
+
+
+def _kanal_status(name: str, cfg: dict) -> str:
+    """"ok" = per API verbunden, "fehlt" = Zugang nicht eingerichtet,
+    "manuell" = Kanal wird von Hand gepostet. Fuer den Punkt im Menue."""
+    ch = (cfg.get("channels") or {}).get(name) or {}
+    if ch.get("manual", False):
+        return "manuell"
+    env = _KANAL_ENV.get(name)
+    if not env:
+        return "manuell"
+    return "ok" if all(os.environ.get(v) for v in env) else "fehlt"
+
+
 def nav_tabs() -> list[dict]:
-    tabs = [{"id": "uebersicht", "name": "Übersicht", "url": "/verwaltung"},
-            {"id": "deploy", "name": "Deploy", "url": "/verwaltung/deploy"},
-            {"id": "ranking", "name": "Ranking", "url": "/verwaltung/ranking"}]
+    tabs = [{"id": "uebersicht", "name": "Übersicht", "url": "/verwaltung", "gruppe": "arbeit"},
+            {"id": "ranking", "name": "Ranking", "url": "/verwaltung/ranking", "gruppe": "arbeit"},
+            {"id": "deploy", "name": "Deploy", "url": "/verwaltung/deploy", "gruppe": "arbeit"}]
+    try:
+        cfg = load_config()
+    except Exception:
+        cfg = {}
     for p in NAV_REIHENFOLGE:
-        tabs.append({"id": p, "name": p, "url": f"/verwaltung/plattform/{p}"})
+        tabs.append({"id": p, "name": PLATTFORM_NAMEN.get(p, p), "url": f"/verwaltung/plattform/{p}",
+                     "gruppe": "kanal", "status": _kanal_status(p, cfg)})
     return tabs
 
 

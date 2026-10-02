@@ -132,8 +132,10 @@ def _saetze(text: str) -> list[str]:
 def summarize_linkedin_kurz(meta: dict, canonical_url: str, min_chars: int = 150, max_chars: int = 300,
                             max_hashtags: int = 2) -> str:
     """Kurzform mit Karte (Standard): 2-3 kurze Saetze mit Haken (Slogan
-    zuerst, dann die Beschreibung), Leerzeile, hoechstens 2-3 Hashtags,
-    Artikel-URL als LETZTE Zeile. min_chars/max_chars gelten fuer den
+    zuerst, dann die Beschreibung), die Artikel-URL DIREKT dahinter im selben
+    Absatz, dann Leerzeile und hoechstens 2-3 Hashtags als letzte Zeile
+    (Hausregel seit 1.10.2026: Hashtags zuletzt, damit man am Handy nicht
+    versehentlich ein Hashtag statt der Adresse antippt). min_chars/max_chars gelten fuer den
     ganzen Beitrag einschliesslich Hashtags und URL. Hintergrund: LinkedIn zeigt mobil ~140, am Desktop ~210
     Zeichen vor "...mehr" - und bei langen Beitraegen erschien in der
     Profil-Uebersicht keine Link-Karte."""
@@ -163,10 +165,10 @@ def summarize_linkedin_kurz(meta: dict, canonical_url: str, min_chars: int = 150
             break
     if not gewaehlt:
         gewaehlt = [truncate(meta["title"], budget)]
-    text = " ".join(gewaehlt)
+    text = " ".join(gewaehlt) + f" {canonical_url}"
     if tag_zeile:
         text += f"\n\n{tag_zeile}"
-    return f"{text}\n\n{canonical_url}"
+    return text
 
 
 def summarize_linkedin(meta: dict, min_chars: int, max_chars: int, *, canonical_url: str | None = None,

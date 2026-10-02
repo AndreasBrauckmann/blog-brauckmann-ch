@@ -109,9 +109,25 @@ class Speicher:
     def artikel_sichern(self, quelle: Path) -> Path:
         ziel_dir = self.root / "data" / "backups" / "artikel"
         ziel_dir.mkdir(parents=True, exist_ok=True)
-        ziel = ziel_dir / f"{quelle.stem}.{datetime.now().strftime('%Y%m%d-%H%M%S')}{quelle.suffix}"
+        zeit = datetime.now().strftime('%Y%m%d-%H%M%S')
+        ziel = ziel_dir / f"{quelle.stem}.{zeit}{quelle.suffix}"
+        n = 1
+        while ziel.exists():  # nie ein vorhandenes Backup ueberschreiben (zwei Sicherungen in einer Sekunde)
+            ziel = ziel_dir / f"{quelle.stem}.{zeit}-{n}{quelle.suffix}"
+            n += 1
         shutil.copy2(quelle, ziel)
         return ziel
+
+    def letzte_sicherung(self, quelle: Path) -> Path | None:
+        """Neueste Sicherung dieses Artikels aus data/backups/artikel/ (nach Zeitstempel im Namen)."""
+        ziel_dir = self.root / "data" / "backups" / "artikel"
+        muster = re.compile(rf"^{re.escape(quelle.stem)}\.(\d{{8}}-\d{{6}})(?:-(\d+))?{re.escape(quelle.suffix)}$")
+        treffer = []
+        for p in ziel_dir.glob(f"{quelle.stem}.*{quelle.suffix}") if ziel_dir.exists() else []:
+            m = muster.match(p.name)
+            if m:
+                treffer.append((m.group(1), int(m.group(2) or 0), p))
+        return max(treffer)[2] if treffer else None
 
 
 def vorschau_hash(titel: str, beschreibung: str, bild: str) -> str:
@@ -124,7 +140,7 @@ def vorschau_hash(titel: str, beschreibung: str, bild: str) -> str:
 # Frontmatter gezielt aendern (Kommentare/Reihenfolge bleiben erhalten)
 # --------------------------------------------------------------------------
 
-ERLAUBTE_FELDER = ("title", "description", "og_image_alt")
+ERLAUBTE_FELDER = ("title", "description", "og_image_alt", "og_image")
 
 
 class FrontmatterFehler(ValueError):

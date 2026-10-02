@@ -1,0 +1,46 @@
+{# Versionsverlauf-Box (Detailseite). Erwartet: vz (versionen.alle), meta #}
+<style>
+.vz-zeile { display:grid; grid-template-columns:minmax(8.5rem,11rem) minmax(0,1fr) minmax(0,15rem) auto; gap:.3rem 1.2rem; align-items:baseline; padding:.8rem 0; border-top:1px solid var(--border); }
+.vz-zeile:first-child { border-top:0; }
+.vz-datum { font-size:1.05rem; font-weight:600; font-variant-numeric:tabular-nums; }
+.vz-datum small { display:block; font-weight:400; color:var(--muted); font-size:.8rem; }
+.vz-etikett { display:inline-block; font-size:.74rem; border:1px solid var(--border); border-radius:4px; padding:0 .4rem; color:var(--muted); margin-right:.4rem; white-space:nowrap; }
+.vz-etikett.aktuell { border-color:var(--ok); color:var(--ok); }
+.vz-was { min-width:0; overflow-wrap:anywhere; font-size:.92rem; }
+.vz-kenn { font-size:.8rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+.vz-aktion { display:flex; gap:.9rem; font-size:.85rem; white-space:nowrap; }
+@media (max-width: 760px) {
+  .vz-zeile { grid-template-columns:minmax(0,1fr); gap:.15rem; padding:.9rem 0; }
+  .vz-aktion { margin-top:.3rem; }
+}
+</style>
+{% macro vz_zeile(v, slug) %}
+<div class="vz-zeile">
+  <div class="vz-datum">{{ v.zeit[8:10] }}.{{ v.zeit[5:7] }}.{{ v.zeit[:4] }}<small>{{ v.zeit[11:16] }} Uhr</small></div>
+  <div class="vz-was">
+    {% if v.aktuell %}<span class="vz-etikett aktuell">aktuell</span>{% endif %}
+    {% if v.quelle == 'snapshot' %}<span class="vz-etikett">{{ v.label }}</span>{% endif %}
+    {% if v.commit %}<span class="vz-etikett" title="{{ v.commit.sha }}">Commit</span>{{ v.commit.meldung }}{% endif %}
+    {% if v.hinweis and v.grund in ('ordnung', 'metas', 'wiederhergestellt', 'rueckgaengig') %}<span class="hinweis klein"> {{ v.hinweis }}</span>{% endif %}
+  </div>
+  <div class="vz-kenn">{{ v.woerter }} Wörter{% if v.d_woerter is not none %} ({{ '%+d'|format(v.d_woerter) }}){% endif %}
+    · Titel {{ 'geändert' if v.titel_geaendert else 'gleich' }} · Beschreibung {{ 'geändert' if v.beschr_geaendert else 'gleich' }}</div>
+  <div class="vz-aktion">
+    {% if v.aktuell %}<span class="hinweis">–</span>{% else %}
+    <a href="{{ url_for('versionen.ansehen', slug=slug, vid=v.vid) }}">Ansehen</a>
+    <a href="{{ url_for('versionen.bestaetigen', slug=slug, vid=v.vid) }}">Wiederherstellen</a>{% endif %}
+  </div>
+</div>
+{% endmacro %}
+<h2 id="versionen">Versionsverlauf</h2>
+<div class="card">
+  {% if not vz %}<p class="hinweis klein" style="margin:0">Noch keine Versionen erfasst.</p>
+  {% else %}
+  {% for v in vz[:8] %}{{ vz_zeile(v, meta.slug) }}{% endfor %}
+  {% if vz|length > 8 %}
+  <details style="border-top:1px solid var(--border);padding-top:.6rem"><summary class="klein">Ältere Versionen ({{ vz|length - 8 }})</summary>
+    {% for v in vz[8:] %}{{ vz_zeile(v, meta.slug) }}{% endfor %}</details>
+  {% endif %}
+  {% endif %}
+  <p class="hinweis klein" style="margin:.8rem 0 0">Jede Änderung wird erfasst: Schreibvorgänge der Verwaltung, Änderungen von Hand (Editor, Git) und Commits. Wiederhergestellt werden Frontmatter und Text zusammen; Bilddateien werden nicht versioniert (siehe Git). Es bleiben die letzten 200 Schnappschüsse, die zuletzt committete Fassung nie gelöscht.</p>
+</div>

@@ -49,6 +49,14 @@ def _name_pruefen(name: str) -> None:
         abort(404)
 
 
+def _sperre_pruefen(name: str, slug: str, cfg: dict, quellen: dict) -> None:
+    """Gesperrte Artikel duerfen auch per Direktaufruf nicht bearbeitet, gepostet oder analysiert werden."""
+    if name == "microsoft_tech_community" and slug in quellen:
+        grund = pl.ms_sperre(quellen[slug], cfg)
+        if grund:
+            abort(403, grund)
+
+
 def _slug_pruefen(slug: str, quellen: dict) -> dict:
     if slug not in quellen:
         abort(400, "Unbekannter Artikel")
@@ -141,6 +149,10 @@ def seite(name):
     if not slug:
         return render_template("plattform.html", name=name, keine_artikel=True, slug=None, auswahl=[], seite=name)
     pc = pl.PLATTFORM_DEF[name]
+    sperren = {s_: pl.ms_sperre(m_, cfg) for s_, m_ in quellen.items()} if name == "microsoft_tech_community" else {}
+    for a_ in auswahl:
+        if sperren.get(a_["slug"]):
+            a_["kurz"] = a_["kurz"] + "  (gesperrt)"
     fmt = None
     if name == "linkedin":
         fmt = request.args.get("format")
@@ -211,7 +223,8 @@ def seite(name):
         g = _gepostet(name, s, log, li_daten)
         w = kz.wirkung_text(name, s, kennz, li_daten)
         zeilen.append({"slug": s, "titel": str(m.get("title", s)), "datum": str(m.get("date", "")), "score": e["score"], "ampel": e["ampel"],
-                       "woerter": ctxs[s]["woerter"], "gepostet": g, "wirkung": w})
+                       "woerter": ctxs[s]["woerter"], "gepostet": g, "wirkung": w,
+                       "gesperrt": sperren.get(s)})
     zeilen.sort(key=lambda r: -r["score"])
     for i, r in enumerate(zeilen, 1):
         r["rang"] = i
@@ -230,7 +243,7 @@ def seite(name):
         felder=felder, ks_auto=ks_auto, ks_anzeige=kz.ZAEHLER_ANZEIGE.get(name), keine_views=kz.KEINE_VIEWS,
         manuell=manuell, li_messungen=li_messungen, felder_profil=li.FELDER_PROFIL,
         li_url=(li_daten["beitraege"].get(slug) or {}).get("beitrag_url", "") if name == "linkedin" else "",
-        zeilen=zeilen, formel=dict(g=pl.GEWICHT_GESAMT, a=pl.GEWICHT_META, p=pl.GEWICHT_PLATTFORM, ms=pl.MS_DECKEL),
+        sperre=sperren.get(slug), zeilen=zeilen, formel=dict(g=pl.GEWICHT_GESAMT, a=pl.GEWICHT_META, p=pl.GEWICHT_PLATTFORM, ms=pl.MS_DECKEL),
         heute=date.today().isoformat(), meldung=request.args.get("meldung", ""), fehler=request.args.get("fehler", ""),
         llm=llm.llm_status(), fmt_namen={"kurz": "Kurz mit Karte (Standard)", "lang": "Lang"},
         prozent=kz.PROZENT_FELDER, kn_fmt=_fmt_datum,
@@ -260,6 +273,7 @@ def pruefliste_speichern(name):
     quellen = gemeinsam.artikel_quellen(cfg)
     slug = request.form.get("slug", "")
     meta = _slug_pruefen(slug, quellen)
+    _sperre_pruefen(name, slug, load_config(), quellen)
     heute = date.today().isoformat()
     angekreuzt = request.form.getlist("punkt")
     neu = pl.pruefliste_auswerten(name, ablage.pruefliste(name, slug), angekreuzt, heute)
@@ -290,6 +304,7 @@ def gepostet_markieren(name):
     quellen = gemeinsam.artikel_quellen(load_config())
     slug = request.form.get("slug", "")
     _slug_pruefen(slug, quellen)
+    _sperre_pruefen(name, slug, load_config(), quellen)
     if request.form.get("aktion") == "zuruecksetzen":
         ablage.post_setzen(name, slug, None)
         return _zurueck(name, slug, "gepostet", meldung="Markierung entfernt.")
@@ -317,6 +332,7 @@ def analyse(name):
     quellen = gemeinsam.artikel_quellen(cfg)
     slug = request.form.get("slug", "")
     meta = _slug_pruefen(slug, quellen)
+    _sperre_pruefen(name, slug, load_config(), quellen)
     fmt = request.form.get("format") if request.form.get("format") in ("kurz", "lang") else None
     pc = pl.PLATTFORM_DEF[name]
     pname = gemeinsam.PLATTFORM_NAMEN[name]
@@ -331,7 +347,7 @@ def analyse(name):
         antwort = llm.chat(llm.PLATTFORM_ANALYSE_SYSTEM,
                            llm.plattform_analyse_prompt(pname, regeln, limit, meta, bw.lesetext(koerper, meta), gemeinsam.live_url(cfg, slug),
                                                         titel_noetig=(name == "reddit"), link_erlaubt=(name != "microsoft_tech_community")),
-                           max_tokens=2000)
+                           max_tokens=2000, aufgabe="plattform")
         e = llm.json_aus_text(antwort)
     except llm.LLMFehler as exc:
         return _zurueck(name, slug, "analyse", fehler=f"Auto-Analyse fehlgeschlagen: {exc}")
@@ -357,6 +373,7 @@ def kennzahlen_aktion(name):
     quellen = gemeinsam.artikel_quellen(load_config())
     slug = request.form.get("slug", "")
     _slug_pruefen(slug, quellen)
+    _sperre_pruefen(name, slug, load_config(), quellen)
     aktion = request.form.get("aktion", "")
     if aktion == "aktualisieren":
         if name not in kz.ABRUF:
@@ -398,6 +415,7 @@ def kennzahlen_import(name):
     quellen = gemeinsam.artikel_quellen(load_config())
     slug = request.form.get("slug", "")
     _slug_pruefen(slug, quellen)
+    _sperre_pruefen(name, slug, load_config(), quellen)
     datei = request.files.get("datei")
     if not datei or not datei.filename:
         return _zurueck(name, slug, "kennzahlen", fehler="Keine Datei ausgewählt.")

@@ -38,6 +38,12 @@
 {% endblock %}
 {% block inhalt %}
 <h1>Artikel-Ranking</h1>
+<form method="post" action="{{ url_for('ranking.alle_durchgehen') }}" class="row" data-lang="reiht ein …" style="margin:.4rem 0 .8rem">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <button type="submit" class="primary" {% if not llm.aktiv %}disabled{% endif %}>Alle Artikel durchgehen</button>
+  <a class="knopf" href="/verwaltung/satz">Satz &amp; Layout (alle Artikel)</a>
+  <span class="hinweis klein">Reiht für jeden Artikel mit behebbaren roten Kriterien einen Durchlauf ein (einer nach dem anderen, im Hintergrund, nur Vorschläge). Die Ergebnisse stehen danach in der Spalte „Vorschlag“; du prüfst und übernimmst Artikel für Artikel.</span>
+</form>
 <p class="hinweis">Redaktionelle Bewertung aller {{ zeilen|length }} Artikel nach den Maßstäben von Lektorat, Redaktion, Content Strategy und Copy Editing. Die Punktzahl ist regelbasiert und reproduzierbar; das LLM-Lektorat ist eine zusätzliche, getrennte Meinung. Die LinkedIn-Wirkung fließt <strong>nicht</strong> in die Punktzahl ein.</p>
 {% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
 {% if not llm.aktiv %}<div class="meldung fehler klein">{{ llm.hinweis }}</div>{% endif %}
@@ -73,6 +79,7 @@
   <th data-typ="text"><button type="button">Post Inspector</button></th>
   <th class="zahl" data-typ="zahl"><button type="button" title="LinkedIn: Impressions und Interaktionsrate der letzten Messung – nicht Teil des Scores">Wirkung</button></th>
   <th class="zahl" data-typ="zahl"><button type="button" title="Mittlere Note des LLM-Lektorats (1–5), falls ausgeführt">Lektorat</button></th>
+  <th data-typ="text"><button type="button" title="Ergebnis von „Alles in Ordnung bringen“ (nur Vorschläge, nichts wird ohne deine Bestätigung geschrieben)">Vorschlag</button></th>
   <th>Links</th>
 </tr></thead>
 <tbody>
@@ -91,6 +98,7 @@
   <td data-label="Post Inspector" data-wert="{{ z.inspector.status }}">{% if z.live %}<span class="punkt {{ z.live.ampel }}" title="Eigener Live-Inspector {{ z.live.zeitpunkt }}"></span><span class="klein">live</span><br>{% endif %}<span class="badge {{ z.inspector.status }}" title="{{ z.inspector.text }}">{{ {'ok':'geprüft','veraltet':'erneut prüfen','offen':'offen'}[z.inspector.status] }}</span>{% if z.inspector.datum %}<br><span class="klein hinweis">{{ z.inspector.datum }}</span>{% endif %}</td>
   <td class="zahl" data-label="Wirkung" data-wert="{{ z.wirkung.impressions if z.wirkung else -1 }}">{% if z.wirkung %}{{ '{:,}'.format(z.wirkung.impressions).replace(',', '’') }} Impr.{% if z.wirkung.rate is not none %}<br><span class="klein">{{ ('%.1f'|format(z.wirkung.rate)).replace('.', ',') }} % Interaktion</span>{% endif %}{% else %}<span class="hinweis">–</span>{% endif %}</td>
   <td class="zahl" data-label="Lektorat" data-wert="{{ z.lektorat if z.lektorat is not none else -1 }}">{% if z.lektorat is not none %}{{ ('%.1f'|format(z.lektorat)).replace('.', ',') }}/5{% else %}<span class="hinweis">–</span>{% endif %}</td>
+  <td data-label="Vorschlag" data-wert="{{ z.ordnung.erwartet if z.ordnung and z.ordnung.erwartet else -1 }}">{% if z.ordnung and z.ordnung.status == 'vorschlag' %}<a href="{{ url_for('inordnung.seite', slug=z.slug) }}"><span class="badge ok">Vorschlag bereit</span></a>{% if z.ordnung.erwartet %}<br><span class="klein">erwartet {{ '%.0f'|format(z.ordnung.erwartet) }}/100</span>{% endif %}{% elif z.ordnung and z.ordnung.status == 'laeuft' %}<a href="{{ url_for('inordnung.seite', slug=z.slug) }}"><span class="badge teils">läuft …</span></a>{% elif z.ordnung and z.ordnung.status == 'wartet' %}<a href="{{ url_for('inordnung.seite', slug=z.slug) }}"><span class="badge offen">wartet</span></a>{% elif z.ordnung and z.ordnung.status == 'uebernommen' %}<span class="klein hinweis">übernommen</span>{% elif z.behebbar %}<span class="klein hinweis">behebbar</span>{% else %}<span class="hinweis">–</span>{% endif %}</td>
   <td class="links-zelle"><div class="links">
     <a class="knopf" href="{{ z.live_url }}" target="_blank" rel="noopener">Artikel ↗</a>
     <a class="knopf" href="{{ z.inspector_url }}" target="_blank" rel="noopener" title="LinkedIn Post Inspector in neuem Tab">Post Inspector ↗</a>

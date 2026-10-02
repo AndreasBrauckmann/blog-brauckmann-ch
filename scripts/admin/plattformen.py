@@ -443,6 +443,23 @@ def pruefliste_auswerten(plattform: str, gespeichert: dict, angekreuzt: list[str
 # --------------------------------------------------------------------------
 
 
+def _gespeicherter_linkedin_text(meta: dict, url: str) -> str | None:
+    """Von Hand (oder von Claude) geschriebener Beitragstext je Artikel aus data/linkedin_texte.json:
+    {"<slug>": {"text": "...", "hashtags": ["#A", "#B"]}}. Format: Text + Leerzeichen + Adresse, Leerzeile, Hashtags.
+    Fehlt die Datei oder der Artikel, gilt der erzeugte Text (summarize.py)."""
+    import json
+    pfad = Path(__file__).resolve().parents[2] / "data" / "linkedin_texte.json"
+    try:
+        eintrag = json.loads(pfad.read_text(encoding="utf-8")).get(str(meta.get("slug")))
+    except (OSError, ValueError):
+        return None
+    if not eintrag or not str(eintrag.get("text", "")).strip():
+        return None
+    text = f"{str(eintrag['text']).strip()} {url}"
+    tags = " ".join(h for h in (eintrag.get("hashtags") or []) if h)
+    return f"{text}\n\n{tags}" if tags else text
+
+
 def texte(meta: dict, cfg: dict, format: str | None = None) -> dict[str, dict]:
     """plattform -> {"text": str, "titel": str|None}. Wie app.py/summarize.py; MS Tech Community als
     Diskussionsfrage ohne Blog-Link."""
@@ -454,6 +471,9 @@ def texte(meta: dict, cfg: dict, format: str | None = None) -> dict[str, dict]:
     for p in ("mastodon", "bluesky"):
         out[p] = {"text": alle.get(p, ""), "titel": None}
     out["linkedin"] = {"text": linkedin_text(meta, cfg, format) if format else alle.get("linkedin", ""), "titel": None}
+    eigener = _gespeicherter_linkedin_text(meta, url)
+    if eigener and (format in (None, "kurz")):
+        out["linkedin"]["text"] = eigener
     r = alle.get("reddit")
     out["reddit"] = {"text": r["body"] if isinstance(r, dict) else str(r or ""), "titel": r["title"] if isinstance(r, dict) else meta["title"]}
     standard = f"{headline(meta)}\n\n{meta['description']}\n\n{url}"
@@ -689,6 +709,26 @@ def eignung(plattform: str, ctx: dict, text: str, titel: str | None = None, cfg:
     return {"score": score, "ampel": "gruen" if score >= 80 else ("gelb" if score >= 60 else "rot"),
             "teile": teile, "plattform_mittel": round(plattform_mittel, 1), "deckel": deckel,
             "gesamt": ctx["gesamt"], "meta_a": ctx["meta_a"]}
+
+
+MS_THEMEN_STANDARD = ["Microsoft", "Azure", "Entra", "Intune", "M365", "Microsoft 365", "Defender",
+                      "Power Platform", "Copilot", "SharePoint", "Exchange", "PowerShell", "Microsoft Teams"]
+
+
+def ms_sperre(meta: dict, cfg: dict) -> str | None:
+    """Grund, warum der Artikel fuer die Microsoft Tech Community GESPERRT ist (sonst None).
+    Dort sind Links auf fremde Inhalte unerwuenscht und Spam fuehrt bis zur Sperre des Kontos
+    (Code of Conduct v15.0). Deshalb sind alle Artikel ohne Microsoft-Bezug gesperrt: lieber
+    ausgegraut als ein gesperrtes Konto."""
+    themen = (cfg.get("channels", {}).get("microsoft_tech_community", {}) or {}).get("themen") or MS_THEMEN_STANDARD
+    tags = [str(t) for t in (meta.get("tags") or [])]
+    text = " ".join(tags + [str(meta.get("title", ""))]).lower()
+    treffer = [t for t in themen if re.search(r"(?<![a-z0-9])" + re.escape(str(t).lower()) + r"(?![a-z0-9])", text)]
+    if treffer:
+        return None
+    return ("Gesperrt: Der Artikel hat keinen Microsoft-Bezug (Tags: " + (", ".join(tags) or "keine") +
+            "). Die Microsoft Tech Community lehnt Links auf fremde Inhalte ab und sperrt bei Spam. "
+            "Zugelassen sind nur Artikel, deren Tags oder Titel eines dieser Themen nennen: " + ", ".join(themen) + ".")
 
 
 def ampel(score: float) -> str:

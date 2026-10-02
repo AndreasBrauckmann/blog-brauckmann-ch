@@ -9,7 +9,7 @@
   <h3 style="margin-top:0">Neue Werte</h3>
   <ul>
   {% for f, v in felder.items() %}{% set e = bewertet[f] %}
-    <li><code>{{ f }}</code>: „{{ v }}“ <span class="zaehler {{ 'ok-text' if e.ok else 'warn-text' }}">({{ e.laenge }} Zeichen, Soll {{ e.soll }}{% if e.haken is defined %}, {{ 'Haken vorn' if e.haken else 'kein klarer Haken' }}{% endif %})</span></li>
+    <li><code>{{ f }}</code>: „{{ v }}“ <span class="zaehler {{ 'ok-text' if e.ok else 'warn-text' }}"><span class="punkt {{ e.ampel }}"></span>({% if f == 'og_image' %}{{ e.info }}, Soll {{ e.soll }}{% else %}{{ e.laenge }} Zeichen, Soll {{ e.soll }}{% if e.haken is defined %}, {{ 'Haken vorn' if e.haken else 'kein klarer Haken' }}{% endif %}{% if not e.ok %}, außerhalb Soll{% endif %}{% endif %})</span></li>
   {% endfor %}
   </ul>
   {% if 'og_image_alt' in felder and not og_image_gesetzt %}<p class="warn-text klein">og:image:alt wird erst ausgegeben, wenn der Artikel auch ein og_image hat.</p>{% endif %}

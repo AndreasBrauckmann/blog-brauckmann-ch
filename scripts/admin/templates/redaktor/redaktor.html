@@ -1,0 +1,171 @@
+{% extends "redaktor/basis.html" %}
+{% import "plattform_vorschau.html" as pv %}
+{% block titel %}{% if erg %}Ergebnis · {% endif %}Quick-Redaktor{% endblock %}
+{% block css %}
+{% include "_pv_css.html" %}
+.datenschutz { font-size:.88rem; border-left:4px solid var(--accent); background:var(--card); padding:.5rem .8rem; border-radius:6px; margin:0 0 .8rem; }
+.modi { display:flex; gap:.4rem; flex-wrap:wrap; border:0; padding:0; margin:.6rem 0; }
+.modi label { border:1px solid var(--border); border-radius:8px; padding:.45rem .7rem; cursor:pointer; flex:1 1 12rem; font-size:.9rem; }
+.modi label:has(input:checked) { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+.modi label.aus { opacity:.55; cursor:not-allowed; }
+.modi small { display:block; color:var(--muted); font-size:.8rem; }
+.zaehler { font-variant-numeric:tabular-nums; font-size:.85rem; color:var(--muted); }
+.zaehler.zu-lang { color:var(--bad); font-weight:600; }
+.punkte { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; }
+.kreis { width:4.6rem; height:4.6rem; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.45rem; font-weight:700; border:4px solid var(--border); font-variant-numeric:tabular-nums; flex:0 0 auto; }
+.kreis.ok { border-color:var(--ok); } .kreis.warn { border-color:var(--warn); } .kreis.fehler { border-color:var(--bad); }
+.pfeil { font-size:1.4rem; color:var(--muted); }
+.diff { white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:.7rem; font-size:.92rem; line-height:1.55; }
+.diff del { background:var(--del-bg); color:var(--del-fg); text-decoration:line-through; }
+.diff ins { background:var(--ins-bg); color:var(--ins-fg); text-decoration:none; }
+.liste { margin:.3rem 0 0; padding-left:1.2rem; }
+.liste li { margin:.35rem 0; }
+.quelle { font-size:.72rem; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 .3rem; margin-left:.3rem; white-space:nowrap; }
+.st { font-weight:700; display:inline-block; width:1.1rem; text-align:center; }
+.st.ok { color:var(--ok); } .st.warn { color:var(--warn); } .st.fehler { color:var(--bad); } .st.info { color:var(--accent); }
+.vorschauen { display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-start; }
+.vorschauen > div { flex:1 1 300px; min-width:0; }
+.kartenlabel { font-size:.8rem; color:var(--muted); margin-bottom:.25rem; }
+.verdeckt { border:1px dashed var(--bad); border-radius:8px; padding:.5rem .7rem; margin-top:.6rem; color:var(--bad); font-size:.82rem; }
+.legende { font-size:.8rem; color:var(--muted); margin-top:.5rem; }
+@media (max-width: 640px) {
+  table.pruef thead { display:none; }
+  table.pruef tr { display:block; border-bottom:1px solid var(--border); padding:.4rem 0; }
+  table.pruef td { display:block; border:0; padding:.1rem 0; }
+  table.pruef td.zahl { text-align:left; }
+  table.pruef td[data-l]::before { content:attr(data-l) ": "; color:var(--muted); font-size:.78rem; }
+}
+{% endblock %}
+{% block kopf_rechts %}
+<form method="post" action="{{ basis }}/abmelden"><input type="hidden" name="csrf" value="{{ csrf }}"><button type="submit">Abmelden</button></form>
+{% endblock %}
+{% block inhalt %}
+<p class="datenschutz"><strong>Datenschutz:</strong> Bei „Behutsam“ und „Straffen“ wird dein Text zur Verarbeitung an Claude (Anthropic) gesendet.
+  Bitte keine vertraulichen Firmeninhalte, Kundendaten oder Namen Dritter einfügen. Hier wird dein Text nicht gespeichert und nicht protokolliert;
+  gezählt werden nur Länge, Modus, Dauer und Punktzahl. „Nur prüfen“ sendet nichts weg.</p>
+
+{% if fehler %}<div class="meldung fehler" role="alert">{{ fehler }}</div>{% endif %}
+
+<form method="post" action="{{ basis }}/pruefen" id="formular" class="card">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="text"><strong>Dein LinkedIn-Beitrag</strong></label>
+  <textarea id="text" name="text" maxlength="{{ max_zeichen }}" required placeholder="Beitragstext hier einfügen …">{{ eingabe }}</textarea>
+  <div class="row" style="justify-content:space-between"><span class="zaehler" id="zaehler">{{ eingabe|length }} / {{ max_zeichen }} Zeichen (LinkedIn erlaubt 3.000)</span></div>
+  <fieldset class="modi">
+    <legend class="hinweis klein">Was soll passieren?</legend>
+    <label class="{% if not llm_an %}aus{% endif %}"><input type="radio" name="modus" value="behutsam" {% if modus == 'behutsam' %}checked{% endif %} {% if not llm_an %}disabled{% endif %}>
+      <strong>Behutsam</strong><small>Fehler, KI-Muster und Lesbarkeit beheben; deine Stimme bleibt, Länge ±15 %.</small></label>
+    <label class="{% if not llm_an %}aus{% endif %}"><input type="radio" name="modus" value="straffen" {% if modus == 'straffen' %}checked{% endif %} {% if not llm_an %}disabled{% endif %}>
+      <strong>Straffen</strong><small>Auf eine Ziellänge kürzen:
+        <select name="ziel" aria-label="Ziellänge">{% for z in ziele %}<option value="{{ z }}" {% if z == ziel %}selected{% endif %}>{{ '{:,}'.format(z).replace(',', '.') }} Zeichen</option>{% endfor %}</select></small></label>
+    <label><input type="radio" name="modus" value="pruefen" {% if modus == 'pruefen' or not llm_an %}checked{% endif %}>
+      <strong>Nur prüfen</strong><small>Nur messen, keine KI, kostenlos.</small></label>
+  </fieldset>
+  {% if not llm_an %}<p class="hinweis klein">Die Verbesserung per KI ist derzeit ausgeschaltet; „Nur prüfen“ steht zur Verfügung.</p>{% endif %}
+  <label class="hinweis" style="display:block;margin:.3rem 0 .6rem"><input type="checkbox" name="aufbau" value="ja" {% if aufbau %}checked{% endif %}>
+    Aufbau anpassen erlaubt: Links und Hashtags ans Ende, Hashtags auf 3 kürzen. Ohne Haken bleiben Links und Hashtags, wo sie sind.</label>
+  <button type="submit" class="primary" id="los">Prüfen und verbessern</button>
+  <span class="hinweis klein">Höchstens {{ limit_stunde }} Durchläufe je Stunde. Mit KI dauert es meist unter einer Minute.</span>
+</form>
+
+{% if erg %}
+{% set nach = erg.nachher or erg.vorher %}
+{% macro stufe(p) %}{% set s = 'ok' if p >= 85 else ('warn' if p >= 50 else 'fehler') %}{{ s }}{% endmacro %}
+<section id="ergebnis" aria-labelledby="h-erg">
+<h2 id="h-erg">Ergebnis: {{ erg.modus_name }}</h2>
+{% if erg.meldung %}<div class="meldung" role="status">{{ erg.meldung }}</div>{% endif %}
+<div class="card punkte">
+  <div class="kreis {{ stufe(erg.vorher.punkte) }}" title="Punktzahl vorher">{{ erg.vorher.punkte }}</div>
+  {% if erg.nachher %}<span class="pfeil" aria-hidden="true">→</span><div class="kreis {{ stufe(erg.nachher.punkte) }}" title="Punktzahl nachher">{{ erg.nachher.punkte }}</div>{% endif %}
+  <div><strong>{% if erg.nachher %}Vorher {{ erg.vorher.punkte }}, nachher {{ erg.nachher.punkte }} von 100{% else %}{{ erg.vorher.punkte }} von 100 Punkten{% endif %}</strong><br>
+    <span class="hinweis klein">{{ erg.vorher.zeichen }}{% if erg.nachher %} → {{ erg.nachher.zeichen }}{% endif %} Zeichen · Dauer {{ '%.1f'|format(erg.dauer_s) }} s{% if erg.aufrufe %} · {{ erg.aufrufe }} KI-Aufruf{% if erg.aufrufe != 1 %}e{% endif %}{% endif %}</span></div>
+</div>
+
+{% if erg.vorschlag %}
+<h2>1 · Verbesserter Text</h2>
+<div class="card">
+  <textarea id="vorschlag" readonly style="min-height:12rem">{{ erg.vorschlag }}</textarea>
+  <div class="row"><button type="button" class="primary" data-kopieren="vorschlag">Kopieren</button>
+    <span class="hinweis klein">Bitte vor dem Posten gegenlesen: Du bist der Autor.</span></div>
+  <details open><summary><strong>Unterschiede</strong> <span class="hinweis klein">(rot = gestrichen, grün = neu)</span></summary>
+    <div class="diff" aria-label="Wortweiser Vergleich">{% for art, t in erg.diff %}{% if art == 'gleich' %}{{ t }}{% elif art == 'weg' %}<del>{{ t }}</del>{% else %}<ins>{{ t }}</ins>{% endif %}{% endfor %}</div>
+  </details>
+</div>
+
+<h2>2 · Was ich geändert habe</h2>
+<div class="card">
+  {% if erg.aenderungen %}
+  <ol class="liste">{% for a in erg.aenderungen %}<li>{{ a.was }}<span class="quelle">{{ a.quelle }}</span><br><span class="hinweis klein">Warum: {{ a.grund }}</span></li>{% endfor %}</ol>
+  {% else %}<p class="hinweis">Keine Änderung. Der Text bleibt, wie er ist.</p>{% endif %}
+  {% if erg.verworfen %}
+  <h3 style="font-size:.95rem;margin:1rem 0 .2rem">Verworfen (Schutzprüfung)</h3>
+  <ul class="liste">{% for v in erg.verworfen %}<li>{% if v.neu %}„{{ v.alt|truncate(80) }}“ → „{{ v.neu|truncate(80) }}“{% elif v.alt == 'ganzer Text' %}Gekürzte Fassung{% else %}„{{ v.alt|truncate(80) }}“ streichen{% endif %}<br><span class="hinweis klein">Nicht übernommen: {{ v.warum }}</span></li>{% endfor %}</ul>
+  {% endif %}
+</div>
+{% endif %}
+
+<h2>{% if erg.vorschlag %}3 · {% endif %}Was noch nicht gut ist</h2>
+<div class="card">
+  {% if erg.offen %}
+  <ul class="liste">{% for o in erg.offen %}<li><strong>{{ o.problem }}</strong><span class="quelle">{{ o.quelle }}</span>{% if o.handgriff %}<br>Handgriff: {{ o.handgriff }}{% endif %}</li>{% endfor %}</ul>
+  {% else %}<p class="ok-text">Nichts Offenes gefunden.</p>{% endif %}
+</div>
+
+<h2>So sieht es vor „…mehr“ aus</h2>
+{% set k = nach.kachel %}
+<div class="vorschauen">
+  <div><div class="kartenlabel">mobil (~{{ sichtbar_mobil }} Zeichen sichtbar, Praxiswert)</div>
+    <div class="pv-post schmal"><div class="pv-inhalt">{{ k.mobil.sichtbar }}{% if k.mobil.gekuerzt %}<span class="mehr"> …mehr</span>{% endif %}</div>
+      {% if k.karte_sichtbar %}{{ pv.karte('klein', '', 'Link-Vorschau der verlinkten Seite', '', nach.domain, 0) }}
+      {% elif k.karte_verdeckt %}<div class="verdeckt">Link-Karte erscheint in der Profil-Übersicht nur bei kurzem Text (Praxisbefund): bei {{ k.laenge }} Zeichen vermutlich nicht.</div>{% endif %}</div></div>
+  <div><div class="kartenlabel">Desktop (~{{ sichtbar_desktop }} Zeichen sichtbar, Praxiswert)</div>
+    <div class="pv-post"><div class="pv-inhalt">{{ k.desktop.sichtbar }}{% if k.desktop.gekuerzt %}<span class="mehr"> …mehr</span>{% endif %}</div>
+      {% if k.karte_sichtbar %}{{ pv.karte('klein', '', 'Link-Vorschau der verlinkten Seite', '', nach.domain, 0) }}
+      {% elif k.karte_verdeckt %}<div class="verdeckt">Link-Karte erscheint in der Profil-Übersicht nur bei kurzem Text (Praxisbefund).</div>{% endif %}</div></div>
+</div>
+<p class="hinweis klein">Nachbau zur Orientierung{% if erg.nachher %} (verbesserter Text){% endif %}, kein Abbild von LinkedIn. Die Karte zeigt Titel und Bild der verlinkten Seite; die kennt der Redaktor nicht.</p>
+
+<h2>{% if erg.vorschlag %}4 · {% endif %}Prüfliste</h2>
+<div class="card tabwrap">
+<table class="daten pruef">
+  <thead><tr><th>Prüfung</th><th>Vorher</th>{% if erg.nachher %}<th>Nachher</th>{% endif %}<th>Soll</th><th>Quelle</th></tr></thead>
+  <tbody>
+  {% for p in erg.vorher.pruefungen %}{% set q = erg.nachher.pruefungen[loop.index0] if erg.nachher else None %}
+  <tr>
+    <td><strong>{{ p.name }}</strong></td>
+    <td data-l="Vorher"><span class="st {{ p.stufe }}" aria-label="{{ p.stufe }}">{{ {'ok':'✓','warn':'!','fehler':'✗','info':'i'}[p.stufe] }}</span> {{ p.messwert }}</td>
+    {% if q %}<td data-l="Nachher"><span class="st {{ q.stufe }}" aria-label="{{ q.stufe }}">{{ {'ok':'✓','warn':'!','fehler':'✗','info':'i'}[q.stufe] }}</span> {{ q.messwert }}</td>{% endif %}
+    <td data-l="Soll" class="hinweis">{{ p.soll }}</td>
+    <td>{% if p.etikett == 'belegt' %}<span class="etikett belegt" title="mit Quelle belegt">belegt</span>{% elif p.etikett == 'praxis' %}<span class="etikett praxis" title="Praxiswert, nicht offiziell dokumentiert">Praxis</span>{% else %}<span class="etikett ungeprueft" title="Hausregel dieses Werkzeugs, nicht an LinkedIn geprüft">nicht geprüft</span>{% endif %}</td>
+  </tr>{% endfor %}
+  </tbody>
+</table>
+<p class="legende">✓ erfüllt · ! Warnung · ✗ Fehler · i Hinweis ohne Punkte. Punktzahl = gewichteter Mittelwert aller Prüfungen mit Punkten (0–100).
+  „belegt“ = Grenze ist dokumentiert, „Praxis“ = beobachteter Wert, „nicht geprüft“ = Hausregel dieses Werkzeugs (Projektregeln für Lesbarkeit und KI-Muster), nicht an LinkedIn geprüft.</p>
+</div>
+</section>
+{% endif %}
+{% endblock %}
+{% block skript %}
+<script>
+(function () {
+  var t = document.getElementById('text'), z = document.getElementById('zaehler'), max = {{ max_zeichen }};
+  function zaehlen() { var n = t.value.length; z.textContent = n + ' / ' + max + ' Zeichen (LinkedIn erlaubt 3.000)'; z.classList.toggle('zu-lang', n > 3000); }
+  t.addEventListener('input', zaehlen); zaehlen();
+  document.getElementById('formular').addEventListener('submit', function () {
+    var b = document.getElementById('los'); b.disabled = true;
+    var m = document.querySelector('input[name=modus]:checked');
+    b.textContent = (m && m.value !== 'pruefen') ? 'Claude überarbeitet … (bis etwa eine Minute)' : 'Wird geprüft …';
+  });
+  document.querySelectorAll('[data-kopieren]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var el = document.getElementById(b.getAttribute('data-kopieren'));
+      var fertig = function () { var a = b.textContent; b.textContent = 'Kopiert'; setTimeout(function () { b.textContent = a; }, 1400); };
+      if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(el.value).then(fertig); }
+      else { el.select(); try { document.execCommand('copy'); fertig(); } catch (e) {} }
+    });
+  });
+  var e = document.getElementById('ergebnis'); if (e) { e.scrollIntoView({ block: 'start' }); }
+})();
+</script>
+{% endblock %}

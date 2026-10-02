@@ -1,0 +1,31 @@
+{# Gutachten (Claude): Erwartet gutachten (Ergebnis), gutachten_lauf (Zustand), meta, live_url #}
+<div class="card">
+  {% set gl = gutachten_lauf %}
+  {% if gl and gl.status in ('wartet', 'laeuft') %}
+  <p style="margin:0"><strong>{{ 'In der Warteschlange' if gl.status == 'wartet' else 'Claude arbeitet' }}</strong> – {{ gl.schritt or '' }}. Die Seite aktualisiert sich selbst; der Lauf geht auch ohne offene Seite weiter.</p>
+  <form method="post" action="{{ url_for('satz.gutachten_abbrechen', slug=meta.slug) }}" class="row" style="margin-top:.5rem"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit">Abbrechen</button></form>
+  <script>setTimeout(function () { location.reload(); }, 5000);</script>
+  {% else %}
+  <form method="post" action="{{ url_for('satz.gutachten_start', slug=meta.slug) }}" data-lang="reiht ein …" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button type="submit" class="primary" {% if meta.is_html %}disabled{% endif %}>Claude hinzuziehen</button>
+    <span class="hinweis klein">Gutachten zu Satz und Format (Lesefluss, Absatz- und Satzrhythmus, Überschriften, Listen/Tabellen/Boxen, Bilder). Claude <strong>liest nur</strong> (Artikel, gebaute Seite, CSS, Bildschirmfotos) und ändert nichts; Vorschläge setzt du über „Alles in Ordnung bringen“ bzw. Übernehmen mit Diff um. Läuft im Hintergrund, höchstens 10 Minuten.</span>
+  </form>
+  {% if gl and gl.status in ('fehler', 'abgebrochen') %}<p class="warn-text klein" style="margin:.4rem 0 0">Letzter Lauf: {{ gl.meldung }}</p>{% endif %}
+  {% endif %}
+  {% if gutachten %}
+  <h3 style="margin-top:1rem">Ergebnis</h3>
+  <p class="klein hinweis">Modell: {{ gutachten.modell }} · {{ gutachten.zeitpunkt.replace('T', ' ') }} · Dauer {{ gutachten.dauer_s|round|int }} s · {{ gutachten.turns }} Turns</p>
+  {% if gutachten.zusammenfassung %}<p>{{ gutachten.zusammenfassung }}</p>{% endif %}
+  {% if gutachten.befunde %}
+  <style>@media (max-width: 760px) { table.gutachten thead { display:none; } table.gutachten, table.gutachten tbody, table.gutachten tr, table.gutachten td { display:block; width:100%; } table.gutachten tr { border-bottom:1px solid var(--border); padding:.6rem 0; } table.gutachten td { border:none; padding:.12rem 0; } table.gutachten td[data-label]::before { content:attr(data-label) ": "; color:var(--muted); font-size:.78rem; } }</style>
+  <div class="tabwrap"><table class="daten gutachten"><thead><tr><th>Schwere</th><th>Kriterium</th><th>Fundstelle</th><th>Vorschlag</th></tr></thead><tbody>
+  {% for b in gutachten.befunde %}<tr>
+    <td><span class="badge {{ {'hoch':'nein','mittel':'teils','niedrig':'offen'}.get(b.schwere, 'offen') }}">{{ b.schwere }}</span></td>
+    <td data-label="Kriterium">{{ b.kriterium }}</td>
+    <td class="klein" data-label="Fundstelle">{{ b.fundstelle or '–' }}{% if b.fundstelle %}{% if b.link %} <a href="{{ live_url }}#{{ b.link }}" target="_blank" rel="noopener">Im Artikel ansehen ↗</a>{% endif %}{% endif %}</td>
+    <td class="klein" data-label="Vorschlag" style="white-space:pre-wrap">{{ b.vorschlag }}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<p class="hinweis klein">Keine Befunde.</p>{% endif %}
+  {% endif %}
+</div>

@@ -28,6 +28,10 @@ from dataclasses import dataclass, field
 from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from titel_beschreibung import ueberschneidung  # noqa: E402  (gemeinsame Logik mit scripts/build.py)
 
 # --------------------------------------------------------------------------
 # Kategorien und Kriterien (sichtbar auf der Seite - nichts versteckt)
@@ -44,8 +48,9 @@ KATEGORIEN = {
 # id -> (Kategorie, Name, Punkte, Soll-Beschreibung)
 KRITERIEN = {
     "a_titel": ("A", "Titellänge", 3, "40–70 Zeichen (Google kürzt ab ca. 60 Zeichen, LinkedIn-Karten nach 1–2 Zeilen)"),
-    "a_beschr": ("A", "Beschreibungslänge", 3, "120–160 Zeichen"),
-    "a_hook": ("A", "Haken vorn in der Beschreibung", 3, "In den ersten ~100 Zeichen Problem/Nutzen statt Floskel"),
+    "a_beschr": ("A", "Beschreibungslänge", 2, "120–160 Zeichen"),
+    "a_hook": ("A", "Haken vorn in der Beschreibung", 2, "In den ersten ~100 Zeichen Problem/Nutzen statt Floskel"),
+    "a_guss": ("A", "Titel und Beschreibung in einem Guss", 2, "Die Beschreibung setzt den Titel fort und wiederholt keine Zahl, kein Schlüsselwort, keine Wortfolge daraus"),
     "a_bild": ("A", "Vorschaubild für og:image geeignet", 4, "Datei vorhanden, ≥ 1200 px breit, Verhältnis ≈ 1,91:1 (1200×630), ≤ 5 MB, kein SVG"),
     "a_alt": ("A", "og:image:alt", 2, "Alternativtext des Vorschaubilds im Kopf der Seite"),
     "a_autor": ("A", "Autor", 1, '<meta name="author"> vorhanden'),
@@ -53,14 +58,15 @@ KRITERIEN = {
     "a_jsonld": ("A", "JSON-LD gültig", 2, "Article mit headline, description, image, datePublished, author"),
     "a_pflicht": ("A", "Fünf Pflicht-Meta-Tags in dist/", 4, "title/og:title, og:type, image/og:image, description/og:description, author"),
     "a_dist": ("A", "dist/ entspricht dem Frontmatter", 2, "Titel und Beschreibung in dist/ = Frontmatter (sonst neu bauen)"),
-    "b_amstad": ("B", "Lesbarkeitsindex (Flesch/Amstad)", 5, "≥ 50 (Fachpublikum; 60+ leicht, < 30 sehr schwer)"),
+    "b_amstad": ("B", "Lesbarkeitsindex (Flesch/Amstad)", 4, "≥ 50 (Fachpublikum; 60+ leicht, < 30 sehr schwer)"),
     "b_satzlaenge": ("B", "Mittlere Satzlänge", 3, "≤ 17 Wörter pro Satz"),
-    "b_lange_saetze": ("B", "Anteil sehr langer Sätze (> 25 Wörter)", 3, "≤ 10 %"),
-    "b_absaetze": ("B", "Absatzlängen", 3, "Höchstens 10 % der Absätze über 100 Wörter"),
+    "b_lange_saetze": ("B", "Anteil sehr langer Sätze (> 25 Wörter)", 2, "≤ 10 %"),
+    "b_absaetze": ("B", "Absatzlängen", 2, "Höchstens 10 % der Absätze über 100 Wörter"),
     "b_wiederholung": ("B", "Wortwiederholungen", 2, "≤ 6 Nahwiederholungen je 1000 Wörter (gleiches Inhaltswort innerhalb von 15 Wörtern)"),
     "b_fuellwoerter": ("B", "Füllwörter", 2, "≤ 1,0 % der Wörter"),
-    "b_einleitung": ("B", "Einleitung mit Haken", 3, "Erster Satz kurz (≤ 25 Wörter) und konkret: Zahl, Frage, Problem oder Nutzen"),
+    "b_einleitung": ("B", "Einleitung mit Haken", 2, "Erster Satz kurz (≤ 25 Wörter) und konkret: Zahl, Frage, Problem oder Nutzen"),
     "b_fazit": ("B", "Fazit/Zusammenfassung am Ende", 2, "Abschnitt „Fazit“, „Zusammenfassung“, „Ausblick“ o. ä."),
+    "b_menschlich": ("B", "Klingt menschlich (KI-Muster)", 4, "Gedankenstriche ≤ 4, „nicht X, sondern Y“ ≤ 1, Floskeln ≤ 2, Verstärker ≤ 6 je 1000 Wörter; gleich lange Satzfolgen ≤ 2, rhetorische Frage mit Gleich-Antwort ≤ 1 (Ideen aus stop-slop, deutsch angepasst)"),
     "b_uebergaenge": ("B", "Übergänge/Zusammenhang", 2, "≥ 25 % der Absätze knüpfen mit Verbindungs- oder Bezugswort an"),
     "c_hierarchie": ("C", "Überschriftenhierarchie H2/H3", 3, "≥ 2 H2, kein H1 im Text, kein Sprung (H2→H4), kein H3 vor dem ersten H2"),
     "c_abschnitte": ("C", "Abschnittslängen", 3, "Kein Abschnitt (zwischen H2/H3) über 450 Wörter"),
@@ -81,7 +87,20 @@ KRITERIEN = {
     "e_aktuell": ("E", "Aktualität", 3, "updated jünger als 90 Tage"),
     "e_historie": ("E", "Änderungshistorie", 2, "Frontmatter-Feld changelog vorhanden"),
     "e_slug": ("E", "Slug", 2, "Kleinbuchstaben/Ziffern/Bindestriche, ≤ 60 Zeichen"),
+    # F · Satz & Layout: ohne KI mit Playwright an der gebauten Seite gemessen (satzmessung.py); nur der Satz der Artikel
+    "f_schrift": ("F", "Schriftgröße Fließtext", 12, "17–20 px (alle Zustände)"),
+    "f_zeilenhoehe": ("F", "Zeilenhöhe", 10, "1,55–1,8"),
+    "f_zeilenlaenge": ("F", "Zeilenlänge (Zeichen je Zeile)", 14, "Desktop 45–75, Handy 35–50"),
+    "f_absatz": ("F", "Absatzabstand", 10, "0,9–1,5 Zeilen"),
+    "f_kontrast": ("F", "Kontrast (Text, Links, gedämpfter Text; hell und dunkel)", 14, "≥ 7:1 (teilweise ab 4,5:1)"),
+    "f_h1": ("F", "H1-Zeilen", 10, "Handy ≤ 3, Desktop ≤ 2 Zeilen"),
+    "f_ueberschrift": ("F", "Abstand vor Zwischenüberschriften", 10, "≥ 1,8 × Absatzabstand und größer als der Abstand danach"),
+    "f_scroll": ("F", "Kein horizontales Scrollen am Handy", 12, "Seite, Bilder, Tabellen, Code nicht breiter als der Bildschirm"),
+    "f_listen": ("F", "Listen", 8, "Einzug ≥ 1 em, Abstand zwischen Punkten ≥ 0,25 Zeilen"),
+    "f_alt": ("F", "Bild-Alt-Texte", 0, "siehe D · Alt-Texte (wird dort gezählt)"),
 }
+
+KATEGORIE_F = {"name": "Satz & Layout", "gewicht": 10, "rolle": "Typografie (nur der Satz der Artikel)"}
 
 
 def ampel(score: float) -> str:
@@ -489,9 +508,19 @@ class Bewertung:
             return 0.0
         return round(sum(k.punkte * k.erfuellung for k in ks) / summe, 1)
 
+    def gewichte(self) -> dict:
+        """Gewichte der Kategorien. Liegt eine Satz-Messung vor, zaehlt F mit 10 %; A-E werden proportional auf 90 % skaliert.
+        Ohne Messung (oder fuer die Simulation im Durchlauf) gelten die ueblichen Gewichte von A-E."""
+        hat_f = any(k.kategorie == "F" and k.erfuellung is not None for k in self.kriterien)
+        if not hat_f:
+            return {k: KATEGORIEN[k]["gewicht"] for k in KATEGORIEN}
+        w = {k: KATEGORIEN[k]["gewicht"] * (100 - KATEGORIE_F["gewicht"]) / 100 for k in KATEGORIEN}
+        w["F"] = KATEGORIE_F["gewicht"]
+        return w
+
     @property
     def gesamt(self) -> float:
-        return round(sum(KATEGORIEN[k]["gewicht"] * self.kategorie_score(k) / 100 for k in KATEGORIEN), 1)
+        return round(sum(g * self.kategorie_score(k) / 100 for k, g in self.gewichte().items()), 1)
 
     @property
     def ampel(self) -> str:
@@ -571,7 +600,7 @@ def _datum(wert) -> date | None:
 
 
 def bewerte(meta: dict, body_html: str, *, base_url: str, static_dir: Path, dist_dir: Path,
-            heute: date, alle_slugs: list[str] | None = None) -> Bewertung:
+            heute: date, alle_slugs: list[str] | None = None, satz: dict | None = None) -> Bewertung:
     """Bewertet einen Artikel. `meta` ist das Frontmatter (wie parse_article),
     `body_html` der gerenderte Artikelkoerper (ohne Seitenrahmen)."""
     slug = meta["slug"]
@@ -606,6 +635,12 @@ def bewerte(meta: dict, body_html: str, *, base_url: str, static_dir: Path, dist
     hat_haken, grund = haken_in(beschr)
     kriterien.append(_k("a_hook", 100.0 if hat_haken else 20.0, ("ja – " if hat_haken else "nein – ") + grund,
                         "Beschreibung mit dem Problem oder dem Nutzen beginnen (Zahl, Gegensatz, konkrete Folge), keine Einleitungsfloskel."))
+
+    ue = ueberschneidung(titel, beschr)
+    kz["guss"] = ue
+    kriterien.append(_k("a_guss", 100.0 if ue["ok"] else (40.0 if len(ue["wiederholt"]) <= 2 else 0.0), ue["hinweis"],
+                        "Die Beschreibung inhaltlich als Fortsetzung des Titels schreiben (nächste Information nennen), nicht als zweiten Anfang: "
+                        + ue["hinweis"]))
 
     og_bild = meta.get("og_image") or meta.get("image") or meta.get("thumb")
     kz["og_bild"] = og_bild
@@ -694,7 +729,7 @@ def bewerte(meta: dict, body_html: str, *, base_url: str, static_dir: Path, dist
                             "Blog neu bauen und deployen, danach Post Inspector ausführen."))
 
     # Vorschau-Urteil
-    probleme = [k for k in kriterien if k.id in ("a_titel", "a_beschr", "a_hook", "a_bild", "a_alt", "a_pflicht") and k.status != "ok"]
+    probleme = [k for k in kriterien if k.id in ("a_titel", "a_beschr", "a_hook", "a_guss", "a_bild", "a_alt", "a_pflicht") and k.status != "ok"]
     schwer = [k for k in probleme if k.id in ("a_bild", "a_pflicht", "a_hook") and k.status == "nein"]
     if not probleme:
         urteil, text = "ja", "Titel, Beschreibung, Haken und Vorschaubild erfüllen die Kriterien."
@@ -769,6 +804,13 @@ def bewerte(meta: dict, body_html: str, *, base_url: str, static_dir: Path, dist
     kz["uebergaenge"] = round(anteil_ue)
     kriterien.append(_k("b_uebergaenge", linear(anteil_ue, 25, 5), f"{_fmt(anteil_ue, 0)} % ({anknuepf} von {gesamt_ue} Folgeabsätzen)",
                         "Absätze ausdrücklich verbinden („Deshalb …“, „Dabei …“, „Genau hier …“), damit der rote Faden sichtbar wird."))
+
+    # Klingt menschlich (KI-Muster): Muster zaehlen, ohne KI (ki_muster.py)
+    import ki_muster
+    km = ki_muster.messe(prosa)
+    kz["ki_muster"] = km
+    e_km, mw_km, tipp_km = ki_muster.erfuellung(km)
+    kriterien.append(_k("b_menschlich", e_km, mw_km, tipp_km))
 
     # ---------------- C: Struktur ----------------
     ebenen = [l for l, _t in ueberschriften]
@@ -937,7 +979,77 @@ def bewerte(meta: dict, body_html: str, *, base_url: str, static_dir: Path, dist
     kz["themen_treue"] = round(100 * len(gefunden) / len(titel_w)) if titel_w else 100
     kz["titel_woerter_fehlen"] = sorted(titel_w - set(gefunden))
 
+    if satz:
+        kz["satz"] = satz
+        kriterien.extend(bewerte_satz(satz, next((k for k in kriterien if k.id == "d_alt"), None)))
     return Bewertung(slug=slug, titel=titel, kriterien=kriterien, kennzahlen=kz, vorschau_urteil=vorschau_urteil)
+
+
+def bewerte_satz(roh: dict, d_alt: Kriterium | None = None) -> list[Kriterium]:
+    """F · Satz & Layout aus den Rohmesswerten (satz_messlauf.py): {"kontexte": {"hell|desktop": {...}, ...}}.
+    Jedes Kriterium gilt fuer den schlechtesten gemessenen Zustand. Deterministisch, ohne KI."""
+    z = roh["kontexte"]
+    desk = [v for k, v in z.items() if k.endswith("|desktop")]
+    handy = [v for k, v in z.items() if k.endswith("|handy")]
+    alle = list(z.values())
+    fmt = lambda x, n=1: _fmt(x, n)  # noqa: E731
+    erg: list[Kriterium] = []
+
+    px = min(v["schrift_px"] for v in alle)
+    erg.append(_k("f_schrift", linear(px, 17, 15) if px < 17 else (100.0 if px <= 20 else linear(px, 20, 24)), f"{fmt(px, 0)} px",
+                  "Fließtext auf 17–20 px setzen (z. B. body { font-size: 1.125rem; }); die Lesbarkeit am Handy und für ältere Augen steigt spürbar."))
+    lh = [v["zeilenhoehe"] for v in alle]
+    erg.append(_k("f_zeilenhoehe", min(band(x, 1.55, 1.8, 1.3, 2.2) for x in lh), (fmt(min(lh), 2) if min(lh) == max(lh) else f"{fmt(min(lh), 2)}–{fmt(max(lh), 2)}").replace(".", ","),
+                  "Zeilenhöhe auf 1,55–1,8 stellen (z. B. line-height: 1.7)."))
+    zd = min(v["zeichen_je_zeile"] for v in desk)
+    zd_max = max(v["zeichen_je_zeile"] for v in desk)
+    zh = [v["zeichen_je_zeile"] for v in handy]
+    e_z = min(min(band(x, 45, 75, 30, 105) for x in (zd, zd_max)), min(band(x, 35, 50, 20, 70) for x in zh))
+    erg.append(_k("f_zeilenlaenge", e_z, f"Desktop {zd}, Handy {min(zh)}–{max(zh)} Zeichen",
+                  "Spaltenbreite am Desktop auf etwa 66ch begrenzen (main { max-width: 66ch; }); am Handy hilft eine etwas größere Schrift."))
+    ab = [v["absatz_abstand_zeilen"] for v in alle]
+    erg.append(_k("f_absatz", min(band(x, 0.9, 1.5, 0.4, 2.2) for x in ab), f"{fmt(min(ab), 2).replace('.', ',')} Zeilen",
+                  "Abstand zwischen Absätzen auf etwa 1,2 em setzen (article p { margin: 0 0 1.2em; })."))
+    ct = min(v["kontrast_text"] for v in alle if v["kontrast_text"])
+    cl = min(v["kontrast_link"] for v in alle if v["kontrast_link"]) if any(v["kontrast_link"] for v in alle) else None
+    cg = min(v["kontrast_gedaempft"] for v in alle if v["kontrast_gedaempft"]) if any(v["kontrast_gedaempft"] for v in alle) else None
+    kmin = min(x for x in (ct, cl, cg) if x)
+    e_k = 100.0 if kmin >= 7 else (55.0 if kmin >= 4.5 else round(linear(kmin, 4.5, 3.0) * 0.4, 1))
+    erg.append(_k("f_kontrast", e_k, f"Text {fmt(ct)}:1" + (f", Links {fmt(cl)}:1" if cl else "") + (f", gedämpft {fmt(cg)}:1" if cg else "") + " (schlechtester Zustand)",
+                  "Farbe des schwächsten Elements abdunkeln bzw. in der dunklen Ansicht aufhellen, bis mindestens 7:1 erreicht sind (Links/gedämpfter Text: --link, --fg-muted)."))
+    h1h = max(v["h1"]["zeilen"] for v in handy)
+    h1d = max(v["h1"]["zeilen"] for v in desk)
+    e_h = min(100.0 if h1h <= 3 else (55.0 if h1h == 4 else max(0.0, 30.0 - 10 * (h1h - 5))), 100.0 if h1d <= 2 else (55.0 if h1d == 3 else 20.0))
+    erg.append(_k("f_h1", e_h, f"Handy {h1h} Zeilen, Desktop {h1d} Zeilen",
+                  "Titel kürzen (Soll 40–70 Zeichen) und/oder die H1 am Handy etwas kleiner setzen; ideal höchstens 3 Zeilen am Handy."))
+    ue = [(v["h2"]["mt"], v["h2"]["mb"], v["absatz_mb"]) for v in alle if v.get("h2")]
+    if ue:
+        verhaeltnisse = [mt / mb_abs if mb_abs else 99 for mt, _mb, mb_abs in ue]
+        r = min(verhaeltnisse)
+        groesser = all(mt > mb for mt, mb, _a in ue)
+        e_u = (100.0 if r >= 1.8 else linear(r, 1.8, 1.0)) * (1.0 if groesser else 0.5)
+        erg.append(_k("f_ueberschrift", e_u, f"{fmt(r)} × Absatzabstand davor, {'größer' if groesser else 'nicht größer'} als danach",
+                      "Mehr Luft vor Zwischenüberschriften (h2 { margin: 2.6em 0 0.7em; }), damit sie zum Text darunter gehören, nicht zum davor."))
+    else:
+        erg.append(_k("f_ueberschrift", None, "keine Zwischenüberschriften"))
+    frei = sum(v["breite"]["tabellen_frei"] + v["breite"]["code_frei"] + v["breite"]["bilder"] for v in handy)
+    box = sum(v["breite"]["tabellen_box"] + v["breite"]["code_box"] for v in handy)
+    ueber = any(v["seite_ueberlauf"] for v in handy)
+    e_s = 0.0 if (ueber or frei) else (60.0 if box else 100.0)
+    erg.append(_k("f_scroll", e_s, ("Seite scrollt seitwärts; " if ueber else "") + (f"{frei} Element(e) breiter als der Bildschirm; " if frei else "")
+                  + (f"{box} Tabelle/Codeblock scrollt in eigener Box" if box else ("" if (ueber or frei) else "nichts breiter als der Bildschirm")),
+                  "Breite Elemente in einen Container mit overflow-x: auto setzen (Tabellen: .table-wrap) oder verkleinern; Codeblöcke dürfen in eigener Box scrollen."))
+    li = [v["liste"] for v in alle if v.get("liste")]
+    if li:
+        e_l = min(min(100.0 if x["einzug_em"] >= 1 else linear(x["einzug_em"], 1, 0.4), 100.0 if x["abstand_zeilen"] >= 0.25 else linear(x["abstand_zeilen"], 0.25, 0.0)) for x in li)
+        erg.append(_k("f_listen", e_l, f"Einzug {fmt(min(x['einzug_em'] for x in li), 1).replace('.', ',')} em, Abstand {fmt(min(x['abstand_zeilen'] for x in li), 2).replace('.', ',')} Zeilen",
+                      "Abstand zwischen Listenpunkten setzen (li { margin: 0.4em 0; }) und Einzug ≥ 1 em lassen."))
+    else:
+        erg.append(_k("f_listen", None, "keine Liste im Artikel"))
+    ohne = max(v["bilder_ohne_alt"] for v in alle)
+    erg.append(Kriterium("f_alt", "F", KRITERIEN["f_alt"][1], 0, KRITERIEN["f_alt"][3], None,
+                         f"{ohne} Bild(er) ohne Alt-Text – wird unter D · Alt-Texte bewertet" if ohne else "siehe D · Alt-Texte"))
+    return erg
 
 
 def auffaelligkeiten(b: Bewertung, durchschnitt: float | None = None) -> list[dict]:

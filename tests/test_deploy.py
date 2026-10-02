@@ -201,12 +201,12 @@ class TestLinkedInKurz(unittest.TestCase):
                 "description": "Beschreibung eins. Beschreibung zwei ist etwas laenger. Drei.",
                 "tags": ["KI", "Zero Trust", "Monitoring"], "slug": "x"}
         text = summarize_linkedin_kurz(meta, "https://blog.example/artikel/x/", 150, 300)
-        zeilen = text.split("\n")
-        self.assertEqual(zeilen[-1], "https://blog.example/artikel/x/")
-        self.assertEqual(zeilen[-2], "")
-        self.assertIn("#KI #ZeroTrust", text)
+        absaetze = text.split("\n\n")
+        self.assertEqual(len(absaetze), 2)
+        self.assertTrue(absaetze[0].endswith(" https://blog.example/artikel/x/"))   # Adresse direkt hinter dem Text
+        self.assertEqual(absaetze[1], "#KI #ZeroTrust")                              # Hashtags gesammelt zuletzt
         self.assertNotIn("#Monitoring", text)
-        self.assertLessEqual(len(text.rsplit("\n\n", 1)[0]), 300)
+        self.assertLessEqual(len(text), 300)
         self.assertTrue(text.startswith("Ein Satz mit Haken."))
 
     def test_config_kurz(self):

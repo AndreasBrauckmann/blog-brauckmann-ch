@@ -1,0 +1,304 @@
+{% extends "ranking_basis.html" %}
+{% set seite = 'ranking' %}
+{% block titel %}Alles in Ordnung bringen – {{ meta.title }}{% endblock %}
+{% block kopf %}
+{% if z and z.status == 'vorschlag' %}{% include "_metas_auswahl_css.html" %}{% endif %}
+<style>
+.schritte-liste { list-style:none; margin:.4rem 0; padding:0; }
+.schritte-liste li { display:flex; gap:.6rem; align-items:baseline; padding:.3rem 0; border-bottom:1px dashed var(--border); flex-wrap:wrap; }
+.schritte-liste .sym { flex:0 0 1.4rem; text-align:center; font-weight:700; }
+.schritte-liste .sym.ok { color:var(--ok); } .schritte-liste .sym.fehler { color:var(--bad); } .schritte-liste .sym.laeuft { color:var(--warn); }
+.schritte-liste .txt { flex:1 1 14rem; min-width:0; overflow-wrap:anywhere; }
+.vn { width:100%; border-collapse:collapse; font-size:.92rem; }
+.vn th, .vn td { padding:.45rem .5rem; border-bottom:1px solid var(--border); text-align:left; vertical-align:middle; }
+.vn th { font-size:.8rem; color:var(--muted); font-weight:600; }
+.vn td.z { font-variant-numeric:tabular-nums; white-space:nowrap; }
+.vn .pfeil { color:var(--muted); }
+.stelle { border-top:1px solid var(--border); padding:.9rem 0 .6rem; margin:0; }
+.stelle .kopf { display:flex; gap:.6rem; align-items:flex-start; flex-wrap:wrap; }
+.stelle .diff { margin:.5rem 0 0; padding:.2rem 0 .2rem .8rem; border-left:2px solid var(--border); line-height:1.65; font-size:.92rem; overflow-wrap:anywhere; white-space:pre-wrap; max-height:13rem; overflow:auto; }
+.stelle ins { background:color-mix(in srgb, var(--ok) 22%, transparent); text-decoration:none; border-radius:3px; }
+.stelle del { background:color-mix(in srgb, var(--bad) 22%, transparent); border-radius:3px; }
+.ort { font-size:.95rem; }
+.blogtext { font-size:1rem; line-height:1.65; max-width:46rem; margin:.5rem 0 0; color:var(--muted); overflow-wrap:anywhere; }
+.blogtext mark.treffer { background:color-mix(in srgb, var(--warn) 24%, transparent); color:var(--fg); border-radius:3px; padding:0 .1rem; }
+.aend { margin:.6rem 0 0; display:grid; gap:.4rem; max-width:46rem; }
+.aend > div { padding:.45rem .7rem; border-radius:6px; line-height:1.6; overflow-wrap:anywhere; }
+.aend .vor { background:color-mix(in srgb, var(--bad) 13%, transparent); border-left:3px solid var(--bad); }
+.aend .nach { background:color-mix(in srgb, var(--ok) 15%, transparent); border-left:3px solid var(--ok); }
+.aend .lbl { display:block; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+.zweck { font-size:.72rem; border:1px solid var(--border); border-radius:4px; padding:0 .35rem; color:var(--muted); }
+.fmdiff { margin:.3rem 0; }
+.knopfreihe { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin:.6rem 0; }
+@media (max-width: 640px) { .vn th, .vn td { padding:.35rem .3rem; font-size:.85rem; } }
+</style>
+{% endblock %}
+{% block inhalt %}
+{% macro tabelle(z) %}
+<div class="tabwrap"><table class="vn">
+  <thead><tr><th>Teilnote</th><th>Vorher</th>{% if z.erwartet and z.status == 'vorschlag' %}<th>Erwartet</th>{% endif %}{% if z.nachher %}<th>Nachher</th>{% endif %}</tr></thead>
+  <tbody>
+  {% for k, v in z.vorher.kategorien.items() %}
+  <tr><td>{{ k }} · {{ v.name }}</td>
+    <td class="z"><span class="punkt {{ v.ampel }}"></span>{{ '%.0f'|format(v.score) }}</td>
+    {% if z.erwartet and z.status == 'vorschlag' %}{% set e = z.erwartet.kategorien[k] %}<td class="z"><span class="punkt {{ e.ampel }}"></span>{{ '%.0f'|format(e.score) }}</td>{% endif %}
+    {% if z.nachher %}{% set n = z.nachher.kategorien[k] %}<td class="z"><span class="punkt {{ n.ampel }}"></span>{{ '%.0f'|format(n.score) }}</td>{% endif %}</tr>
+  {% endfor %}
+  <tr><td><strong>Gesamt</strong></td>
+    <td class="z"><span class="punkt {{ z.vorher.ampel }}"></span><strong>{{ '%.0f'|format(z.vorher.gesamt) }}</strong></td>
+    {% if z.erwartet and z.status == 'vorschlag' %}<td class="z"><span class="punkt {{ z.erwartet.ampel }}"></span><strong>{{ '%.0f'|format(z.erwartet.gesamt) }}</strong></td>{% endif %}
+    {% if z.nachher %}<td class="z"><span class="punkt {{ z.nachher.ampel }}"></span><strong>{{ '%.0f'|format(z.nachher.gesamt) }}</strong></td>{% endif %}</tr>
+  </tbody></table></div>
+{% endmacro %}
+
+<p class="klein"><a href="{{ url_for('ranking.detail', slug=slug) }}">← zurück zum Artikel</a></p>
+<h1>Alles in Ordnung bringen</h1>
+<p><strong>{{ meta.title }}</strong> <span class="hinweis klein">· <code>articles/{{ slug }}.md</code></span></p>
+{% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
+{% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
+
+{% macro ort(s) -%}
+<strong>Abschnitt „{{ s.ort.abschnitt or 'Einleitung' }}“{% if s.ort.absatz_nr %}, Absatz {{ s.ort.absatz_nr }}{% endif %}</strong>
+<span class="klein hinweis">· Zeile {{ s.ort.zeile }}</span>
+<a class="klein" href="{{ live_url }}{% if s.ort.abschnitt_id %}#{{ s.ort.abschnitt_id }}{% endif %}" target="_blank" rel="noopener">Im Artikel ansehen ↗</a>
+{%- endmacro %}
+{% macro aenderung(s) -%}
+<div class="blogtext">{{ s.ansicht.kontext|safe }}</div>
+<div class="aend">{% for c in s.ansicht.aenderungen %}
+  {% if c.vorher %}<div class="vor"><span class="lbl">Vorher</span>{{ c.vorher|safe }}</div>{% endif %}
+  {% if c.nachher %}<div class="nach"><span class="lbl">Nachher</span>{{ c.nachher|safe }}</div>{% endif %}
+{% endfor %}</div>
+{%- endmacro %}
+
+{% macro schritte(z) %}
+<ul class="schritte-liste" id="schritte">
+{% for s in z.schritte %}
+  <li data-key="{{ s.key }}"><span class="sym {{ s.status }}">{{ {'ok':'✓','fehler':'!','laeuft':'…','uebersprungen':'–','offen':'·'}[s.status] }}</span>
+    <span><strong>{{ s.name }}</strong></span><span class="txt hinweis klein">{{ {'offen':'wartet','laeuft':'läuft','ok':'fertig','uebersprungen':'übersprungen','fehler':'Fehler'}[s.status] }}{% if s.text %} – {{ s.text }}{% endif %}{% if s.dauer %} ({{ s.dauer|round|int }} s){% endif %}</span></li>
+{% endfor %}
+</ul>
+{% endmacro %}
+
+{% if ist_html %}
+<div class="card">HTML-Artikel haben kein Frontmatter und werden nicht unterstützt.</div>
+
+{% elif not z %}
+<div class="card">
+  <p style="margin-top:0">Ein Durchlauf prüft die Teilnoten A–E, erzeugt Vorschläge nur für das, was nicht grün ist (Lektorat, Metas, Textstellen), und zeigt sie als gemeinsamen Diff. <strong>Es wird nichts geschrieben, gebaut oder veröffentlicht</strong>, bevor du bestätigst.</p>
+  <form method="post" action="{{ url_for('inordnung.start', slug=slug) }}" data-lang="startet …">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button type="submit" class="primary" {% if not llm.aktiv or gesperrt %}disabled{% endif %}>Durchlauf starten</button>
+    {% if not llm.aktiv %}<p class="hinweis klein">{{ llm.hinweis }}</p>{% endif %}
+  </form>
+</div>
+
+{% elif z.status in ('laeuft', 'wartet') %}
+<div class="card">
+  {% if z.status == 'wartet' %}
+  <p style="margin-top:0"><strong>In der Warteschlange</strong>{% if z.warteplatz %} (Platz {{ z.warteplatz }}){% endif %} – es läuft immer nur ein Auftrag gleichzeitig. Die Seite aktualisiert sich selbst.</p>
+  {% else %}
+  <p style="margin-top:0"><strong>Durchlauf läuft</strong> – gestartet {{ z.gestartet.replace('T', ' ') }}. Der Auftrag läuft im Hintergrund weiter, auch wenn du die Seite schließt; beim Wiederöffnen siehst du den Stand. Gründlichkeit geht vor Tempo: mehrere Runden, fünf bis zehn Minuten oder mehr sind normal.</p>
+  {% endif %}
+  <p class="klein" id="fortschritt">{% if z.fortschritt %}Runde {{ z.fortschritt.runde or 1 }} von {{ z.fortschritt.max or 8 }} · {{ z.fortschritt.schritt or '' }} · {{ z.fortschritt.stellen_erledigt or 0 }} Stellen verbessert{% endif %}</p>
+  <div id="runden-info" class="klein hinweis">{% for r in z.runden or [] %}Runde {{ r.nr }}: {{ r.offen|length }} behebbare Kriterien offen{% if r.neu %}, {{ r.neu }} Änderung(en){% endif %}<br>{% endfor %}</div>
+  {{ schritte(z) }}
+  <form method="post" action="{{ url_for('inordnung.abbrechen', slug=slug) }}" class="row"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit">Abbrechen</button><span class="hinweis klein">Der Auftrag endet nach dem laufenden Schritt, nichts wird geändert.</span></form>
+  <noscript><p class="hinweis klein">Ohne JavaScript bitte die Seite von Hand neu laden.</p></noscript>
+</div>
+
+{% elif z.status in ('abgebrochen', 'fehler', 'nichts_zu_tun', 'keine_vorschlaege') %}
+<div class="card">
+  <p style="margin-top:0"><strong>{{ {'abgebrochen':'Abgebrochen','fehler':'Fehler','nichts_zu_tun':'Nichts zu tun','keine_vorschlaege':'Kein verwertbarer Vorschlag'}[z.status] }}</strong>{% if z.meldung %} – {{ z.meldung }}{% endif %}</p>
+  {{ schritte(z) }}
+  {% if z.vorher %}{{ tabelle(z) }}{% endif %}
+  {% if z.stellen_abgelehnt or (z.metas and z.metas.abgewiesen) %}<p class="hinweis klein">Details zu abgelehnten Vorschlägen siehe unten.</p>{% endif %}
+  <div class="knopfreihe">
+    <form method="post" action="{{ url_for('inordnung.start', slug=slug) }}" data-lang="startet …"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit" class="primary" {% if not llm.aktiv %}disabled{% endif %}>Neu starten</button></form>
+    <a class="knopf" href="{{ url_for('ranking.detail', slug=slug) }}">Zurück zum Artikel</a>
+  </div>
+</div>
+{% if z.stellen_abgelehnt %}
+<h2>Abgelehnt, weil …</h2>
+{% for s in z.stellen_abgelehnt %}<div class="stelle"><strong>Zeile {{ s.zeile }}</strong> <span class="hinweis klein">{{ s.abschnitt }}</span><div class="warn-text klein">Abgelehnt, weil: {{ s.grund }}</div></div>{% endfor %}
+{% endif %}
+
+{% elif z.status == 'vorschlag' %}
+{% set offen_n = offen_erwartet|length %}
+<div class="card" style="border-left:4px solid {{ 'var(--ok)' if not offen_n else 'var(--warn)' }}">
+  <p style="margin-top:0;font-size:1.05rem"><strong>{% if not offen_n %}Alles Behebbare wird grün.{% elif offen_behebbar %}{{ offen_behebbar|length }} behebbare{% if offen_mensch %} und {{ offen_mensch|length }} nur von Hand behebbare{% endif %} Kriterien bleiben offen.{% else %}Alles, was der Durchlauf beheben kann, wird grün. {{ offen_mensch|length }} Kriterien brauchen einen Menschen.{% endif %}</strong>
+    <span class="hinweis klein">Nach {{ z.runden|length }} Runde(n). Nichts ist geschrieben.</span></p>
+  {{ tabelle(z) }}
+  <p class="hinweis klein">„Erwartet“ gilt für die vorausgewählte Kombination (alles angehakt), gerechnet mit der echten Bewertung an einem Entwurf. Schwellen, Gewichte und Messregeln sind unverändert.{% if z.modelle %} Modelle: {% for k, m in z.modelle.items() %}{{ k }}: {{ m }}{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
+  {% if z.nicht_bearbeitet or z.nicht_bearbeitet_bereiche %}
+  <div class="meldung fehler"><strong>{{ (z.nicht_bearbeitet|length) }} Stelle(n){% if z.nicht_bearbeitet_bereiche %} und {{ z.nicht_bearbeitet_bereiche|join(', ') }}{% endif %} wegen Verbindungsproblem nicht bearbeitet</strong> – der LLM-Dienst war nicht erreichbar. Das ist kein Fehler der Texte.
+    <form method="post" action="{{ url_for('inordnung.nachholen', slug=slug) }}" data-lang="holt nach …" style="margin-top:.4rem"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit" class="primary" {% if not llm.aktiv %}disabled{% endif %}>Nur diese Stellen nochmals</button></form></div>
+  {% endif %}
+  {% if z.warnungen %}<div class="meldung fehler">Schutzprüfung der Gesamtkombination: {{ z.warnungen|join('; ') }}</div>{% endif %}
+  {% if z.letzter_fehler %}<div class="meldung fehler">Letzter Versuch: {{ z.letzter_fehler }}</div>{% endif %}
+  {% if z.meldung_frist %}<div class="meldung">{{ z.meldung_frist }}</div>{% endif %}
+  {% if offen_behebbar %}
+  <h3>Bleibt offen, obwohl der Durchlauf es versuchen konnte</h3>
+  <ul>{% for o in offen_behebbar %}<li><strong>{{ o.kat }} · {{ o.name }}</strong> <span class="klein hinweis">({{ o.messwert }})</span><br><span class="klein">{{ o.grund }}</span></li>{% endfor %}</ul>
+  <p class="klein">Nach dem Übernehmen gibt es den Knopf „Noch ein Durchlauf“ (ein Klick).</p>
+  {% endif %}
+  {% if offen_mensch %}
+  <h3>Braucht einen Menschen</h3>
+  <ul>{% for o in offen_mensch %}<li><strong>{{ o.kat }} · {{ o.name }}</strong> <span class="klein hinweis">({{ o.messwert }})</span><br><span class="klein">{{ o.grund }}</span></li>{% endfor %}</ul>
+  {% endif %}
+  <details><summary class="klein">Verlauf der Runden und Schritte</summary>
+    {% for r in z.runden %}<p class="klein" style="margin:.3rem 0">Runde {{ r.nr }}: {{ r.offen|length }} behebbare Kriterien offen ({% for o in r.offen %}{{ o.name }}{% if not loop.last %}, {% endif %}{% endfor %}){% if r.neu %}, {{ r.neu }} Änderung(en){% endif %} · Gesamt {{ '%.0f'|format(r.gesamt) }}</p>{% endfor %}
+    {{ schritte(z) }}
+    {% if z.protokoll %}<ul class="klein">{% for p in z.protokoll %}<li>{{ p }}</li>{% endfor %}</ul>{% endif %}
+  </details>
+</div>
+
+{% if z.wirkung_auswahl %}
+{% set w = z.wirkung_auswahl %}
+<div class="card" id="wirkung" style="border-left:4px solid var(--accent)">
+  <strong>Wirkung deiner Auswahl</strong> <span class="hinweis klein">({{ w.ids|length }} von {{ z.stellen|length }} Stellen{% if w.meta %}, geänderte Metas: {{ w.meta.keys()|join(', ') }}{% endif %})</span>
+  <div class="tabwrap"><table class="vn"><thead><tr><th>Teilnote</th><th>Alle an</th><th>Deine Auswahl</th></tr></thead><tbody>
+  {% for k, v in z.erwartet.kategorien.items() %}{% set n = w.snap.kategorien[k] %}
+  <tr><td>{{ k }} · {{ v.name }}</td><td class="z"><span class="punkt {{ v.ampel }}"></span>{{ '%.0f'|format(v.score) }}</td><td class="z"><span class="punkt {{ n.ampel }}"></span>{{ '%.0f'|format(n.score) }}</td></tr>
+  {% endfor %}
+  <tr><td><strong>Gesamt</strong></td><td class="z"><strong>{{ '%.0f'|format(z.erwartet.gesamt) }}</strong></td><td class="z"><strong>{{ '%.0f'|format(w.snap.gesamt) }}</strong></td></tr>
+  </tbody></table></div>
+  {% if w.rot %}<p class="warn-text"><strong>Mit dieser Auswahl würden wieder rot:</strong></p>
+  <ul>{% for r in w.rot %}<li>{{ r.name }} <span class="klein hinweis">({{ r.messwert }})</span></li>{% endfor %}</ul>
+  {% else %}<p class="ok-text">Mit dieser Auswahl bleiben alle Kriterien so grün wie bei „alle an“.</p>{% endif %}
+  <form method="post" action="{{ url_for('inordnung.wirkung_route', slug=slug) }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="aktion" value="zuruecksetzen"><button type="submit" class="klein">Auswahl zurücksetzen (alle an)</button></form>
+</div>
+{% endif %}
+
+<form method="post" action="{{ url_for('inordnung.uebernehmen', slug=slug) }}" id="inordnung-form">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <h2>Änderungen nach Kriterium</h2>
+  <h3 style="margin-top:.6rem">Titel und Beschreibung</h3>
+  {% if z.metas %}
+    <p class="hinweis klein">Das Modell lieferte Vorschläge; die Grenzen (Titel 40–70, Beschreibung 120–160 mit Haken in den ersten 90 Zeichen, Bild-Alt 60–160) und die Regel „in einem Guss“ wurden nachgemessen{% if z.metas.nachgefragt %} – bei Verfehlung wurde mit der gemessenen Abweichung nachgefragt{% endif %}; vorgewählt ist die bestbewertete gültige Kombination. {% if z.metas.modell %}Modell: {{ z.metas.modell }}.{% endif %} <span class="mk-info" title="Titel 40–70, Beschreibung 120–160 (Haken in den ersten 90 Zeichen), Bild-Alt 60–160 Zeichen. Vorschläge außerhalb werden nie vorausgewählt.">i</span></p>
+  {% else %}
+    <p class="hinweis klein">Titel, Beschreibung und Bild-Alt sind im Soll – Anpassung nur, wenn du sie selbst ändern willst.</p>
+  {% endif %}
+  {% include "_metas_auswahl.html" %}
+  {% if z.metas and z.metas.abgewiesen %}
+  <details class="mk-aus" style="margin-top:.8rem"><summary>{{ z.metas.abgewiesen|length }} Vorschlag/Vorschläge von der Grenzprüfung abgewiesen</summary>
+    <ul class="klein">{% for a in z.metas.abgewiesen %}<li><strong>{{ ma.felder[a.feld].name }}</strong> ({{ a.laenge }} Z., Runde {{ a.runde }}): {{ a.grund }} – „{{ a.text }}“</li>{% endfor %}</ul></details>
+  {% endif %}
+
+  {% for g in gruppen %}
+  <h3 style="margin-top:1.6rem">{{ g.name }} <span class="hinweis klein">({{ g.stellen|length }})</span></h3>
+  <div class="row"><button type="button" class="klein" data-gruppe="{{ g.id }}" data-an="1">Alle an</button><button type="button" class="klein" data-gruppe="{{ g.id }}" data-an="0">Alle aus</button></div>
+  {% for s in g.stellen %}
+  <div class="stelle">
+    <label class="kopf"><input type="checkbox" name="stelle" value="{{ s.id }}" data-gruppe="{{ g.id }}" {% if auswahl_ids is none or s.id in auswahl_ids %}checked{% endif %}>
+      <span class="ort">{{ ort(s) }}
+        {% for zw in s.zweck %}<span class="zweck">{{ {'kuerzen':'Sätze kürzen','uebergang':'Übergang','woerter':'Wortwahl','absatz':'Absatz teilen','link':'interner Link'}[zw] }}</span> {% endfor %}
+        {% for h in s.hinweise %}<span class="zweck">{{ h }}</span> {% endfor %}
+        {% if s.uebergang_erkannt is defined and s.uebergang_erkannt is not none %}<span class="zweck">{{ 'Übergangswort erkannt' if s.uebergang_erkannt else 'kein Übergangswort am Anfang' }}</span>{% endif %}</span></label>
+    {{ aenderung(s) }}
+  </div>
+  {% endfor %}
+  {% else %}<p class="hinweis klein">Keine Textstelle vorgeschlagen.</p>{% endfor %}
+  {% if z.stellen_abgelehnt %}
+  <details class="card" style="margin-top:1.4rem"><summary>{{ z.stellen_abgelehnt|length }} Stelle(n) abgelehnt – warum</summary>
+    {% for s in z.stellen_abgelehnt %}<div class="stelle"><span class="ort">{{ ort(s) }}</span>
+      <div class="warn-text klein" style="margin-top:.3rem">Abgelehnt, weil: {{ s.grund }}</div>
+      {{ aenderung(s) }}</div>{% endfor %}
+  </details>
+  {% endif %}
+
+  <h2>Wirkung der Auswahl prüfen und übernehmen</h2>
+  <div class="card">
+    <div class="knopfreihe">
+      <button type="submit" class="klein" formaction="{{ url_for('inordnung.wirkung_route', slug=slug) }}" formnovalidate>Wirkung meiner Auswahl neu berechnen</button>
+      <span class="hinweis klein">Wähle Stellen ab und rechne neu: du siehst, welche Kriterien dadurch wieder rot würden. Es wird nichts geschrieben.</span>
+    </div>
+    <label class="row"><input type="checkbox" name="bestaetigt" value="ja" required> Ich habe die Auswahl geprüft und will sie in <code>articles/{{ slug }}.md</code> schreiben.</label>
+    <div class="knopfreihe">
+      <button type="submit" class="primary" data-bestaetigen>Übernehmen (Backup, schreiben, bauen)</button>
+      <a class="knopf" href="{{ url_for('ranking.detail', slug=slug) }}">Abbrechen</a>
+    </div>
+    <p class="hinweis klein">Ablauf: Backup nach <code>data/backups/artikel/</code> → schreiben → <code>scripts/build.py</code>. Schlägt der Build fehl oder fehlt danach ein Pflicht-Meta-Tag, wird das Backup automatisch zurückgespielt. Danach wird der Artikel neu eingelesen und neu bewertet. Es wird nichts committet, gepusht oder veröffentlicht.</p>
+  </div>
+</form>
+<form method="post" action="{{ url_for('inordnung.verwerfen', slug=slug) }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit" class="klein">Vorschlag verwerfen</button></form>
+
+{% elif z.status in ('uebernommen', 'rueckgaengig', 'wiederhergestellt') %}
+<div class="card">
+  {% if z.status == 'uebernommen' %}
+  <p style="margin-top:0"><strong>Übernommen, gebaut und neu bewertet</strong> ({{ z.uebernommen_am.replace('T', ' ') }}). Backup: <code>{{ z.backup.split('/data/')[-1] }}</code>.</p>
+  {% elif z.status == 'wiederhergestellt' %}
+  <p style="margin-top:0"><strong>Version wiederhergestellt</strong> ({{ z.uebernommen_am.replace('T', ' ') }}): Fassung vom {{ z.wiederhergestellt.zeit.replace('T', ' ')[:16] }}, gebaut und neu bewertet. Die vorherige Fassung steht im <a href="{{ url_for('ranking.detail', slug=slug) }}#versionen">Versionsverlauf</a>.</p>
+  {% else %}
+  <p style="margin-top:0"><strong>Rückgängig gemacht</strong> ({{ z.rueckgaengig_am.replace('T', ' ') }}): Backup zurückgespielt und neu gebaut.</p>
+  {% endif %}
+  <h3>Vorher / Nachher</h3>
+  {{ tabelle(z) }}
+  {% if aenderungen %}
+  <h3>Was sich bei den Kriterien geändert hat</h3>
+  <div class="tabwrap"><table class="vn"><thead><tr><th>Kriterium</th><th>Vorher</th><th>Nachher</th></tr></thead><tbody>
+  {% for a in aenderungen %}<tr><td>{{ a.kat }} · {{ a.name }}</td>
+    <td><span class="badge {{ a.vorher }}">{{ {'ok':'bestanden','teils':'teilweise','nein':'nicht bestanden','na':'entfällt'}[a.vorher] }}</span> <span class="klein hinweis">{{ a.messwert_vorher }}</span></td>
+    <td><span class="badge {{ a.nachher }}">{{ {'ok':'bestanden','teils':'teilweise','nein':'nicht bestanden','na':'entfällt'}[a.nachher] }}</span> <span class="klein hinweis">{{ a.messwert_nachher }}</span></td></tr>{% endfor %}
+  </tbody></table></div>
+  {% endif %}
+  {% if fehlt %}
+  {% if fehlt_behebbar %}<h3>Noch nicht grün, aber behebbar</h3>
+  <ul>{% for f in fehlt if f.art == 'behebbar' %}<li><strong>{{ f.kat }} · {{ f.name }}</strong> <span class="badge {{ f.status }}">{{ {'teils':'teilweise','nein':'nicht bestanden'}[f.status] }}</span> <span class="klein hinweis">({{ f.messwert }})</span><br><span class="klein">{{ f.grund }}</span></li>{% endfor %}</ul>{% endif %}
+  {% if fehlt_mensch %}<h3>Braucht einen Menschen</h3>
+  <ul>{% for f in fehlt_mensch %}<li><strong>{{ f.kat }} · {{ f.name }}</strong> <span class="badge {{ f.status }}">{{ {'teils':'teilweise','nein':'nicht bestanden'}[f.status] }}</span> <span class="klein hinweis">({{ f.messwert }})</span><br><span class="klein">{{ f.grund }}</span></li>{% endfor %}</ul>{% endif %}
+  {% else %}<p class="ok-text">Alle Kriterien sind bestanden.</p>{% endif %}
+  <div class="knopfreihe">
+    {% if z.status in ('uebernommen', 'wiederhergestellt') %}
+    <a class="knopf primary" href="{{ url_for('deploy.seite', artikel=slug) }}">Weiter zum Veröffentlichen</a>
+    {% endif %}
+    <a class="knopf" href="{{ url_for('ranking.detail', slug=slug) }}">Zurück zum Artikel</a>
+    <form method="post" action="{{ url_for('inordnung.start', slug=slug) }}" data-lang="startet …"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit" class="{{ 'primary' if fehlt_behebbar else '' }}" {% if not llm.aktiv %}disabled{% endif %}>{{ 'Noch ein Durchlauf' if fehlt_behebbar else 'Weiteren Durchlauf starten' }}</button></form>
+  </div>
+  <p class="hinweis klein">Zum Veröffentlichen: <a href="{{ url_for('deploy.seite', artikel=slug) }}">Deploy-Seite</a> (mit diesem Artikel vorausgewählt). Committet oder veröffentlicht wurde nichts.</p>
+  {% if z.status == 'uebernommen' %}
+  <form method="post" action="{{ url_for('inordnung.rueckgaengig', slug=slug) }}" style="margin-top:.8rem">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <label class="row klein"><input type="checkbox" name="bestaetigt" value="ja" required> Rückgängig: das Backup zurückspielen und neu bauen</label>
+    <button type="submit">Rückgängig</button>
+  </form>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+{% block skript %}
+<script>
+(function () {
+  var s = document.getElementById('schritte');
+  var aktiv = {{ 'true' if z and z.status in ('laeuft', 'wartet') else 'false' }};
+  if (aktiv && s) {
+    var sym = {ok:'✓', fehler:'!', laeuft:'…', uebersprungen:'–', offen:'·'};
+    var txt = {offen:'wartet', laeuft:'läuft', ok:'fertig', uebersprungen:'übersprungen', fehler:'Fehler'};
+    function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x) e.textContent = x; return e; }
+    function tick() {
+      fetch('{{ url_for("inordnung.status", slug=slug) }}', {credentials:'same-origin'}).then(function (r) { return r.json(); }).then(function (d) {
+        s.textContent = '';
+        d.schritte.forEach(function (st) {
+          var li = el('li'); li.setAttribute('data-key', st.key);
+          li.appendChild(el('span', 'sym ' + st.status, sym[st.status] || '·'));
+          var n = el('span'); n.appendChild(el('strong', '', st.name)); li.appendChild(n);
+          li.appendChild(el('span', 'txt hinweis klein', (txt[st.status] || '') + (st.text ? ' – ' + st.text : '') + (st.dauer ? ' (' + Math.round(st.dauer) + ' s)' : '')));
+          s.appendChild(li);
+        });
+        var f = d.fortschritt || {}, fe = document.getElementById('fortschritt');
+        if (fe && f.runde) fe.textContent = 'Runde ' + f.runde + ' von ' + (f.max || 8) + ' · ' + (f.schritt || '') + ' · ' + (f.stellen_erledigt || 0) + ' Stellen verbessert';
+        var ri = document.getElementById('runden-info');
+        if (ri) { ri.textContent = ''; (d.runden || []).forEach(function (r) { ri.appendChild(document.createTextNode('Runde ' + r.nr + ': ' + r.offen.length + ' behebbare Kriterien offen' + (r.neu ? ', ' + r.neu + ' Änderung(en)' : ''))); ri.appendChild(document.createElement('br')); }); }
+        if (d.status !== 'laeuft' && d.status !== 'wartet') { location.reload(); } else { setTimeout(tick, 3000); }
+      }).catch(function () { setTimeout(tick, 6000); });
+    }
+    setTimeout(tick, 1500);
+  }
+  document.querySelectorAll('button[data-gruppe]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var an = b.getAttribute('data-an') === '1';
+      document.querySelectorAll('input[name=stelle][data-gruppe="' + b.getAttribute('data-gruppe') + '"]').forEach(function (c) { c.checked = an; });
+    });
+  });
+})();
+</script>
+{% endblock %}

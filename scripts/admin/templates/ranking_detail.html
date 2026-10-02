@@ -40,10 +40,12 @@ table.kriterien td.vorschlag { color:var(--fg); }
 .flagge { display:inline-block; margin:.15rem .25rem .15rem 0; padding:.1rem .5rem; border-radius:6px; font-size:.82rem; border:1px solid var(--bad); color:var(--bad); }
 .flagge.design { border-color:var(--warn); color:var(--warn); } .flagge.auffaellig { border-color:var(--border); color:var(--fg); }
 </style>
+{% if ma %}{% include "_metas_auswahl_css.html" %}{% endif %}
 {% endblock %}
 {% block inhalt %}
 <p class="klein"><a href="{{ url_for('ranking.uebersicht') }}">← zurück zum Ranking</a></p>
 <h1>{{ meta.title }}</h1>
+{% if vz is not none %}<p class="klein" style="margin:-.4rem 0 .6rem"><a href="#versionen">Versionsverlauf ({{ vz|length }})</a></p>{% endif %}
 {% if meldung %}<div class="meldung">{{ meldung }}</div>{% endif %}
 {% if fehler %}<div class="meldung fehler">{{ fehler }}</div>{% endif %}
 
@@ -61,8 +63,30 @@ table.kriterien td.vorschlag { color:var(--fg); }
 <div class="teilnoten">
 {% for k, kat in kategorien.items() %}
   {% set s = b.kategorie_score(k) %}{% set farbe = 'gruen' if s >= 80 else ('gelb' if s >= 60 else 'rot') %}
-  <div class="card"><div class="klein hinweis">{{ k }} · {{ kat.name }} (Gewicht {{ kat.gewicht }})</div><div class="wert">{{ '%.0f'|format(s) }}</div><div class="balken"><span class="{{ farbe }}" style="width:{{ s }}%"></span></div></div>
+  <div class="card"><div class="klein hinweis">{{ k }} · {{ kat.name }} (Gewicht {{ gewichte[k]|round(1) }})</div><div class="wert">{{ '%.0f'|format(s) }}</div><div class="balken"><span class="{{ farbe }}" style="width:{{ s }}%"></span></div></div>
 {% endfor %}
+{% if satz_gemessen %}{% set s = b.kategorie_score('F') %}{% set farbe = 'gruen' if s >= 80 else ('gelb' if s >= 60 else 'rot') %}
+  <div class="card"><div class="klein hinweis">F · {{ kategorie_f.name }} (Gewicht {{ gewichte['F']|round(1) }})</div><div class="wert">{{ '%.0f'|format(s) }}</div><div class="balken"><span class="{{ farbe }}" style="width:{{ s }}%"></span></div></div>
+{% elif satz_laeuft %}<div class="card"><div class="klein hinweis">F · {{ kategorie_f.name }}</div><div class="wert hinweis">wird gemessen …</div></div>
+{% endif %}
+</div>
+
+<div class="card" id="in-ordnung" style="border-left:4px solid {{ 'var(--ok)' if not inordnung.offen.kriterien and not inordnung.offen.kategorien else 'var(--warn)' }}">
+  {% set o = inordnung.offen %}{% set zu = inordnung.zustand %}
+  <div class="row" style="margin:0">
+    <a class="knopf" href="#gutachten" title="Gutachten zu Satz und Format durch Claude (nur Lesen)">Claude hinzuziehen</a>
+    <a class="knopf primary" href="{{ url_for('inordnung.seite', slug=meta.slug) }}" {% if inordnung.ist_html %}aria-disabled="true" style="opacity:.5;pointer-events:none"{% endif %}>Alles in Ordnung bringen</a>
+    <span class="klein">
+      {% if o.kriterien or o.kategorien %}
+        Nicht grün: {% for k, s in o.kategorien %}<strong>{{ k }}</strong> ({{ '%.0f'|format(s) }}){% if not loop.last %}, {% endif %}{% else %}alle Teilnoten grün{% endfor %};
+        {{ o.kriterien|length }} Kriterium/Kriterien nicht bestanden, davon {{ o.automatisch|length }} automatisch angehbar, {{ o.mensch|length }} nur von Hand.
+      {% else %}Alle Teilnoten grün und alle Kriterien bestanden – nichts zu tun.{% endif %}
+    </span>
+  </div>
+  {% if zu %}<div class="klein hinweis" style="margin-top:.35rem">Letzter Durchlauf {{ zu.gestartet.replace('T', ' ') if zu.gestartet }}:
+    {{ {'laeuft':'läuft gerade','vorschlag':'Vorschlag wartet auf deine Prüfung','uebernommen':'übernommen','rueckgaengig':'rückgängig gemacht','abgebrochen':'abgebrochen','fehler':'Fehler','nichts_zu_tun':'nichts zu tun','keine_vorschlaege':'kein verwertbarer Vorschlag'}.get(zu.status, zu.status) }}
+    – <a href="{{ url_for('inordnung.seite', slug=meta.slug) }}">ansehen</a></div>{% endif %}
+  <div class="hinweis klein" style="margin-top:.3rem">Ein Durchlauf erzeugt nur Vorschläge (Lektorat, Metas, Textstellen) und zeigt sie mit Diff und Vorher/Nachher. Geschrieben und gebaut wird erst nach deiner Bestätigung, mit Backup und automatischem Zurückspielen bei Fehlern. Veröffentlicht wird nichts.</div>
 </div>
 
 {% set lk = lektorat.ergebnis if lektorat and lektorat.ergebnis else none %}
@@ -75,7 +99,7 @@ table.kriterien td.vorschlag { color:var(--fg); }
     <div class="klein hinweis">{{ b.kennzahlen.visuell.values()|sum }} visuelle Elemente, größte Lücke {{ b.kennzahlen.groesster_abstand }} Wörter{% if lk and lk.kriterien and lk.kriterien.grafiken %} · Lektorat: {{ lk.kriterien.grafiken.note }}/5{% endif %}</div></div>
 </div>
 
-<h2 id="vorschau">Artikelvorschau und LinkedIn Post Inspector</h2>
+<h2 id="vorschau">Artikelvorschau</h2>
 {% set u = b.vorschau_urteil %}
 <div class="card">
   <strong>Hält die Artikelvorschau den hohen Ansprüchen der Leser stand?</strong>
@@ -84,20 +108,37 @@ table.kriterien td.vorschlag { color:var(--fg); }
   {% if lk and lk.vorschau_haelt_stand %}<p class="klein" style="margin:.4rem 0 0">Lektorat: <span class="badge {{ 'ok' if lk.vorschau_haelt_stand.urteil == 'ja' else lk.vorschau_haelt_stand.urteil }}">{{ lk.vorschau_haelt_stand.urteil }}</span> {{ lk.vorschau_haelt_stand.begruendung }}</p>{% endif %}
 </div>
 
-<div class="karten">
-  <div><div class="kartenlabel">LinkedIn-Feed, Desktop (Nachbau)</div>
-    <div class="li-karte">
-      <div class="li-bild">{% if karte.bild %}<img src="{{ url_for('ranking.bild', pfad=karte.bild.split('/static/img/', 1)[-1]) }}" alt="">{% endif %}</div>
-      <div class="li-text"><div class="li-titel">{{ karte.titel }}</div><div class="li-domain">{{ karte.domain }}</div></div>
-    </div></div>
-  <div><div class="kartenlabel">LinkedIn-App, Telefon (Nachbau)</div>
-    <div class="li-karte mobil">
-      <div class="li-bild">{% if karte.bild %}<img src="{{ url_for('ranking.bild', pfad=karte.bild.split('/static/img/', 1)[-1]) }}" alt="">{% endif %}</div>
-      <div class="li-text"><div class="li-titel">{{ karte.titel }}</div><div class="li-domain">{{ karte.domain }}</div></div>
-    </div></div>
+<h2 id="metas">Metas optimieren</h2>
+<div class="card">
+  <form method="post" action="{{ url_for('ranking.metas_erzeugen', slug=meta.slug) }}" data-lang="Vorschläge werden erzeugt …" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button type="submit" class="primary" {% if not llm.aktiv or meta.is_html %}disabled{% endif %}>Vorschläge erzeugen</button>
+    {% if metas %}<span class="hinweis klein">Vorschläge vom {{ metas.zeitpunkt }} ({{ metas.modell }}){% if metas.nachgefragt %}, einmal mit Rückmeldung nachgefragt{% endif %}</span>{% endif %}
+  </form>
+  {% if not llm.aktiv %}<p class="hinweis klein">{{ llm.hinweis }} Die Felder unten lassen sich trotzdem von Hand bearbeiten und übernehmen.</p>{% endif %}
+  <p class="hinweis klein" style="margin:.2rem 0 1rem">Grenzen werden nachgemessen <span class="mk-info" title="Titel 40–70, Beschreibung 120–160 (Haken in den ersten 90 Zeichen), Bild-Alt 60–160 Zeichen. Vorschläge außerhalb werden nie empfohlen oder vorausgewählt.">i</span></p>
+  {% if ma %}
+  <form method="post" action="{{ url_for('ranking.metas_pruefen', slug=meta.slug) }}" id="metas-form">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="kombi" value="1">
+    {% include "_metas_auswahl.html" %}
+    {% if ma.abgewiesen %}
+    <details class="mk-aus" style="margin-top:.8rem"><summary>{{ ma.abgewiesen|length }} Vorschlag/Vorschläge von der Grenzprüfung abgewiesen</summary>
+      <ul class="klein">{% for a in ma.abgewiesen %}<li><strong>{{ ma.felder[a.feld].name }}</strong> ({{ a.laenge }} Z., Runde {{ a.runde }}): {{ a.grund }} – „{{ a.text }}“</li>{% endfor %}</ul></details>
+    {% endif %}
+    <div class="mk-aktion"><button type="submit" class="primary">Kombination übernehmen</button>
+      <span class="hinweis klein">Zeigt zuerst den Diff; geschrieben wird erst nach Bestätigung, mit Backup. Kein Build.</span></div>
+  </form>
+  {% if sicherung %}
+  <form method="post" action="{{ url_for('ranking.metas_rueckgaengig', slug=meta.slug) }}" class="row" style="margin-top:.4rem">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <label class="row klein" style="margin:0"><input type="checkbox" name="bestaetigt" value="ja" required> Rückgängig: letzte Sicherung <code>{{ sicherung }}</code> zurückspielen (kein Build)</label>
+    <button type="submit" class="klein">Rückgängig</button>
+  </form>
+  {% endif %}
+  {% else %}<p class="hinweis klein">HTML-Artikel haben kein Frontmatter.</p>{% endif %}
 </div>
-<p class="hinweis klein">Nachbau zur Orientierung, kein Abbild von LinkedIn. Das Bild wird auf 1,91:1 beschnitten (hier: {% if b.kennzahlen.og_bild_masse %}{{ b.kennzahlen.og_bild_masse[0] }}×{{ b.kennzahlen.og_bild_masse[1] }} px{% else %}Maße unbekannt{% endif %}, Quelle <code>{{ karte.bild or '–' }}</code>). Der Titel wird nach zwei Zeilen abgeschnitten – am Desktop nach etwa 70–90 Zeichen, auf dem Telefon früher ({{ karte.titel|length }} Zeichen). Die Beschreibung ({{ karte.beschreibung|length }} Zeichen) zeigt LinkedIn in der Feed-Karte nach heutiger Beobachtung meist nicht; Google, Slack, Teams und Facebook nutzen sie, Google kürzt nach etwa 155–160 Zeichen: <em>„{{ karte.beschreibung[:157] }}{% if karte.beschreibung|length > 157 %} …{% endif %}“</em>. Verbindlich ist nur, was der Post Inspector zeigt.</p>
 
+<h2 id="postinspector">LinkedIn Post Inspector</h2>
 <div class="card">
   <strong>Post Inspector</strong> – Menschen-Schritt, erst nach Bauen und Deployen sinnvoll (LinkedIn liest nur die öffentliche Seite).
   <div class="kopierbar" style="margin:.5rem 0">
@@ -149,8 +190,8 @@ table.kriterien td.vorschlag { color:var(--fg); }
 {% endif %}
 
 <h2 id="kriterien">Alle Kriterien</h2>
-{% for k, kat in kategorien.items() %}
-<h3>{{ k }} · {{ kat.name }} – {{ '%.0f'|format(b.kategorie_score(k)) }}/100 <span class="hinweis klein">(Gewicht {{ kat.gewicht }}, {{ kat.rolle }})</span></h3>
+{% for k, kat in (kategorien_alle) %}
+<h3>{{ k }} · {{ kat.name }} – {{ '%.0f'|format(b.kategorie_score(k)) }}/100 <span class="hinweis klein">(Gewicht {{ gewichte[k]|round(1) }}, {{ kat.rolle }})</span></h3>
 <div class="tabwrap"><table class="daten kriterien">
 <thead><tr><th>Status</th><th>Kriterium</th><th class="zahl">Punkte</th><th>Messwert</th><th>Soll</th><th>Verbesserungsvorschlag</th></tr></thead>
 <tbody>
@@ -159,17 +200,32 @@ table.kriterien td.vorschlag { color:var(--fg); }
   <td><span class="badge {{ kr.status }}">{{ {'ok':'bestanden','teils':'teilweise','nein':'nicht bestanden','na':'entfällt'}[kr.status] }}</span></td>
   <td><strong>{{ kr.name }}</strong></td>
   <td class="zahl" data-label="Punkte">{% if kr.erfuellung is not none %}{{ ('%.1f'|format(kr.punkte * kr.erfuellung / 100)).replace('.', ',') }}/{{ kr.punkte }}{% else %}–{% endif %}</td>
-  <td data-label="Messwert">{{ kr.messwert }}</td>
+  <td data-label="Messwert">{{ kr.messwert }}{% if kr.id == 'b_menschlich' and lk and lk.kriterien and lk.kriterien.klingt_menschlich %}<div class="klein" style="margin-top:.3rem"><strong>Lektorat:</strong> Note {{ lk.kriterien.klingt_menschlich.note }}/5 – {{ lk.kriterien.klingt_menschlich.begruendung }}</div>{% endif %}</td>
   <td data-label="Soll" class="hinweis">{{ kr.soll }}</td>
-  <td data-label="Vorschlag" class="vorschlag">{{ kr.vorschlag or '–' }}</td>
+  <td data-label="Vorschlag" class="vorschlag">{{ kr.vorschlag or '–' }}{% if kr.kategorie == 'F' and kr.status in ('teils', 'nein') and satz_alle[kr.id] %}{% set sa = satz_alle[kr.id] %}<div class="klein warn-text" style="margin-top:.3rem">{% if sa.gemessen >= 2 and sa.betroffen == sa.gemessen %}Betrifft alle Artikel ({{ sa.betroffen }} von {{ sa.gemessen }}): Mangel der gemeinsamen <code>static/style.css</code>{% else %}Betrifft {{ sa.betroffen }} von {{ sa.gemessen }} Artikeln{% endif %} · <a href="/verwaltung/satz">Satz-Übersicht</a></div>{% endif %}</td>
 </tr>
 {% endfor %}
 </tbody></table></div>
 {% endfor %}
+<details class="card" style="margin-top:1rem"><summary>Klingt menschlich (KI-Muster): Regeln, Messwerte und Fundstellen</summary>
+<p class="klein hinweis">Quelle: {{ ki_quelle }}. Gezählt im Fließtext (ohne Code, Überschriften, Tabellen); wörtliche Zitate in „…“ zählen nicht. Gewicht: 4 der 25 Punkte von B (aus „Lesbarkeitsindex“, „Anteil sehr langer Sätze“, „Absatzlängen“ und „Einleitung“ umverteilt, B bleibt bei 25).</p>
+<div class="tabwrap"><table class="daten"><thead><tr><th>Muster</th><th class="zahl">Messwert</th><th class="zahl">Soll</th><th>Beschreibung</th></tr></thead><tbody>
+{% for r in ki_regeln %}{% set m = ki_messung[r.id] if ki_messung else none %}<tr><td><strong>{{ r.name }}</strong></td>
+<td class="zahl">{% if m %}<span class="{{ 'ok-text' if m.ok else 'warn-text' }}">{{ m.wert|string|replace('.', ',') }}{{ ' %' if r.prozent else ('' if r.absolut else ' / 1000') }}</span> <span class="klein hinweis">({{ m.anzahl }}×)</span>{% endif %}</td>
+<td class="zahl">≤ {{ r.soll|string|replace('.0', '')|replace('.', ',') }}{{ ' %' if r.prozent else '' }}</td><td class="klein">{{ r.beschreibung }} <em>{{ r.vorschlag }}</em></td></tr>{% endfor %}
+</tbody></table></div>
+{% if ki_funde %}<h3>Fundstellen ({{ ki_funde|length }} Absätze)</h3>
+<ul class="klein">{% for f in ki_funde[:25] %}<li><strong>Abschnitt „{{ f.abschnitt or 'Einleitung' }}“, Absatz {{ f.absatz }}</strong> <span class="hinweis">(Zeile {{ f.zeile }})</span>: {% for t in f.treffer %}<span class="zweck">{{ t.regel }}</span> „…{{ t.auszug }}…“ {% endfor %}</li>{% endfor %}</ul>{% if ki_funde|length > 25 %}<p class="klein hinweis">… und {{ ki_funde|length - 25 }} weitere Absätze.</p>{% endif %}{% endif %}
+</details>
 {% if b.kennzahlen.lange_saetze %}
 <details class="card" style="margin-top:1rem"><summary>Die längsten Sätze</summary>
 <ol class="klein">{% for s in b.kennzahlen.lange_saetze %}<li>{{ s }}{% if s|length >= 160 %} …{% endif %}</li>{% endfor %}</ol></details>
 {% endif %}
+
+{% if vz is not none %}{% include "_versionen_box.html" %}{% endif %}
+
+<h2 id="gutachten">Gutachten (Claude)</h2>
+{% include "_gutachten_box.html" %}
 
 <h2 id="lektorat">Lektorat (LLM, optional)</h2>
 <div class="card">
@@ -190,46 +246,6 @@ table.kriterien td.vorschlag { color:var(--fg); }
   </tbody></table></div>
   {% if lk.verbesserungen %}<h3>Drei Verbesserungen</h3><ol>{% for v in lk.verbesserungen %}<li>{{ v }}</li>{% endfor %}</ol>{% endif %}
   {% endif %}
-</div>
-
-<h2 id="metas">Metas optimieren</h2>
-<div class="card">
-  <form method="post" action="{{ url_for('ranking.metas_erzeugen', slug=meta.slug) }}" data-lang="Vorschläge werden erzeugt …" class="row">
-    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
-    <button type="submit" class="primary" {% if not llm.aktiv %}disabled{% endif %}>Metas optimieren</button>
-    {% if metas %}<span class="hinweis klein">Vorschläge vom {{ metas.zeitpunkt }} ({{ metas.modell }})</span>{% endif %}
-  </form>
-  {% if not llm.aktiv %}<p class="hinweis klein">{{ llm.hinweis }} Die Felder unten lassen sich trotzdem von Hand bearbeiten und übernehmen.</p>{% endif %}
-
-  <form method="post" action="{{ url_for('ranking.metas_pruefen', slug=meta.slug) }}" id="metas-form">
-    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
-    {% set gruppen = [('title', 'Titel', 'titel', 40, 70), ('description', 'Beschreibung', 'beschreibung', 120, 160), ('og_image_alt', 'og:image:alt (Alternativtext Vorschaubild)', 'og_image_alt', 60, 160)] %}
-    {% for feld, name, vkey, lo, hi in gruppen %}
-    <fieldset class="vorschlag-gruppe">
-      <legend>{{ name }} <span class="hinweis klein">Soll {{ lo }}–{{ hi }} Zeichen</span></legend>
-      <div class="variante">
-        <input type="radio" name="wahl_{{ feld }}" value="__aktuell" id="{{ feld }}-akt" checked data-text="{{ meta.get(feld) or '' }}">
-        <label for="{{ feld }}-akt"><span class="hinweis klein">Aktuell:</span> {{ meta.get(feld) or '(leer)' }} <span class="zaehler">({{ (meta.get(feld) or '')|length }} Z.)</span></label>
-      </div>
-      {% if metas and metas.bewertet %}
-      {% for v in metas.bewertet[vkey] %}
-      <div class="variante">
-        <input type="radio" name="wahl_{{ feld }}" value="{{ loop.index }}" id="{{ feld }}-{{ loop.index }}" data-text="{{ v.text }}">
-        <label for="{{ feld }}-{{ loop.index }}">{{ v.text }}
-          <span class="zaehler {{ 'ok-text' if v.ok else 'warn-text' }}">({{ v.laenge }} Z., Soll {{ v.soll }}{% if v.haken is defined %}, {{ 'Haken vorn' if v.haken else 'kein klarer Haken' }}{% endif %})</span></label>
-      </div>
-      {% endfor %}
-      {% endif %}
-      <label class="klein" for="{{ feld }}-text" style="display:block;margin-top:.5rem">Text (anpassbar) – <span class="zaehler" data-zaehler="{{ feld }}" data-lo="{{ lo }}" data-hi="{{ hi }}"></span></label>
-      <textarea name="{{ feld }}" id="{{ feld }}-text" rows="2" data-feld="{{ feld }}">{{ meta.get(feld) or '' }}</textarea>
-      <label class="row klein" style="margin-top:.3rem"><input type="checkbox" name="uebernehmen_{{ feld }}" value="1"> diesen Text übernehmen</label>
-      {% if feld == 'og_image_alt' and not og_image_gesetzt %}<p class="warn-text klein" style="margin:.2rem 0 0">Hinweis: build.py gibt og:image:alt nur aus, wenn im Frontmatter auch <code>og_image</code> gesetzt ist. Dieser Artikel hat kein og_image – der Alternativtext wirkt erst mit einem eigenen Vorschaubild (1200×630).</p>{% endif %}
-      {% if feld == 'og_image_alt' %}<p class="hinweis klein" style="margin:.2rem 0 0">Das LLM sieht das Bild nicht – Vorschlag vor der Übernahme mit dem Bild abgleichen.</p>{% endif %}
-    </fieldset>
-    {% endfor %}
-    <button type="submit" class="primary">Änderungen prüfen (Diff anzeigen)</button>
-    <p class="hinweis klein">Nächster Schritt zeigt den Diff; geschrieben wird erst nach Bestätigung, mit Backup. Es wird nichts gebaut, committet oder veröffentlicht.</p>
-  </form>
 </div>
 
 <h2 id="linkedin">LinkedIn-Wirkung</h2>
@@ -259,25 +275,5 @@ table.kriterien td.vorschlag { color:var(--fg); }
 </div>
 {% endblock %}
 {% block skript %}
-<script>
-(function () {
-  document.querySelectorAll('textarea[data-feld]').forEach(function (ta) {
-    var feld = ta.getAttribute('data-feld');
-    var z = document.querySelector('[data-zaehler="' + feld + '"]');
-    var lo = +z.getAttribute('data-lo'), hi = +z.getAttribute('data-hi');
-    var box = document.querySelector('input[name="uebernehmen_' + feld + '"]');
-    var start = ta.value;
-    function zaehle() {
-      var n = ta.value.trim().length;
-      z.textContent = n + ' Zeichen' + (n < lo ? ' – zu kurz' : n > hi ? ' – zu lang' : ' – im Soll');
-      z.className = 'zaehler ' + (n >= lo && n <= hi ? 'ok-text' : 'warn-text');
-    }
-    ta.addEventListener('input', function () { zaehle(); if (box) box.checked = ta.value.trim() !== start.trim(); });
-    document.querySelectorAll('input[name="wahl_' + feld + '"]').forEach(function (r) {
-      r.addEventListener('change', function () { ta.value = r.getAttribute('data-text'); zaehle(); if (box) box.checked = r.value !== '__aktuell'; });
-    });
-    zaehle();
-  });
-})();
-</script>
+{% if satz_laeuft %}<script>setTimeout(function () { location.reload(); }, 6000);</script>{% endif %}
 {% endblock %}

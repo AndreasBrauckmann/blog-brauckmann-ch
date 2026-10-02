@@ -4,21 +4,7 @@
 {% block titel %}{{ plattform or 'Plattform' }}{% endblock %}
 {% block kopf %}
 <style>
-.pv-post { border:1px solid var(--border); border-radius:10px; background:var(--card); padding:.8rem .9rem; max-width:560px; width:100%; }
-.pv-post.schmal { max-width:340px; }
-.pv-post .pv-inhalt { white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; font-size:.93rem; }
-.pv-post .pv-kopf { font-size:.82rem; color:var(--muted); margin-bottom:.4rem; }
-mark.gekuerzt { background:transparent; color:var(--muted); text-decoration:line-through; text-decoration-color:var(--bad); opacity:.75; }
-.mehr { color:var(--muted); }
-.pv-karte { border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--bg); margin-top:.6rem; max-width:100%; }
-.pv-karte.gross .pv-bild { aspect-ratio:1.91 / 1; width:100%; background:var(--bar); display:flex; align-items:center; justify-content:center; overflow:hidden; }
-.pv-karte.klein { display:flex; }
-.pv-karte.klein .pv-bild { flex:0 0 28%; max-width:120px; aspect-ratio:1/1; background:var(--bar); overflow:hidden; display:flex; align-items:center; justify-content:center; }
-.pv-karte .pv-bild img { width:100%; height:100%; object-fit:cover; display:block; }
-.pv-ktext { padding:.5rem .7rem .6rem; min-width:0; }
-.pv-titel { font-weight:600; font-size:.9rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
-.pv-beschr { color:var(--muted); font-size:.8rem; margin-top:.15rem; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
-.pv-domain { color:var(--muted); font-size:.74rem; margin-top:.2rem; }
+{% include "_pv_css.html" %}
 .vorschauen { display:flex; gap:1.2rem; flex-wrap:wrap; align-items:flex-start; }
 .vorschauen > div { min-width:0; max-width:100%; flex:1 1 300px; }
 .kartenlabel { font-size:.78rem; color:var(--muted); margin-bottom:.25rem; }
@@ -44,6 +30,9 @@ textarea.beitrag { min-height:9rem; font-size:.92rem; }
 .kopfzeile { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; }
 .klein-tab td, .klein-tab th { font-size:.84rem; }
 .meta-wert { overflow-wrap:break-word; min-width:13rem; }
+.ms-gesperrt { opacity:.38; filter:grayscale(1); pointer-events:none; user-select:none; }
+.ms-zeile { opacity:.5; } .ms-zeile td { color:var(--muted); }
+.ms-banner { margin-top:.8rem; }
 </style>
 {% endblock %}
 {% block inhalt %}
@@ -61,6 +50,8 @@ textarea.beitrag { min-height:9rem; font-size:.92rem; }
   <a class="knopf" href="{{ pc.post_url }}" target="_blank" rel="noopener">{{ plattform }} ↗</a>
 </div>
 
+{% if sperre %}<div class="warnbox ms-banner" role="alert"><strong>Für diesen Artikel gesperrt.</strong> {{ sperre }}</div>{% endif %}
+<div class="{% if sperre %}ms-gesperrt{% endif %}"{% if sperre %} inert aria-disabled="true"{% endif %}>
 {# ------------------------------------------------------------ 1. Vorschau #}
 <h2 id="vorschau">Vorschau</h2>
 {% if name == 'linkedin' %}
@@ -110,8 +101,8 @@ textarea.beitrag { min-height:9rem; font-size:.92rem; }
     {% if km.gekuerzt %}<p class="hinweis klein">gekürzt ab Zeichen {{ km.ab }}.</p>{% endif %}
   </div>
   <div>
-    <div class="kartenlabel">Feed-Karte (Link-Vorschau)</div>
-    <div class="pv-post">{{ pv.karte(kartentyp, bild_url, ctx.titel, ctx.beschreibung, ctx.domain, 0) }}</div>
+    <div class="kartenlabel">Feed-Karte (Link-Vorschau){% if name == 'linkedin' %} – Beschreibung blass: LinkedIn zeigt sie meist nicht{% endif %}</div>
+    <div class="pv-post{% if name == 'linkedin' %} pv-blass{% endif %}">{{ pv.karte(kartentyp, bild_url, ctx.titel, ctx.beschreibung, ctx.domain, 0) }}</div>
     <p class="hinweis klein">Titel nach zwei Zeilen abgeschnitten (am Desktop ~70–90 Zeichen, Telefon früher: {{ ctx.titel|length }} Zeichen). Die Beschreibung ({{ ctx.beschreibung|length }}) zeigt LinkedIn in der Karte meist nicht. Verbindlich ist nur der Post Inspector.</p>
   </div>
 </div>
@@ -280,15 +271,17 @@ textarea.beitrag { min-height:9rem; font-size:.92rem; }
 
 {% include "plattform_kennzahlen.html" %}
 
+</div>
 {# ------------------------------------------------------------ 8. Ranking #}
 <h2 id="ranking">Ranking aller Artikel für {{ plattform }}</h2>
 <div class="tabwrap"><table class="daten">
   <thead><tr><th class="zahl">Rang</th><th>Artikel</th><th>Eignung</th><th class="zahl">Wörter</th><th>Datum</th><th>Gepostet</th><th>Wirkung</th></tr></thead>
   <tbody>
   {% for r in zeilen %}
-    <tr {% if r.slug == slug %}style="background:var(--card)"{% endif %}>
+    <tr class="{% if r.gesperrt %}ms-zeile{% endif %}" {% if r.slug == slug %}style="background:var(--card)"{% endif %} {% if r.gesperrt %}title="{{ r.gesperrt }}"{% endif %}>
       <td class="zahl">{{ r.rang }}</td>
       <td class="kurz"><a href="{{ url_for('plattform.seite', name=name, slug=r.slug, **({'format': fmt} if fmt else {})) }}" title="{{ r.titel }}">{{ r.titel|kurztitel(40) }}</a></td>
+      {% if r.gesperrt %}<td style="min-width:5.5rem"><span class="badge offen">gesperrt</span></td>{% endif %}{% else %}
       <td style="min-width:5.5rem"><span class="punkt {{ r.ampel }}"></span><span class="score">{{ '%.0f'|format(r.score) }}</span><div class="balken"><span class="{{ r.ampel }}" style="width:{{ r.score }}%"></span></div></td>
       <td class="zahl">{{ r.woerter }}</td>
       <td>{{ r.datum|kurzdatum }}</td>

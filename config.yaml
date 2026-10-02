@@ -78,6 +78,9 @@ channels:
   microsoft_tech_community:
     enabled: false
     manual: true
+    # Nur Artikel mit Microsoft-Bezug sind dort zugelassen; alle anderen sind in der Verwaltung gesperrt
+    # (Passt ein Tag oder der Titel zu einem der Begriffe, gilt der Artikel als passend.)
+    themen: [Microsoft, Azure, Entra, Intune, M365, Microsoft 365, Defender, Power Platform, Copilot, SharePoint, Exchange, PowerShell, Microsoft Teams]
     note: "Kein öffentlicher Schreibzugang. Links auf Inhalte, die nicht Microsoft gehören, sind unerwünscht - Diskussion/Frage mit Mehrwert statt Werbelink."
     max_chars: 5000
 

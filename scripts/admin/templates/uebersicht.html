@@ -21,7 +21,7 @@
 {% for name, ch in channels.items() %}
 <div class="card">
   <div class="kanal-kopf">
-    <strong>{% if ch.seite %}<a href="/verwaltung/plattform/{{ name }}?slug={{ slug }}">{{ name }}</a>{% else %}{{ name }}{% endif %}</strong>
+    <strong>{% if ch.seite %}<a href="/verwaltung/plattform/{{ name }}?slug={{ slug }}">{{ PLATTFORM_NAMEN.get(name, name) }}</a>{% else %}{{ PLATTFORM_NAMEN.get(name, name) }}{% endif %}</strong>
     {% if ch.manual %}<span class="badge manual">manuell</span>
     {% elif ch.connected %}<span class="badge ok">verbunden</span>
     {% else %}<span class="badge bad">kein Token</span>{% endif %}
