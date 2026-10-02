@@ -10,7 +10,7 @@ tags: [KI, Claude, LinkedIn, Schreiben, Automatisierung]
 og_image: /static/img/og-quick-redaktor.jpg
 og_image_alt: "Schema des Quick-Redaktors: Beitragstext mit roten Streichungen und grünen Ergänzungen, daneben drei Kennzahlen aus dem Probelauf."
 thumb: /static/img/thumbs/quick-redaktor-und-blog-verwaltung.jpg
-draft: true
+draft: false
 changelog:
   - datum: 2026-10-02
     text: "Entwurf: Blog-Verwaltung, Quick-Redaktor und Ergebnisse der Probeläufe."
@@ -44,10 +44,8 @@ Die Amstad-Formel habe ich selbst umgesetzt. Die übliche Bibliothek zählt deut
 | KVM-Switch per Siri | 87 Zeichen | 62 Zeichen |
 | Monitoring, Teil 2 | 94 Zeichen | 60 Zeichen |
 | Netdata und Claude | 100 Zeichen | 54 Zeichen |
-| KI-Tempo und Skills | 85 Zeichen | 54 Zeichen |
+| Sieben Monate, elf Umbrüche | 85 Zeichen | 54 Zeichen |
 | Wirtschaftskalender | 124 Zeichen | 58 Zeichen |
-
-[PRÜFEN: Gesamtnoten vor der Überarbeitung 80,8 bis 93,6, erwartet danach 89,2 bis 98,5 laut Simulation. Im Repo nicht belegt.]
 
 ## Claude als Lektor, mit Leitplanken
 
@@ -55,7 +53,7 @@ Gebaut habe ich die Verwaltung im Gespräch mit Claude Code. Ich habe beschriebe
 
 Über die Messung hinaus arbeitet die Verwaltung mit Claude. Ein Knopf startet das Lektorat: Claude bewertet neun Kriterien und nennt drei konkrete Verbesserungen. Ein zweiter Knopf heißt „Alles in Ordnung bringen“. Er schreibt bis zu acht Runden lang Vorschläge, misst nach jeder Runde neu und hört auf, wenn sich zweimal nichts verbessert.
 
-[PRÜFEN: Die Artikel entstanden mit Claude Sonnet 5.] Die Überarbeitung lief mit Claude Opus 4.6. Die Anfragen gehen über den claude-code-openai-wrapper auf dem Raspberry Pi. Das Modell richtet sich nach der Aufgabe. Metas und Plattformtexte bekommt das Standardmodell, Lektorat und Textüberarbeitung die starke Stufe. Besteht ein Ergebnis die Prüfung zweimal nicht, wiederholt die Verwaltung den Auftrag eine Stufe höher.
+Die Anfragen gehen über den claude-code-openai-wrapper auf dem Raspberry Pi. Das Modell richtet sich nach der Aufgabe. Metas und Plattformtexte bekommt das Standardmodell, Lektorat und Textüberarbeitung die starke Stufe. Besteht ein Ergebnis die Prüfung zweimal nicht, wiederholt die Verwaltung den Auftrag eine Stufe höher.
 
 Die wichtigste Leitplanke ist die Schutzprüfung. Sie vergleicht jeden Vorschlag mit dem Original. Zahlen, Links, Code, Fachbegriffe und wörtliche Zitate müssen erhalten bleiben. Fehlt eine Zahl oder taucht eine neue auf, verwirft die Verwaltung die Stelle und erklärt den Grund in einem Satz.
 
@@ -67,7 +65,7 @@ Veröffentlichen folgt einer festen Reihenfolge: prüfen, bauen, Diff ansehen, v
 
 Zwei Schritte bleiben bei mir. Den Knopf „Veröffentlichen“ drücke ich selbst. Danach gebe ich die Live-Adresse im LinkedIn Post Inspector ein und kontrolliere Titel, Bild und Beschreibung. Der Inspector erneuert auch den Zwischenspeicher von LinkedIn. Diesen Schritt automatisiere ich nicht, und LinkedIn selbst bediene ich nie per Skript.
 
-Die Testsuite wuchs während der Arbeit von 62 auf 232 Tests. Mit dem Quick-Redaktor kamen 33 dazu.
+Die Testsuite wuchs während der Arbeit von 62 auf 232 Tests. Mit dem Quick-Redaktor kamen 35 dazu, heute sind es 267.
 
 ## Was schiefging
 
