@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert · Brauckmann Blog</title>
+<title>LinkedIn-Beiträge prüfen: Post Inspector, Messwerte, KI-Lektor · Brauckmann Blog</title>
 <link rel="canonical" href="https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
 
@@ -16,17 +16,17 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Brauckmann Blog">
 <meta property="og:locale" content="de_DE">
-<meta name="title" property="og:title" content="Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert">
-<meta name="description" property="og:description" content="Aus einer Blog-Verwaltung mit 6 Teilnoten, Schutzprüfung und Deploy-Panel entstand ein Werkzeug für Kollegen: mit Messwerten, Pannen und Probeläufen.">
+<meta name="title" property="og:title" content="LinkedIn-Beiträge prüfen: Post Inspector, Messwerte, KI-Lektor">
+<meta name="description" property="og:description" content="Die Link-Karte kontrollieren, den Text messen und Claude lektorieren lassen, ohne dass Zahlen, Adressen oder Zitate verloren gehen.">
 <meta property="og:url" content="https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/">
 <meta name="image" property="og:image" content="https://blog.brauckmann.ch/static/img/og-quick-redaktor.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Schema des Quick-Redaktors: Beitragstext mit roten Streichungen und grünen Ergänzungen, daneben drei Kennzahlen aus dem Probelauf.">
+<meta property="og:image:alt" content="Schema einer Textprüfung: Beitragstext mit roten Streichungen und grünen Ergänzungen, daneben drei Kennzahlen.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert">
-<meta name="twitter:description" content="Aus einer Blog-Verwaltung mit 6 Teilnoten, Schutzprüfung und Deploy-Panel entstand ein Werkzeug für Kollegen: mit Messwerten, Pannen und Probeläufen.">
+<meta name="twitter:title" content="LinkedIn-Beiträge prüfen: Post Inspector, Messwerte, KI-Lektor">
+<meta name="twitter:description" content="Die Link-Karte kontrollieren, den Text messen und Claude lektorieren lassen, ohne dass Zahlen, Adressen oder Zitate verloren gehen.">
 <meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/og-quick-redaktor.jpg">
 <meta property="article:published_time" content="2026-10-02">
 <meta property="article:modified_time" content="2026-10-02">
@@ -42,8 +42,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert",
-  "description": "Aus einer Blog-Verwaltung mit 6 Teilnoten, Schutzprüfung und Deploy-Panel entstand ein Werkzeug für Kollegen: mit Messwerten, Pannen und Probeläufen.",
+  "headline": "LinkedIn-Beiträge prüfen: Post Inspector, Messwerte, KI-Lektor",
+  "description": "Die Link-Karte kontrollieren, den Text messen und Claude lektorieren lassen, ohne dass Zahlen, Adressen oder Zitate verloren gehen.",
   "datePublished": "2026-10-02",
   "dateModified": "2026-10-02",
   "inLanguage": "de",
@@ -679,7 +679,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <main>
   <article>
     <header>
-      <h1>Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert</h1>
+      <h1>LinkedIn-Beiträge prüfen: Post Inspector, Messwerte, KI-Lektor</h1>
       <time class="article-date" datetime="2026-10-02">2026-10-02</time>
       <div class="article-meta-row">
         <div class="tags"><a class="tag" href="/tag/ki/">KI</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/linkedin/">LinkedIn</a><a class="tag" href="/tag/schreiben/">Schreiben</a><a class="tag" href="/tag/automatisierung/">Automatisierung</a></div>
@@ -690,160 +690,134 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </header>
     <div class="summary-box is-open" id="summary-box">
       <div class="summary-box-inner">
-        <p>In zwei Tagen habe ich mit Claude eine Verwaltung für meinen Blog gebaut. Sie hat ein Ranking mit sechs Teilnoten, ein Lektorat per KI und eine Schutzprüfung für Zahlen und Zitate. Dazu kommen ein Versionsverlauf und ein Deploy-Panel mit Menschen-Schritt. Daraus ist der Quick-Redaktor entstanden, eine kleine Seite für zwei bis vier Kollegen. Man fügt einen LinkedIn-Beitrag ein und bekommt den verbesserten Text, eine Liste der Änderungen mit Begründung, die offenen Punkte und eine Prüfliste mit Punktzahl. In drei Probeläufen mit absichtlich schwachen Beiträgen stieg die Punktzahl im Modus „Behutsam“ von 61 bis 77 auf 75 bis 99. Der Artikel zeigt Aufbau, Werkzeuge, Pannen und was Leser für ihre eigenen Beiträge mitnehmen können.</p>
+        <p>Ein LinkedIn-Beitrag mit Link hat zwei Teile, die du prüfen kannst: die Link-Karte und den Text. Die Karte kontrollierst du im LinkedIn Post Inspector, den nur wenige kennen. Den Text misst du mit wenigen Regeln: Länge, Anfang vor dem Wort „mehr“, Absätze, Hashtags und Gedankenstriche. Danach lässt du Claude den Text überarbeiten und schützt Zahlen, Adressen und Zitate mit einer eigenen Prüfung. Der Artikel zeigt jeden Schritt mit Code und einer Checkliste für den Alltag.</p>
       </div>
     </div>
     
-    <h2 id="ein-titel-mit-124-zeichen">Ein Titel mit 124 Zeichen</h2>
-<p>Mein längster Artikeltitel hatte 124 Zeichen. LinkedIn schneidet die Überschrift einer Link-Karte nach zwei Zeilen ab, Google schon nach etwa 60 Zeichen. Gemerkt habe ich das erst, als ich alle fünf Artikel nebeneinander gemessen habe. Heute liegen die Titel zwischen 54 und 62 Zeichen.</p>
-<p>Gemessen hat eine Verwaltung, die ich in zwei Tagen mit Claude gebaut habe. Ich bin Senior System Engineer und kein Texter. Mir fehlte ein Lektorat, das nachzählt, statt zu loben. Aus dieser Verwaltung ist ein zweites Werkzeug entstanden: der Quick-Redaktor für Kollegen, die selbst auf LinkedIn schreiben.</p>
-<p>Dieser Text beschreibt beides. Er nennt die Werkzeuge, die Pannen und die Zahlen aus drei Probeläufen.</p>
-<h2 id="was-die-verwaltung-misst">Was die Verwaltung misst</h2>
-<p>Die Verwaltung ist eine kleine Flask-Anwendung neben dem statischen Blog-Generator. Sie läuft auf einem Raspberry Pi und ist nur im eigenen Netz erreichbar. Das Herz ist ein Ranking mit sechs Teilnoten:</p>
-<ul>
-<li><strong>A · Vorschau und Meta:</strong> Titellänge, Beschreibung, Vorschaubild, Pflicht-Meta-Tags.</li>
-<li><strong>B · Lesbarkeit und Fluss:</strong> Lesbarkeitsindex nach Amstad, Satzlänge, Füllwörter und „Klingt menschlich“.</li>
-<li><strong>C · Struktur:</strong> Überschriften, Listen, Abschnittslängen.</li>
-<li><strong>D · Grafiken:</strong> Abstand zwischen Bildern, Alt-Texte, Bildgewichte.</li>
-<li><strong>E · SEO:</strong> Schlüsselbegriffe, Links, Aktualität.</li>
-<li><strong>F · Satz und Layout:</strong> Playwright öffnet die gebaute Seite am Desktop mit 1.280 Pixeln und am Handy mit 393 Pixeln, jeweils hell und dunkel. Es misst Schriftgröße, Zeilenlänge und Kontrast.</li>
-</ul>
-<p>Die Amstad-Formel habe ich selbst umgesetzt. Die übliche Bibliothek zählt deutsche Silben über Trennstellen, und das verfälscht den Wert. Für Fundstellen im Text läuft Vale mit eigenen Regeln.</p>
-<p>„Klingt menschlich“ zählt Muster, die Texte nach KI klingen lassen. Dazu gehören Gedankenstriche, die Figur „nicht X, sondern Y“, Einleiter wie „Kurz vorweg“ und Verstärker wie „wirklich“. Die Ideen stammen aus stop-slop. Vor der Überarbeitung standen in allen fünf Artikeln zwischen 22 und 29 Gedankenstriche je 1.000 Wörter. Das Soll liegt bei höchstens vier.</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Artikel</th>
-<th>Titel vorher</th>
-<th>Titel nachher</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>KVM-Switch per Siri</td>
-<td>87 Zeichen</td>
-<td>62 Zeichen</td>
-</tr>
-<tr>
-<td>Monitoring, Teil 2</td>
-<td>94 Zeichen</td>
-<td>60 Zeichen</td>
-</tr>
-<tr>
-<td>Netdata und Claude</td>
-<td>100 Zeichen</td>
-<td>54 Zeichen</td>
-</tr>
-<tr>
-<td>Sieben Monate, elf Umbrüche</td>
-<td>85 Zeichen</td>
-<td>54 Zeichen</td>
-</tr>
-<tr>
-<td>Wirtschaftskalender</td>
-<td>124 Zeichen</td>
-<td>58 Zeichen</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="claude-als-lektor-mit-leitplanken">Claude als Lektor, mit Leitplanken</h2>
-<p>Gebaut habe ich die Verwaltung im Gespräch mit Claude Code. Ich habe beschrieben, was ich brauche, Zwischenstände angesehen und Regeln nachgeschärft. Größere Teilaufgaben gingen an Unteragenten. Auch deren Modell folgt einer festen Tabelle: Haiku für Mechanisches, Sonnet für die Umsetzung, Opus für Lektorat, Abwägung und Korrektheit. Jede Regel, die sich bewährt hat, steht heute in der Projektdatei CLAUDE.md. So beginnt die nächste Sitzung mit demselben Stand.</p>
-<p>Über die Messung hinaus arbeitet die Verwaltung mit Claude. Ein Knopf startet das Lektorat: Claude bewertet neun Kriterien und nennt drei konkrete Verbesserungen. Ein zweiter Knopf heißt „Alles in Ordnung bringen“. Er schreibt bis zu acht Runden lang Vorschläge, misst nach jeder Runde neu und hört auf, wenn sich zweimal nichts verbessert.</p>
-<p>Die Anfragen gehen über den claude-code-openai-wrapper auf dem Raspberry Pi. Das Modell richtet sich nach der Aufgabe. Metas und Plattformtexte bekommt das Standardmodell, Lektorat und Textüberarbeitung die starke Stufe. Besteht ein Ergebnis die Prüfung zweimal nicht, wiederholt die Verwaltung den Auftrag eine Stufe höher.</p>
-<p>Die wichtigste Leitplanke ist die Schutzprüfung. Sie vergleicht jeden Vorschlag mit dem Original. Zahlen, Links, Code, Fachbegriffe und wörtliche Zitate müssen erhalten bleiben. Fehlt eine Zahl oder taucht eine neue auf, verwirft die Verwaltung die Stelle und erklärt den Grund in einem Satz.</p>
-<p>Nichts davon schreibt ungefragt in einen Artikel. Ein Vorschlag landet erst nach Diff, Bestätigung und Backup in der Datei. Ein Versionsverlauf hält jede Fassung fest und stellt sie auf Knopfdruck wieder her.</p>
-<h2 id="das-deploy-panel-und-der-menschen-schritt">Das Deploy-Panel und der Menschen-Schritt</h2>
-<p>Veröffentlichen folgt einer festen Reihenfolge: prüfen, bauen, Diff ansehen, veröffentlichen, live prüfen. Ein eigener Inspector ruft die Live-Seite so ab, wie es der Bot von LinkedIn tut. Er prüft die fünf Pflicht-Meta-Tags, das Vorschaubild und den Zwischenspeicher. Commit und Push laufen nur auf Knopfdruck und nur für ausgewählte Pfade.</p>
-<p>Zwei Schritte bleiben bei mir. Den Knopf „Veröffentlichen“ drücke ich selbst. Danach gebe ich die Live-Adresse im LinkedIn Post Inspector ein und kontrolliere Titel, Bild und Beschreibung. Der Inspector erneuert auch den Zwischenspeicher von LinkedIn. Diesen Schritt automatisiere ich nicht, und LinkedIn selbst bediene ich nie per Skript.</p>
-<p>Die Testsuite wuchs während der Arbeit von 62 auf 232 Tests. Mit dem Quick-Redaktor kamen 35 dazu, heute sind es 267.</p>
-<h2 id="was-schiefging">Was schiefging</h2>
-<p>Drei Pannen haben mich am meisten gelehrt.</p>
-<p><strong>Der Wrapper startete mitten im Lauf neu.</strong> Die Verwaltung bekam einen ConnectionResetError und brach ab. Jetzt wiederholt sie Anfragen bei Verbindungsfehlern nach 5, 15, 30, 60 und 120 Sekunden. Inhaltliche Fehler wiederholt sie nie.</p>
-<p><strong>Anführungszeichen zerbrachen das JSON.</strong> Claude antwortet in JSON und übernimmt dabei Zitate aus dem Artikel. Ein gerades Anführungszeichen mitten im Text beendet aber eine JSON-Zeichenkette. Die Auswertung repariert solche Stellen jetzt selbst. Beim Quick-Redaktor kam die Panne zurück: In den ersten fünf Probeläufen scheiterten alle fünf Antworten. Das Modell schrieb deutsche Anführungszeichen unten auf, oben aber gerade. Eine gezielte Reparatur und eine Nachfrage lösten das.</p>
-<p><strong>Die Schutzprüfung war strenger als gedacht.</strong> Claude wollte wörtliche Zitate glätten. Die Prüfung lehnte das ab, und das ist richtig so. Ein Zitat gehört dem, der es gesagt hat.</p>
-<p>Daraus habe ich gelernt: Ein Sprachmodell braucht eine Prüfung, die nicht von ihm selbst stammt. Die Regeln stehen im Code, und ein Test belegt jede einzelne.</p>
-<h2 id="der-quick-redaktor-fur-kollegen">Der Quick-Redaktor für Kollegen</h2>
-<p>Zwei bis vier Kollegen schreiben ebenfalls auf LinkedIn. Für sie gibt es jetzt eine kleine Seite. Man fügt den Beitrag ein, wählt einen Modus und drückt einen Knopf. Zurück kommen vier Dinge:</p>
+    <p>Bevor du einen Beitrag mit Link auf LinkedIn postest, kannst du die Link-Karte kostenlos prüfen. Viele überspringen diesen Schritt. Danach misst du den Text und lässt ihn von Claude überarbeiten, ohne dass Zahlen und Zitate verloren gehen.</p>
+<h2 id="der-linkedin-post-inspector-die-prufseite-fur-deine-link-karte">Der LinkedIn Post Inspector: die Prüfseite für deine Link-Karte</h2>
+<p>LinkedIn liest die Karte aus den Open-Graph-Angaben im Kopf deiner Seite. Vier davon braucht LinkedIn laut eigener Entwicklerhilfe: <code>og:title</code>, <code>og:description</code>, <code>og:image</code> und <code>og:url</code>. Fehlt eine, rät LinkedIn aus dem Seiteninhalt. Das Ergebnis ist oft ein falsches oder gar kein Bild.</p>
+<p>Das Bild sollte mindestens 1.200 Pixel breit sein, am besten im Verhältnis 1,91 zu 1, also 1.200 mal 627 Pixel. Mit kleineren Bildern zeigt LinkedIn oft keine große Karte.</p>
+<p>Ob alles ankommt, siehst du im <strong>LinkedIn Post Inspector</strong>. Das Werkzeug ist kostenlos und gehört LinkedIn. Es ruft deine Seite so ab wie LinkedIn selbst und zeigt, welche Angaben es gefunden hat.</p>
 <ol>
-<li>der verbesserte Text mit Kopier-Knopf und einem Wortvergleich in Rot und Grün,</li>
-<li>die Liste „Was ich geändert habe“, je Änderung mit Begründung,</li>
-<li>„Was noch nicht gut ist“, je Punkt mit einem konkreten Handgriff,</li>
-<li>eine Prüfliste mit Messwert, Soll und Punktzahl von 0 bis 100, vorher und nachher.</li>
+<li>Öffne <code>linkedin.com/post-inspector</code> und melde dich an.</li>
+<li>Füge die Adresse deines Artikels ein und klicke auf <strong>Inspect</strong>.</li>
+<li>Lies Titel, Beschreibung und Bild in der Vorschau. Darunter stehen die gefundenen Angaben und mögliche Hinweise.</li>
+<li>Stimmt etwas nicht, behebe es auf deiner Seite und klicke erneut auf <strong>Inspect</strong>.</li>
 </ol>
-<p>Es gibt drei Modi. „Behutsam“ behebt Fehler, KI-Muster und schwere Sätze und lässt die Stimme des Autors stehen. „Straffen“ kürzt auf 300, 600 oder 1.300 Zeichen. „Nur prüfen“ misst ohne KI und kostet nichts.</p>
-<p>Die Prüfliste kennzeichnet jede Regel. Belegt ist die harte Grenze von 3.000 Zeichen. Ein Praxiswert ist die Sichtbarkeit vor „…mehr“: mobil etwa 140 Zeichen, am Desktop etwa 210. Ebenfalls aus der Praxis stammt mein Befund, dass die Link-Karte in der Profil-Übersicht nur bei kurzem Text erschien. Ob die Stelle der Adresse dafür eine Rolle spielt, ist nicht belegt. Kurze Absätze und höchstens drei Hashtags sind Hausregeln, ebenso der Aufbau am Schluss. Die Seite markiert sie als „nicht geprüft“.</p>
-<p>Der Aufbau am Schluss folgt einer festen Reihenfolge. Die Adresse steht direkt hinter dem letzten Satz, im selben Absatz. Dann folgt eine Leerzeile, und in der letzten Zeile stehen die Hashtags. So steht die Adresse dort, wo das Auge nach dem Lesen hinfällt, und nichts drängt sich davor. Hashtags sind das Unwichtigste und kommen zuletzt. Die Leerzeile verhindert am Handy, dass der Daumen ein Hashtag statt der Adresse trifft.</p>
-<p>Im Hintergrund laufen dieselben Bausteine wie in der Verwaltung: Musterzählung, Amstad, Schutzprüfung und Modellwahl. Neu ist eine Ebene ohne KI. Sie entfernt Markdown-Sterne, wandelt Unicode-„Fett“ zurück und stellt auf Wunsch Adresse und Hashtags in diese Reihenfolge. Erwähnungen, Hashtags, Links und Zahlen schützt die Schutzprüfung zusätzlich.</p>
-<p>Für den Probelauf habe ich drei absichtlich schwache Beiträge geschrieben: Floskeln, Gedankenstriche, acht oder neun Hashtags, ein Link mitten im Satz, eine Textwand.</p>
+<p>Der letzte Schritt hat eine Nebenwirkung, die du kennen solltest. LinkedIn speichert die Karte zwischen. Der Post Inspector erneuert diesen Speicher, sobald du eine Adresse prüfst. Das gilt aber nur für neue Beiträge. Ein Beitrag, der bereits veröffentlicht ist, behält seine alte Karte. Fehlte das Bild beim ersten Posten, hilft nur ein neuer Beitrag.</p>
+<p>Daraus folgt die wichtigste Regel: <strong>Erst den Post Inspector, dann posten.</strong> Prüfe jede neue Adresse, bevor sie in einem Beitrag steht.</p>
+<h2 id="den-text-messen">Den Text messen</h2>
+<p>Ein Text lässt sich mit wenigen Regeln prüfen. Manche Regeln sind belegt, andere Erfahrung, andere Hausregeln. Trenne das, damit du nichts als Gesetz behandelst, was nur Geschmack ist.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
-<th>Beitrag</th>
-<th>Modus</th>
-<th>Punkte vorher</th>
-<th>Punkte nachher</th>
-<th>Zeichen</th>
-<th>Dauer</th>
+<th>Regel</th>
+<th>Wert</th>
+<th>Art</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Cloud-Migration</td>
-<td>Behutsam</td>
-<td>61</td>
-<td>75</td>
-<td>1.010 → 860</td>
-<td>30 s</td>
+<td>Höchstlänge eines Beitrags</td>
+<td>3.000 Zeichen</td>
+<td>belegt, harte Grenze</td>
 </tr>
 <tr>
-<td>Cloud-Migration</td>
-<td>Straffen auf 600</td>
-<td>61</td>
-<td>94</td>
-<td>1.010 → 460</td>
-<td>44 s</td>
+<td>Sichtbar vor „mehr“</td>
+<td>mobil etwa 140, am Desktop etwa 210 Zeichen</td>
+<td>Erfahrung, schwankt</td>
 </tr>
 <tr>
-<td>Zertifizierung</td>
-<td>Behutsam</td>
-<td>77</td>
-<td>99</td>
-<td>681 → 419</td>
-<td>24 s</td>
+<td>Hashtags</td>
+<td>höchstens drei, gesammelt am Ende</td>
+<td>Hausregel</td>
 </tr>
 <tr>
-<td>Konferenzbericht</td>
-<td>Behutsam</td>
-<td>69</td>
-<td>89</td>
-<td>1.004 → 812</td>
-<td>28 s</td>
+<td>Absätze</td>
+<td>höchstens 50 Wörter</td>
+<td>Hausregel</td>
 </tr>
 <tr>
-<td>Konferenzbericht</td>
-<td>Straffen auf 300</td>
-<td>69</td>
-<td>92</td>
-<td>1.004 → 318</td>
-<td>19 s</td>
+<td>Gedankenstriche</td>
+<td>möglichst keine</td>
+<td>Hausregel</td>
 </tr>
 </tbody>
 </table></div>
-<p>Die fünf Läufe brauchten zusammen 143 Sekunden und sechs KI-Aufrufe. Beim Konferenzbericht verwarf die Schutzprüfung drei Änderungen. Claude hatte zwei Zahlen von einem Satz in einen anderen verschoben und eine Stelle auf ein Viertel gekürzt. Beim Straffen auf 300 Zeichen kamen 318 heraus; die Prüfliste zeigt das offen an.</p>
-<p>Die Ergebnisse schwanken. Ein früherer Lauf mit demselben Migrationsbeitrag kam auf 98 Punkte. Claude hatte damals den ersten Satz umgebaut; diesmal verwarf die Schutzprüfung diesen Umbau als zu starke Kürzung. Wer das Werkzeug nutzt, liest deshalb zuerst den Vergleich in Rot und Grün und erst danach die Punktzahl.</p>
-<p>Datenschutz hat Vorrang. Die Seite speichert keine Texte und protokolliert sie nicht. Sie zählt nur Länge, Modus, Dauer und Punktzahl. Ein Test sucht nach jedem Lauf alle neuen Dateien und die Logausgabe nach dem eingegebenen Text. Ein Hinweis auf der Seite bittet, keine vertraulichen Firmeninhalte einzufügen. Ohne ausdrückliche Einstellung läuft nur „Nur prüfen“. Ob die KI-Modi über mein persönliches Abo für andere laufen dürfen, kläre ich vor der Freigabe.</p>
-<h2 id="fazit-messen-bevor-man-postet">Fazit: Messen, bevor man postet</h2>
-<p>Zwei Tage reichten für eine Verwaltung und ein Werkzeug für Kollegen. Den größten Gewinn brachte die Messung. Claude formuliert gut, und die Prüfung danach sorgt dafür, dass dabei keine Zahl und kein Zitat verloren geht.</p>
-<p>Wer selbst auf LinkedIn postet, kann fünf Punkte ohne jedes Werkzeug prüfen:</p>
+<p>Die zweite Zeile ist die wichtigste. Alles nach etwa 140 Zeichen versteckt LinkedIn hinter „mehr“. Der erste Satz muss deshalb den Kern enthalten und vor dieser Grenze enden.</p>
+<p>Gedankenstriche stehen hier, weil sie in KI-Texten auffallen. Ein einzelner stört nicht. Zehn in einem Beitrag lesen sich wie maschinell erzeugt.</p>
+<p>So misst du das in Python, ohne Bibliothek:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pruefe</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">erste_zeile</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">absaetze</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\n\s*\n"</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">if</span> <span class="n">a</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"zeichen"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span>
+        <span class="s2">"zu_lang"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3000</span><span class="p">,</span>
+        <span class="s2">"erster_satz_vor_140"</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[.!?]"</span><span class="p">,</span> <span class="n">erste_zeile</span><span class="p">[:</span><span class="mi">140</span><span class="p">])),</span>
+        <span class="s2">"hashtags"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;!\w)#\w+"</span><span class="p">,</span> <span class="n">text</span><span class="p">)),</span>
+        <span class="s2">"gedankenstriche"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">" [–—] |--"</span><span class="p">,</span> <span class="n">text</span><span class="p">)),</span>
+        <span class="s2">"langer_absatz"</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">absaetze</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="s2">"adresse_im_text"</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"https?://"</span><span class="p">,</span> <span class="n">text</span><span class="p">)),</span>
+    <span class="p">}</span>
+</code></pre></div>
+
+<p>Der Aufruf <code>pruefe(text)</code> liefert für einen Beitrag sofort ein Ergebnis. Wichtig ist die Reihenfolge der Ausgabe: Zahlen und Ja/Nein-Werte, keine Bewertung. Ob ein Wert stört, entscheidest du.</p>
+<h2 id="claude-als-lektor-mit-schutzprufung">Claude als Lektor, mit Schutzprüfung</h2>
+<p>Eine KI überarbeitet Text gut und verändert dabei gern mehr, als du willst. Sie rundet Zahlen, verschiebt Zahlen zwischen Sätzen, kürzt Zitate und baut Adressen um. Deshalb braucht jede Überarbeitung eine Prüfung, die nicht von der KI selbst stammt.</p>
+<p><strong>Der Auftrag.</strong> Gib Claude eine klare Rolle und enge Grenzen. Ein Beispiel:</p>
+<div class="codehilite"><pre><span></span><code>Du bist Lektor für LinkedIn-Beiträge. Überarbeite den Text so wenig wie nötig.
+Behalte Zahlen, Namen, Adressen, Hashtags und wörtliche Zitate unverändert.
+Streiche Floskeln und Gedankenstriche. Stelle den Kern in den ersten Satz.
+Antworte als JSON: {"text": "...", "aenderungen": [{"was": "...", "warum": "..."}]}
+</code></pre></div>
+
+<p>Die Liste der Änderungen mit Begründung ist wichtig. Sie macht die Überarbeitung nachvollziehbar, und du siehst, wo Claude eingegriffen hat.</p>
+<p><strong>Die Schutzprüfung.</strong> Sie vergleicht Original und Vorschlag und verwirft jede Überarbeitung, bei der etwas Geschütztes fehlt:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ZAHL</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\d+(?:[.,]\d+)*"</span><span class="p">)</span>
+<span class="n">ADRESSE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"https?://\S+"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">schutzpruefung</span><span class="p">(</span><span class="n">original</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vorschlag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">fehler</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ZAHL</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">original</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ZAHL</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">vorschlag</span><span class="p">)):</span>
+        <span class="n">fehler</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Zahlen verändert"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ADRESSE</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">original</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ADRESSE</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">vorschlag</span><span class="p">)):</span>
+        <span class="n">fehler</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Adresse verändert"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">zitat</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"„[^“]+“"</span><span class="p">,</span> <span class="n">original</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">zitat</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vorschlag</span><span class="p">:</span>
+            <span class="n">fehler</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Zitat fehlt: </span><span class="si">{</span><span class="n">zitat</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fehler</span>
+</code></pre></div>
+
+<p>Probiere sie an einem Beispiel. Das Original sagt „3 Server in 12 Wochen“. Schreibt Claude „Drei Server in 12 Wochen“, meldet die Prüfung <code>Zahlen verändert</code>. Das ist Absicht: Die Prüfung vergleicht Zeichen und deutet keinen Sinn. Eine Umformung von „3“ zu „Drei“ lässt du dann von Hand zu. Das ist besser als eine Prüfung, die zu viel durchlässt.</p>
+<p><strong>Nichts ohne dich.</strong> Zeige den Vorschlag als Vergleich, am besten mit Streichungen in Rot und Ergänzungen in Grün, und übernimm ihn erst nach deiner Bestätigung. Lies den Vergleich zuerst und die Zahlen danach. Eine KI schwankt von Lauf zu Lauf, und derselbe Text kommt nicht jedes Mal gleich heraus.</p>
+<p><strong>Antwort als JSON, mit Nachfrage.</strong> Eine Falle für alle, die Claude in ein Programm einbinden: Zitate im Text enthalten oft gerade Anführungszeichen, und ein solches Zeichen beendet in JSON eine Zeichenkette. Prüfe die Antwort deshalb beim Einlesen. Gelingt es nicht, frage Claude einmal nach, statt abzubrechen.</p>
+<h2 id="der-aufbau-am-schluss">Der Aufbau am Schluss</h2>
+<p>Die Reihenfolge am Ende eines Beitrags zählt. Eine bewährte Anordnung ist diese:</p>
+<ol>
+<li>der letzte Satz,</li>
+<li>die Adresse direkt dahinter, im selben Absatz,</li>
+<li>eine Leerzeile,</li>
+<li>die Hashtags in der letzten Zeile.</li>
+</ol>
+<p>Die Adresse steht dort, wo das Auge nach dem Lesen hinfällt. Hashtags sind das Unwichtigste und kommen zuletzt. Die Leerzeile hilft am Handy, damit der Daumen kein Hashtag statt der Adresse trifft. Ob die Stelle der Adresse die Anzeige der Karte beeinflusst, ist nicht belegt. Probiere es mit deinen eigenen Beiträgen aus.</p>
+<h2 id="datenschutz-bei-fremden-texten">Datenschutz bei fremden Texten</h2>
+<p>Wenn du die Prüfung als Seite für Kollegen bereitstellst, gilt: Speichere keine Texte und schreibe sie in kein Protokoll. Zähle höchstens Länge, Dauer und Punktzahl. Ein Test, der nach jedem Lauf alle neuen Dateien nach dem eingegebenen Text durchsucht, schützt dich davor, dass ein Hilfsprogramm ihn doch ablegt. Weise auf der Seite darauf hin, dass niemand vertrauliche Firmeninhalte einfügen soll. Und kläre vorher die Nutzungsbedingungen deines KI-Zugangs, wenn Texte anderer Personen darüber laufen.</p>
+<h2 id="checkliste-vor-dem-posten">Checkliste vor dem Posten</h2>
 <ul>
-<li>Den Kern in den ersten Satz stellen und den Satz vor Zeichen 140 beenden.</li>
-<li>Gedankenstriche, „Kurz vorweg“ und „wirklich“ streichen.</li>
-<li>Absätze mit mehr als 50 Wörtern teilen.</li>
-<li>Höchstens drei Hashtags setzen, gesammelt am Ende.</li>
-<li>Die Adresse direkt hinter den letzten Satz setzen, nach einer Leerzeile die Hashtags.</li>
+<li>Den Kern in den ersten Satz stellen und ihn vor Zeichen 140 beenden.</li>
+<li>Gedankenstriche, Floskeln wie „Kurz vorweg“ und Verstärker wie „wirklich“ streichen.</li>
+<li>Absätze über 50 Wörter teilen.</li>
+<li>Höchstens drei Hashtags, gesammelt am Ende nach einer Leerzeile.</li>
+<li>Die Adresse direkt hinter den letzten Satz setzen.</li>
+<li>Bei einer KI-Überarbeitung die Schutzprüfung laufen lassen und den Vergleich lesen.</li>
+<li>Die Adresse im Post Inspector prüfen: Titel, Beschreibung und Bild.</li>
+<li>Erst dann posten.</li>
 </ul>
-<p>Und vor jedem Beitrag mit Link gilt: erst den Post Inspector, dann posten.</p>
-    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-10-02">2026-10-02</time> — Entwurf: Blog-Verwaltung, Quick-Redaktor und Ergebnisse der Probeläufe.</li></ul></section>
+<p>Der Post Inspector kostet eine Minute und erspart dir einen Beitrag ohne Bild.</p>
+    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-10-02">2026-10-02</time> — Artikel veröffentlicht: Anleitung zum Prüfen von LinkedIn-Beiträgen.</li></ul></section>
   </article>
 </main>
 
