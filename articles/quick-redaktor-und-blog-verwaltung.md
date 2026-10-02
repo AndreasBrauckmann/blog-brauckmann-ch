@@ -1,11 +1,11 @@
 ---
-slogan: "Eine Karte, die fehlt, und ein Link, der im Text untergeht: So prüfst du einen LinkedIn-Beitrag, bevor du ihn postest."
-title: "LinkedIn-Beiträge prüfen: Post Inspector, Messwerte, KI-Lektor"
+slogan: "Eine Karte, die fehlt, und ein Text, den niemand gegengelesen hat: So kommt ein Blogartikel geprüft auf LinkedIn."
+title: "Blog und LinkedIn: Ablauf, Redaktion und Post Inspector"
 slug: quick-redaktor-und-blog-verwaltung
 date: 2026-10-02
-description: "Die Link-Karte kontrollieren, den Text messen und Claude lektorieren lassen, ohne dass Zahlen, Adressen oder Zitate verloren gehen."
+description: "Vom Entwurf bis zum Beitrag: was ein Redaktor prüft, wie Messwerte und Claude als Lektor helfen und warum die Link-Karte vor dem Posten kontrolliert wird."
 summary: >-
-  Ein LinkedIn-Beitrag mit Link hat zwei Teile, die du prüfen kannst: die Link-Karte und den Text. Die Karte kontrollierst du im LinkedIn Post Inspector, den nur wenige kennen. Den Text misst du mit wenigen Regeln: Länge, Anfang vor dem Wort „mehr“, Absätze, Hashtags und Gedankenstriche. Danach lässt du Claude den Text überarbeiten und schützt Zahlen, Adressen und Zitate mit einer eigenen Prüfung. Der Artikel zeigt jeden Schritt mit Code und einer Checkliste für den Alltag.
+  Ein Blogartikel braucht einen Ablauf: Idee, Gliederung, Entwurf, Redaktion, Messung, Veröffentlichung und Kontrolle der Link-Karte. Der Artikel erklärt, was ein Redaktor in diesem Ablauf tut und welche Prüfungen sich messen lassen. Er zeigt den LinkedIn Post Inspector, den nur wenige kennen, und erklärt, wie Claude als Lektor hilft, ohne dass Zahlen, Adressen oder Zitate verloren gehen. Dazu gibt es Code für die Messung, eine Schutzprüfung und eine Checkliste für den Alltag.
 tags: [KI, Claude, LinkedIn, Schreiben, Automatisierung]
 og_image: /static/img/og-quick-redaktor.jpg
 og_image_alt: "Schema einer Textprüfung: Beitragstext mit roten Streichungen und grünen Ergänzungen, daneben drei Kennzahlen."
@@ -16,7 +16,7 @@ changelog:
     text: "Artikel veröffentlicht: Anleitung zum Prüfen von LinkedIn-Beiträgen."
 ---
 
-Bevor du einen Beitrag mit Link auf LinkedIn postest, kannst du die Link-Karte kostenlos prüfen. Viele überspringen diesen Schritt. Danach misst du den Text und lässt ihn von Claude überarbeiten, ohne dass Zahlen und Zitate verloren gehen.
+Bevor du einen Beitrag mit Link auf LinkedIn postest, kannst du die Link-Karte kostenlos prüfen. Viele überspringen diesen Schritt. Danach folgt der ganze Weg eines Blogartikels vom Entwurf bis zum Beitrag, mit den Prüfungen, die sich messen lassen, und mit Claude als Lektor, der Zahlen und Zitate nicht anfassen darf.
 
 ## Der LinkedIn Post Inspector: die Prüfseite für deine Link-Karte
 
@@ -35,7 +35,42 @@ Der letzte Schritt hat eine Nebenwirkung, die du kennen solltest. LinkedIn speic
 
 Daraus folgt die wichtigste Regel: **Erst den Post Inspector, dann posten.** Prüfe jede neue Adresse, bevor sie in einem Beitrag steht.
 
-## Den Text messen
+## Der Ablauf eines Blogartikels
+
+Ein Artikel entsteht in Schritten, und jeder Schritt hat eine eigene Frage. Wer sie in dieser Reihenfolge stellt, spart sich späte Umbauten.
+
+**1. Leser und Ziel klären.** Wer liest den Artikel, und was kann er danach? Schreibe das in einem Satz auf. Ein Artikel, der zwei Zielgruppen bedient, dient meist keiner.
+
+**2. Gliederung.** Lege Überschriften fest, bevor du Sätze schreibst. Jeder Abschnitt beantwortet eine Frage des Lesers. Eine gute Gliederung lässt sich in einer Minute überblicken.
+
+**3. Entwurf.** Schreibe den ersten Text zügig und ohne Feinschliff. Der Entwurf darf schlecht sein, aber er muss vollständig sein.
+
+**4. Redaktion.** Hier kommt der Redaktor ins Spiel. Ein Redaktor ist die zweite Person zwischen Autor und Leser. Er stellt vier Fragen: Stimmt der Inhalt? Ist der Aufbau schlüssig? Ist die Sprache klar? Hält jede Behauptung einer Nachfrage stand? Der Autor ist für diese Fragen betriebsblind, weil er weiß, was er meinte. Ein Redaktor liest, was dasteht. Seine Arbeit besteht aus Rückmeldungen und Änderungsvorschlägen. Entscheiden darf am Ende der Autor.
+
+Diese Rolle kann Claude übernehmen, als Zweitleser mit klaren Grenzen. Es liest den Entwurf, nennt Schwächen und schlägt Änderungen mit Begründung vor. Wichtig bleibt die Aufteilung: Claude schlägt vor, du entscheidest, und eine Prüfung nach festen Regeln schützt, was nicht verändert werden darf.
+
+**5. Messen.** Manches an einem Artikel lässt sich zählen, und das geht schneller und ehrlicher als ein Bauchgefühl. Folgende Werte haben sich als Richtwerte bewährt. Es sind Hausregeln und keine Gesetze:
+
+| Bereich | Richtwert |
+|---|---|
+| Titel | 40 bis 70 Zeichen. Google kürzt Titel nach etwa 60 Zeichen. |
+| Beschreibung | 120 bis 160 Zeichen, als Fortsetzung des Titels und ohne Wiederholung |
+| Vorschaubild | 1.200 mal 630 Pixel, mit Alt-Text |
+| Überschriften | eine pro Frage, kein Abschnitt ohne Überschrift |
+| Absätze | kurz, in der Regel unter 50 Wörtern |
+| Satzlänge | im Mittel höchstens 17 Wörter, kein Satz über 25 |
+| Lesbarkeit | Index nach Amstad für Deutsch, nicht die englische Flesch-Formel |
+| Füllwörter und KI-Muster | zählen und streichen: Gedankenstriche, „Kurz vorweg“, „wirklich“ |
+
+Eine Besonderheit beim Titel und der Beschreibung: Sie sollen zusammen gelesen werden wie ein Satz. Der Titel nennt das Thema, die Beschreibung führt es weiter. Wiederholt die Beschreibung den Titel, verschenkst du die Hälfte des Platzes in der Suche und auf der Link-Karte.
+
+**6. Veröffentlichen.** Baue die Seite und sieh dir vor dem Veröffentlichen an, was sich ändert. Ein Vergleich der Dateien zeigt dir, ob nur der Artikel betroffen ist. Prüfe, ob keine Zugangsdaten im Text stehen. Veröffentliche erst nach deiner Bestätigung und nur die Dateien, die du ausgewählt hast.
+
+**7. Die Karte kontrollieren.** Jetzt kommt der Post Inspector aus dem ersten Abschnitt. Die Adresse muss live sein, damit LinkedIn sie abrufen kann.
+
+**8. Posten und nachpflegen.** Poste den Beitrag mit dem Aufbau, den der letzte Abschnitt beschreibt. Später ergänzt du Korrekturen im Artikel selbst und notierst sie in einem Änderungsprotokoll, damit Leser sehen, was sich geändert hat.
+
+## Den Text messen: Regeln für den LinkedIn-Beitrag
 
 Ein Text lässt sich mit wenigen Regeln prüfen. Manche Regeln sind belegt, andere Erfahrung, andere Hausregeln. Trenne das, damit du nichts als Gesetz behandelst, was nur Geschmack ist.
 
