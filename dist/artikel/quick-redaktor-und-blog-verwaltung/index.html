@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert · Brauckmann Blog</title>
+<link rel="canonical" href="https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.48.0/tabler-icons.min.css">
+
+<meta name="author" content="Andreas Brauckmann">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="alternate" type="application/rss+xml" title="Brauckmann Blog" href="https://blog.brauckmann.ch/rss.xml">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Brauckmann Blog">
+<meta property="og:locale" content="de_DE">
+<meta name="title" property="og:title" content="Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert">
+<meta name="description" property="og:description" content="Aus einer Blog-Verwaltung mit 6 Teilnoten, Schutzprüfung und Deploy-Panel entstand ein Werkzeug für Kollegen: mit Messwerten, Pannen und Probeläufen.">
+<meta property="og:url" content="https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/">
+<meta name="image" property="og:image" content="https://blog.brauckmann.ch/static/img/og-quick-redaktor.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Schema des Quick-Redaktors: Beitragstext mit roten Streichungen und grünen Ergänzungen, daneben drei Kennzahlen aus dem Probelauf.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert">
+<meta name="twitter:description" content="Aus einer Blog-Verwaltung mit 6 Teilnoten, Schutzprüfung und Deploy-Panel entstand ein Werkzeug für Kollegen: mit Messwerten, Pannen und Probeläufen.">
+<meta name="twitter:image" content="https://blog.brauckmann.ch/static/img/og-quick-redaktor.jpg">
+<meta property="article:published_time" content="2026-10-02">
+<meta property="article:modified_time" content="2026-10-02">
+<meta property="article:author" content="https://brauckmann.ch/about-me/">
+<meta property="article:tag" content="KI">
+<meta property="article:tag" content="Claude">
+<meta property="article:tag" content="LinkedIn">
+<meta property="article:tag" content="Schreiben">
+<meta property="article:tag" content="Automatisierung">
+<meta name="keywords" content="KI, Claude, LinkedIn, Schreiben, Automatisierung">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert",
+  "description": "Aus einer Blog-Verwaltung mit 6 Teilnoten, Schutzprüfung und Deploy-Panel entstand ein Werkzeug für Kollegen: mit Messwerten, Pannen und Probeläufen.",
+  "datePublished": "2026-10-02",
+  "dateModified": "2026-10-02",
+  "inLanguage": "de",
+  "author": {
+    "@type": "Person",
+    "name": "Andreas Brauckmann",
+    "url": "https://brauckmann.ch/about-me/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Andreas Brauckmann",
+    "url": "https://brauckmann.ch/about-me/"
+  },
+  "mainEntityOfPage": "https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/",
+  "url": "https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/",
+  "keywords": "KI, Claude, LinkedIn, Schreiben, Automatisierung",
+  "image": "https://blog.brauckmann.ch/static/img/og-quick-redaktor.jpg"
+}
+</script>
+
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --fg-muted: #555555;
+  --link: #0a58ca;
+  --link-visited: #5b3fa8;
+  --border: #dddddd;
+  --code-bg: #f5f5f5;
+  --tag-bg: #eef1f5;
+  --callout-bg: #fff6e0;
+  --callout-border: #e0a415;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --fg: #e6e6e6;
+    --fg-muted: #a6a6a6;
+    --link: #7db2ff;
+    --link-visited: #c3a6ff;
+    --border: #333333;
+    --code-bg: #1e1e1e;
+    --tag-bg: #1f2733;
+    --callout-bg: #2c2410;
+    --callout-border: #e0ab3a;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+footer.site-footer {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+main {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 3rem;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.25;
+}
+
+h1 { font-size: 1.9rem; margin-top: 0; }
+h2 { font-size: 1.4rem; margin-top: 2rem; }
+h3 { font-size: 1.15rem; }
+
+a { color: var(--link); }
+a:visited { color: var(--link-visited); }
+
+time.article-date {
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+.tags { margin: 0.5rem 0 1.5rem; }
+.tag {
+  display: inline-block;
+  background: var(--tag-bg);
+  color: var(--fg-muted);
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.8rem;
+  margin-right: 0.4rem;
+}
+
+a.tag { text-decoration: none; }
+a.tag:visited { color: var(--fg-muted); }
+
+.list-heading { margin-bottom: 0.5rem; }
+.list-heading a { text-decoration: none; color: var(--fg-muted); font-size: 0.9rem; }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.pagination a { text-decoration: none; }
+.pagination .disabled { color: var(--fg-muted); }
+
+img { max-width: 100%; height: auto; }
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+table { border-collapse: collapse; width: 100%; }
+th, td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); text-align: left; }
+th { background: var(--tag-bg); }
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+code { font-family: "SFMono-Regular", Consolas, Menlo, monospace; font-size: 0.9em; }
+p code, li code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; }
+
+article > p, article > ul, article > ol { max-width: 70ch; }
+
+.article-list-item {
+  display: grid;
+  grid-template-columns: 23% 77%;
+  column-gap: 1.1rem;
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 0;
+}
+
+.article-list-thumb {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: block;
+}
+.article-list-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.article-list-head { grid-column: 2; grid-row: 1; min-width: 0; }
+.article-list-item:not(:has(.article-list-thumb)) .article-list-head {
+  grid-column: 1 / -1;
+}
+.article-list-item h2 { margin-top: 0; }
+.article-list-item h2 a { text-decoration: none; }
+
+.article-list-item .teaser {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 5px;
+}
+
+@media (max-width: 30em) {
+  .article-list-item { grid-template-columns: 33% 67%; }
+}
+
+.teaser { color: var(--fg-muted); }
+
+.footnote-backref { text-decoration: none; }
+
+/* ---------- Bild-Lightbox: Klick zum Vergrössern ---------- */
+article img {
+  cursor: zoom-in;
+}
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  cursor: zoom-out;
+}
+.lightbox-overlay.is-open {
+  display: flex;
+}
+.lightbox-overlay img {
+  max-width: 96vw;
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  cursor: zoom-out;
+}
+
+/* ---------- Fünf-Techniken-Liste: Symbol als Aufzählungszeichen, Einzug für Zeilenumbruch ---------- */
+.funf-techniken-liste {
+  list-style: none;
+  margin: 18px 0 24px;
+  padding: 0;
+}
+.funf-techniken-liste li {
+  position: relative;
+  padding-left: 2.3em;
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+.funf-techniken-liste li:last-child {
+  margin-bottom: 0;
+}
+.funf-techniken-liste .fte {
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  font-size: 1.1em;
+}
+
+/* ---------- Zusammenfassung: Button + Akkordeon ---------- */
+.article-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1.5rem;
+}
+.article-meta-row .tags {
+  margin: 0;
+}
+.summary-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 999px;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.summary-toggle:hover {
+  background: var(--tag-bg);
+}
+.summary-toggle-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.summary-toggle[aria-expanded="true"] .summary-toggle-icon {
+  transform: rotate(180deg);
+}
+.summary-box {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  max-width: 70ch;
+}
+.summary-box.is-open {
+  max-height: 700px;
+}
+.summary-box-inner {
+  border-left: 3px solid var(--border);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+}
+.summary-box-inner p:first-child {
+  margin-top: 0.8rem;
+}
+.summary-box-inner p:last-child {
+  margin-bottom: 0.8rem;
+}
+
+/* Bildpaare (hell/dunkel) -- reines CSS, kein JS. Zwei <img>, jeweils
+   mit ".bild-hell"/".bild-dunkel", nur eins sichtbar je nach System-
+   Theme. Gleiches Prinzip wie im Kontor-Admin-Handbuch. */
+.bild-dunkel { display: none; }
+@media (prefers-color-scheme: dark) {
+  .bild-hell { display: none; }
+  .bild-dunkel { display: block; }
+}
+
+/* Hervorhebungs-Box fuer Absaetze, die im Fliesstext untergehen wuerden --
+   deutliche Kontur statt nur eingerueckter Blockquote, damit ein
+   scannender Leser nicht daran vorbeiliest. */
+.callout {
+  background: var(--callout-bg);
+  border-left: 4px solid var(--callout-border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0;
+}
+.callout p { margin: 0.75rem 0; font-size: 1.05rem; line-height: 1.6; }
+.callout p:first-child { margin-top: 0; }
+.callout p:last-child { margin-bottom: 0; }
+
+/* Diagramm "Sicherheitsnetz" -- Risiken fallen von oben, das KI-Monitoring
+   faengt sie im Netz ab, bevor sie unten ankommen. Gleiches Muster/gleiche
+   Tokens wie .mcp-diagramm (netdata-homelab-monitoring-claude), eigener
+   Namensraum, damit nichts kollidiert. */
+.netz-diagramm {
+  margin: 2rem 0; padding: 1.5rem 0.75rem 1.25rem; border: 1px solid var(--border);
+  border-radius: 10px; overflow-x: auto;
+  --md-coral-bg:#FAECE7; --md-coral-fg:#712B13;
+  --md-warning-bg:#FAEEDA; --md-warning-fg:#633806;
+  --md-success-bg:#EAF3DE; --md-success-fg:#27500A;
+}
+@media (prefers-color-scheme: dark) {
+  .netz-diagramm {
+    --md-coral-bg:#3a231c; --md-coral-fg:#f2b09b;
+    --md-warning-bg:#3a2a12; --md-warning-fg:#f0c98a;
+    --md-success-bg:#22331a; --md-success-fg:#a9d98b;
+  }
+}
+.netz-diagramm .risiken { display:flex; justify-content:space-around; gap:10px; max-width:640px; min-width:480px; margin:0 auto; flex-wrap:nowrap; }
+.netz-diagramm .risiko, .netz-diagramm .ergebnis { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; min-width:0; }
+.netz-diagramm .circ {
+  width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:1.25rem; flex:none; background:var(--c-bg); color:var(--c-fg);
+  animation: netz-pulse 2.6s ease-in-out infinite;
+}
+.netz-diagramm .risiko:nth-child(1) .circ { animation-delay: 0s; }
+.netz-diagramm .risiko:nth-child(2) .circ { animation-delay: .3s; }
+.netz-diagramm .risiko:nth-child(3) .circ { animation-delay: .6s; }
+.netz-diagramm .risiko:nth-child(4) .circ { animation-delay: .9s; }
+.netz-diagramm .ergebnis-circ { animation: netz-pulse 2.2s ease-in-out infinite; }
+@keyframes netz-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-fg) 45%, transparent); }
+  50% { box-shadow: 0 0 16px 4px color-mix(in srgb, var(--c-fg) 45%, transparent); }
+}
+.netz-diagramm .lbl { font-size:0.72rem; font-weight:600; color:var(--fg); text-align:center; }
+.netz-diagramm .fallweg { display:flex; justify-content:space-around; max-width:640px; min-width:480px; margin:4px auto; height:24px; }
+.netz-diagramm .fallweg-einzeln { justify-content:center; }
+.netz-diagramm .fallspur {
+  position:relative; width:2px; height:100%; flex:none;
+  background:linear-gradient(var(--fg-muted), transparent); opacity:0.4;
+}
+.netz-diagramm .fallpunkt {
+  position:absolute; left:50%; top:-4px; width:6px; height:6px; margin-left:-3px; border-radius:50%;
+  background:var(--callout-border); box-shadow:0 0 6px var(--callout-border);
+  animation: netz-fall 1.8s linear infinite;
+}
+@keyframes netz-fall {
+  0% { top:-4px; opacity:0; }
+  15% { opacity:1; }
+  85% { opacity:1; }
+  100% { top:100%; opacity:0; }
+}
+.netz-diagramm .netz {
+  position:relative; max-width:640px; min-width:480px; margin:0.5rem auto; height:52px; overflow:hidden;
+  background-image:
+    repeating-linear-gradient(45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px),
+    repeating-linear-gradient(-45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px);
+  opacity:0.7; border-top:2px solid var(--callout-border); border-bottom:2px solid var(--callout-border);
+  border-radius:6px; display:flex; align-items:center; justify-content:center;
+}
+.netz-diagramm .netz::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--callout-border) 65%, transparent) 50%, transparent 65%);
+  background-size:250% 100%;
+  animation: netz-schimmer 3.4s linear infinite;
+}
+@keyframes netz-schimmer {
+  0% { background-position: 130% 0; }
+  100% { background-position: -130% 0; }
+}
+.netz-diagramm .netz-label {
+  position:relative; z-index:1;
+  background:var(--callout-bg); color:var(--fg); font-size:0.78rem; font-weight:700;
+  padding:3px 12px; border-radius:999px; border:1px solid var(--callout-border);
+}
+.netz-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
+@media (prefers-reduced-motion: reduce) {
+  .netz-diagramm .circ, .netz-diagramm .fallpunkt, .netz-diagramm .netz::after { animation: none; }
+}
+
+/* ── Diagramm "Vom Handy zum Hypervisor" (netdata-homelab-monitoring-claude) ──
+   Uebernommen aus einer eigenstaendigen HTML-Vorlage, an das Blog-eigene
+   Token-System angepasst (--bg/--fg/--fg-muted/--border statt eigener
+   --bg-accent etc.). War bis 28.9.26 nur im mittlerweile geloeschten
+   Standalone-HTML-Artikel eingebettet -- bei der Umwandlung in Markdown
+   (27.9.26, gleicher Anlass wie wirtschaftskalender-ohne-anmeldung.md)
+   ging der Head-Bereich samt diesem Block verloren, weil der Konverter nur
+   den Inhalt zwischen </header> und </article> uebernahm. Hier nachgetragen. */
+.mcp-diagramm {
+  margin: 2rem 0; padding: 1.5rem 0.75rem 1.25rem; border: 1px solid var(--border);
+  border-radius: 10px; overflow-x: auto;
+  --md-accent-bg:#EEEDFE; --md-accent-fg:#3C3489;
+  --md-success-bg:#EAF3DE; --md-success-fg:#27500A;
+  --md-warning-bg:#FAEEDA; --md-warning-fg:#633806;
+  --md-coral-bg:#FAECE7; --md-coral-fg:#712B13;
+}
+@media (prefers-color-scheme: dark) {
+  .mcp-diagramm {
+    --md-accent-bg:#2a2650; --md-accent-fg:#b9b1ff;
+    --md-success-bg:#22331a; --md-success-fg:#a9d98b;
+    --md-warning-bg:#3a2a12; --md-warning-fg:#f0c98a;
+    --md-coral-bg:#3a231c; --md-coral-fg:#f2b09b;
+  }
+}
+.mcp-diagramm .chain { display:flex; align-items:center; justify-content:space-between; gap:6px; flex-wrap:nowrap; max-width:640px; min-width:540px; margin:0 auto; }
+.mcp-diagramm .node { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; min-width:0; }
+.mcp-diagramm .circ { width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; }
+.mcp-diagramm .lbl { font-size:0.8rem; font-weight:600; color:var(--fg); text-align:center; }
+.mcp-diagramm .sub { font-size:0.68rem; color:var(--fg-muted); text-align:center; }
+.mcp-diagramm .link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; flex:0 0 auto; color:var(--fg-muted); }
+.mcp-diagramm .link .top-label { font-size:0.62rem; font-weight:600; }
+.mcp-diagramm .link .bottom-label { font-size:0.58rem; text-align:center; line-height:1.3; }
+@keyframes mcp-wavepulse { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
+.mcp-diagramm .wavebar { width:2px; background:var(--fg-muted); transform-origin:center; animation:mcp-wavepulse 1s ease-in-out infinite; }
+.mcp-diagramm .voicewrap { flex:0 0 46px; height:40px; margin-top:-16px; }
+.mcp-diagramm .voicewrap .wavebars { display:flex; align-items:center; justify-content:center; gap:3px; height:20px; }
+.mcp-diagramm .returnrow { max-width:640px; min-width:540px; margin:0 auto; display:block; }
+@keyframes mcp-dashmove { to { stroke-dashoffset:-16; } }
+.mcp-diagramm .returnpath { stroke-dasharray:4 4; animation:mcp-dashmove 1.2s linear infinite; }
+.mcp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:0.75rem; }
+@media (prefers-reduced-motion: reduce) {
+  .mcp-diagramm .wavebar, .mcp-diagramm .returnpath { animation: none; }
+}
+
+/* Diagramm "Big Picture" -- Cloudflare + Tailscale Funnel, Caddy-Edge als
+   Proxy-Container, Zugang zum internen Netz. Gleiches Bauprinzip wie
+   .netz-diagramm (Knoten -> Faellt-Punkte -> Sammelband -> Knoten),
+   diesmal zwei Eingaenge, die sich zu EINEM Edge buendeln, der sich
+   wieder zu mehreren internen Diensten auffaechert. */
+.bp-diagramm {
+  margin: 2rem 0; padding: 1.5rem 0.75rem 1.25rem; border: 1px solid var(--border);
+  border-radius: 10px; overflow-x: auto;
+  --md-accent-bg:#EEEDFE; --md-accent-fg:#3C3489;
+  --md-cf-bg:#FFE9DB; --md-cf-fg:#8A3B0A;
+  --md-ts-bg:#E3EEFF; --md-ts-fg:#1D4E8C;
+  --md-svc-bg:#EAF3DE; --md-svc-fg:#27500A;
+}
+@media (prefers-color-scheme: dark) {
+  .bp-diagramm {
+    --md-accent-bg:#2a2650; --md-accent-fg:#b9b1ff;
+    --md-cf-bg:#3a2712; --md-cf-fg:#f2a465;
+    --md-ts-bg:#182a42; --md-ts-fg:#8cb8f5;
+    --md-svc-bg:#22331a; --md-svc-fg:#a9d98b;
+  }
+}
+.bp-diagramm .bp-eingaenge { display:flex; justify-content:center; gap:14px; max-width:640px; min-width:480px; margin:0 auto; flex-wrap:nowrap; }
+.bp-diagramm .bp-box {
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:10px 16px; border-radius:10px; flex:1; min-width:0;
+}
+.bp-diagramm .bp-box i { font-size:1.15rem; }
+.bp-diagramm .bp-box .bp-lbl { font-size:0.78rem; font-weight:700; text-align:center; }
+.bp-diagramm .bp-box .bp-sub { font-size:0.65rem; text-align:center; opacity:0.85; }
+.bp-diagramm .bp-cf { background:var(--md-cf-bg); color:var(--md-cf-fg); }
+.bp-diagramm .bp-ts { background:var(--md-ts-bg); color:var(--md-ts-fg); }
+
+.bp-diagramm .bp-pfeile { display:flex; justify-content:center; gap:120px; max-width:640px; min-width:480px; margin:4px auto; height:22px; }
+.bp-diagramm .bp-pfeile .fallspur { position:relative; width:2px; height:100%; background:linear-gradient(var(--fg-muted), transparent); opacity:0.4; }
+
+.bp-diagramm .bp-edge {
+  position:relative; max-width:400px; margin:0.25rem auto; padding:10px 20px; overflow:hidden;
+  background-image:
+    repeating-linear-gradient(45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px),
+    repeating-linear-gradient(-45deg, var(--callout-border) 0, var(--callout-border) 1.5px, transparent 1.5px, transparent 13px);
+  opacity:0.7; border-top:2px solid var(--callout-border); border-bottom:2px solid var(--callout-border);
+  border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center;
+}
+.bp-diagramm .bp-edge::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--callout-border) 65%, transparent) 50%, transparent 65%);
+  background-size:250% 100%;
+  animation: netz-schimmer 3.4s linear infinite;
+}
+.bp-diagramm .bp-edge-label {
+  position:relative; z-index:1;
+  background:var(--callout-bg); color:var(--fg); font-size:0.78rem; font-weight:700;
+  padding:4px 14px; border-radius:999px; border:1px solid var(--callout-border);
+}
+
+.bp-diagramm .bp-pfeil-solo { text-align:center; color:var(--callout-border); font-size:1.1rem; margin:4px 0; }
+
+.bp-diagramm .bp-intern { display:flex; justify-content:center; gap:10px; max-width:640px; min-width:480px; margin:0.25rem auto 0; flex-wrap:wrap; }
+.bp-diagramm .bp-svc {
+  background:var(--md-svc-bg); color:var(--md-svc-fg); font-size:0.72rem; font-weight:600;
+  padding:6px 12px; border-radius:999px; white-space:nowrap;
+}
+
+/* Aenderungshistorie am Artikelende -- dezent, damit sie nicht mit dem
+   eigentlichen Inhalt konkurriert, aber auffindbar bleibt. */
+.aenderungshistorie {
+  margin: 3rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.aenderungshistorie h2 { font-size: 1rem; color: var(--fg-muted); margin: 0 0 0.75rem; }
+.aenderungshistorie ul { list-style: none; margin: 0; padding: 0; }
+.aenderungshistorie li {
+  font-size: 0.85rem; color: var(--fg-muted); line-height: 1.6;
+  padding: 0.35rem 0; border-bottom: 1px dashed var(--border);
+}
+.aenderungshistorie li:last-child { border-bottom: none; }
+.aenderungshistorie time { font-family: "SFMono-Regular", Consolas, Menlo, monospace; color: var(--fg); margin-right: 0.4em; }
+.bp-diagramm figcaption { text-align:center; font-size:0.85rem; color:var(--fg-muted); margin-top:1rem; }
+
+/* ===== Typografie v1 (1.10.2026): groessere Schrift, mehr Zeilen- und Absatzabstand, ruhigere Ueberschriften ===== */
+body { font-size: 1.125rem; line-height: 1.7; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+main { max-width: 66ch; }
+footer.site-footer { max-width: 66ch; }
+article > p, article > ul, article > ol { max-width: 66ch; }
+article p { margin: 0 0 1.2em; }
+h1 { font-size: 2.3rem; line-height: 1.15; letter-spacing: -0.018em; margin: 0.2em 0 0.45em; }
+h2 { font-size: 1.6rem; line-height: 1.22; letter-spacing: -0.01em; margin: 2.8em 0 0.7em; }
+h3 { font-size: 1.22rem; line-height: 1.3; margin: 2.1em 0 0.55em; }
+ul, ol { margin: 0 0 1.35em; padding-left: 1.45em; }
+li { margin: 0.4em 0; }
+li > p { margin: 0.4em 0; }
+strong { font-weight: 650; }
+blockquote { margin: 1.8em 0; padding: 0.1em 0 0.1em 1.1em; border-left: 3px solid var(--border); color: var(--fg-muted); }
+figure, article > p > img { margin-top: 1.8em; margin-bottom: 1.8em; }
+img { border-radius: 6px; }
+.table-wrap { margin: 2em 0; }
+th, td { padding: 0.6rem 0.9rem; }
+time.article-date { font-size: 0.92rem; }
+.tags { margin: 0.7rem 0 2rem; }
+pre { padding: 1.1rem 1.2rem; line-height: 1.5; font-size: 0.92rem; }
+@media (max-width: 30em) { body { font-size: 1.0625rem; line-height: 1.68; } h1 { font-size: 1.85rem; } h2 { font-size: 1.4rem; margin-top: 2.4em; } }
+.article-list-item > * { min-width: 0; }
+.article-list-item .teaser { overflow-wrap: anywhere; }
+
+/* ===== Typografie v1.1: Kontrast der Links >= 7:1, Absatzabstand >= 0,9 Zeilen ===== */
+:root { --link: #0846a8; --link-visited: #4a2f94; }
+article p { margin: 0 0 1.5em; }
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f8f8f8; }
+.codehilite .c { color: #3D7B7B; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #9C6500 } /* Comment.Preproc */
+.codehilite .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #E40000 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #008400 } /* Generic.Inserted */
+.codehilite .go { color: #717171 } /* Generic.Output */
+.codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+.codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #B00040 } /* Keyword.Type */
+.codehilite .m { color: #666 } /* Literal.Number */
+.codehilite .s { color: #BA2121 } /* Literal.String */
+.codehilite .na { color: #687822 } /* Name.Attribute */
+.codehilite .nb { color: #008000 } /* Name.Builtin */
+.codehilite .nc { color: #00F; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #800 } /* Name.Constant */
+.codehilite .nd { color: #A2F } /* Name.Decorator */
+.codehilite .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.codehilite .nf { color: #00F } /* Name.Function */
+.codehilite .nl { color: #767600 } /* Name.Label */
+.codehilite .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #19177C } /* Name.Variable */
+.codehilite .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #666 } /* Literal.Number.Bin */
+.codehilite .mf { color: #666 } /* Literal.Number.Float */
+.codehilite .mh { color: #666 } /* Literal.Number.Hex */
+.codehilite .mi { color: #666 } /* Literal.Number.Integer */
+.codehilite .mo { color: #666 } /* Literal.Number.Oct */
+.codehilite .sa { color: #BA2121 } /* Literal.String.Affix */
+.codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+.codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+.codehilite .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+.codehilite .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.codehilite .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.codehilite .sx { color: #008000 } /* Literal.String.Other */
+.codehilite .sr { color: #A45A77 } /* Literal.String.Regex */
+.codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+.codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+.codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #00F } /* Name.Function.Magic */
+.codehilite .vc { color: #19177C } /* Name.Variable.Class */
+.codehilite .vg { color: #19177C } /* Name.Variable.Global */
+.codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+.codehilite .vm { color: #19177C } /* Name.Variable.Magic */
+.codehilite .il { color: #666 } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body>
+<main>
+  <article>
+    <header>
+      <h1>Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert</h1>
+      <time class="article-date" datetime="2026-10-02">2026-10-02</time>
+      <div class="article-meta-row">
+        <div class="tags"><a class="tag" href="/tag/ki/">KI</a><a class="tag" href="/tag/claude/">Claude</a><a class="tag" href="/tag/linkedin/">LinkedIn</a><a class="tag" href="/tag/schreiben/">Schreiben</a><a class="tag" href="/tag/automatisierung/">Automatisierung</a></div>
+        <button type="button" class="summary-toggle" id="summary-toggle" aria-expanded="true" aria-controls="summary-box">
+          Zusammenfassung <span class="summary-toggle-icon" aria-hidden="true">&#9662;</span>
+        </button>
+      </div>
+    </header>
+    <div class="summary-box is-open" id="summary-box">
+      <div class="summary-box-inner">
+        <p>In zwei Tagen habe ich mit Claude eine Verwaltung für meinen Blog gebaut. Sie hat ein Ranking mit sechs Teilnoten, ein Lektorat per KI und eine Schutzprüfung für Zahlen und Zitate. Dazu kommen ein Versionsverlauf und ein Deploy-Panel mit Menschen-Schritt. Daraus ist der Quick-Redaktor entstanden, eine kleine Seite für zwei bis vier Kollegen. Man fügt einen LinkedIn-Beitrag ein und bekommt den verbesserten Text, eine Liste der Änderungen mit Begründung, die offenen Punkte und eine Prüfliste mit Punktzahl. In drei Probeläufen mit absichtlich schwachen Beiträgen stieg die Punktzahl im Modus „Behutsam“ von 61 bis 77 auf 75 bis 99. Der Artikel zeigt Aufbau, Werkzeuge, Pannen und was Leser für ihre eigenen Beiträge mitnehmen können.</p>
+      </div>
+    </div>
+    
+    <h2 id="ein-titel-mit-124-zeichen">Ein Titel mit 124 Zeichen</h2>
+<p>Mein längster Artikeltitel hatte 124 Zeichen. LinkedIn schneidet die Überschrift einer Link-Karte nach zwei Zeilen ab, Google schon nach etwa 60 Zeichen. Gemerkt habe ich das erst, als ich alle fünf Artikel nebeneinander gemessen habe. Heute liegen die Titel zwischen 54 und 62 Zeichen.</p>
+<p>Gemessen hat eine Verwaltung, die ich in zwei Tagen mit Claude gebaut habe. Ich bin Senior System Engineer und kein Texter. Mir fehlte ein Lektorat, das nachzählt, statt zu loben. Aus dieser Verwaltung ist ein zweites Werkzeug entstanden: der Quick-Redaktor für Kollegen, die selbst auf LinkedIn schreiben.</p>
+<p>Dieser Text beschreibt beides. Er nennt die Werkzeuge, die Pannen und die Zahlen aus drei Probeläufen.</p>
+<h2 id="was-die-verwaltung-misst">Was die Verwaltung misst</h2>
+<p>Die Verwaltung ist eine kleine Flask-Anwendung neben dem statischen Blog-Generator. Sie läuft auf einem Raspberry Pi und ist nur im eigenen Netz erreichbar. Das Herz ist ein Ranking mit sechs Teilnoten:</p>
+<ul>
+<li><strong>A · Vorschau und Meta:</strong> Titellänge, Beschreibung, Vorschaubild, Pflicht-Meta-Tags.</li>
+<li><strong>B · Lesbarkeit und Fluss:</strong> Lesbarkeitsindex nach Amstad, Satzlänge, Füllwörter und „Klingt menschlich“.</li>
+<li><strong>C · Struktur:</strong> Überschriften, Listen, Abschnittslängen.</li>
+<li><strong>D · Grafiken:</strong> Abstand zwischen Bildern, Alt-Texte, Bildgewichte.</li>
+<li><strong>E · SEO:</strong> Schlüsselbegriffe, Links, Aktualität.</li>
+<li><strong>F · Satz und Layout:</strong> Playwright öffnet die gebaute Seite am Desktop mit 1.280 Pixeln und am Handy mit 393 Pixeln, jeweils hell und dunkel. Es misst Schriftgröße, Zeilenlänge und Kontrast.</li>
+</ul>
+<p>Die Amstad-Formel habe ich selbst umgesetzt. Die übliche Bibliothek zählt deutsche Silben über Trennstellen, und das verfälscht den Wert. Für Fundstellen im Text läuft Vale mit eigenen Regeln.</p>
+<p>„Klingt menschlich“ zählt Muster, die Texte nach KI klingen lassen. Dazu gehören Gedankenstriche, die Figur „nicht X, sondern Y“, Einleiter wie „Kurz vorweg“ und Verstärker wie „wirklich“. Die Ideen stammen aus stop-slop. Vor der Überarbeitung standen in allen fünf Artikeln zwischen 22 und 29 Gedankenstriche je 1.000 Wörter. Das Soll liegt bei höchstens vier.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Artikel</th>
+<th>Titel vorher</th>
+<th>Titel nachher</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>KVM-Switch per Siri</td>
+<td>87 Zeichen</td>
+<td>62 Zeichen</td>
+</tr>
+<tr>
+<td>Monitoring, Teil 2</td>
+<td>94 Zeichen</td>
+<td>60 Zeichen</td>
+</tr>
+<tr>
+<td>Netdata und Claude</td>
+<td>100 Zeichen</td>
+<td>54 Zeichen</td>
+</tr>
+<tr>
+<td>Sieben Monate, elf Umbrüche</td>
+<td>85 Zeichen</td>
+<td>54 Zeichen</td>
+</tr>
+<tr>
+<td>Wirtschaftskalender</td>
+<td>124 Zeichen</td>
+<td>58 Zeichen</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="claude-als-lektor-mit-leitplanken">Claude als Lektor, mit Leitplanken</h2>
+<p>Gebaut habe ich die Verwaltung im Gespräch mit Claude Code. Ich habe beschrieben, was ich brauche, Zwischenstände angesehen und Regeln nachgeschärft. Größere Teilaufgaben gingen an Unteragenten. Auch deren Modell folgt einer festen Tabelle: Haiku für Mechanisches, Sonnet für die Umsetzung, Opus für Lektorat, Abwägung und Korrektheit. Jede Regel, die sich bewährt hat, steht heute in der Projektdatei CLAUDE.md. So beginnt die nächste Sitzung mit demselben Stand.</p>
+<p>Über die Messung hinaus arbeitet die Verwaltung mit Claude. Ein Knopf startet das Lektorat: Claude bewertet neun Kriterien und nennt drei konkrete Verbesserungen. Ein zweiter Knopf heißt „Alles in Ordnung bringen“. Er schreibt bis zu acht Runden lang Vorschläge, misst nach jeder Runde neu und hört auf, wenn sich zweimal nichts verbessert.</p>
+<p>Die Anfragen gehen über den claude-code-openai-wrapper auf dem Raspberry Pi. Das Modell richtet sich nach der Aufgabe. Metas und Plattformtexte bekommt das Standardmodell, Lektorat und Textüberarbeitung die starke Stufe. Besteht ein Ergebnis die Prüfung zweimal nicht, wiederholt die Verwaltung den Auftrag eine Stufe höher.</p>
+<p>Die wichtigste Leitplanke ist die Schutzprüfung. Sie vergleicht jeden Vorschlag mit dem Original. Zahlen, Links, Code, Fachbegriffe und wörtliche Zitate müssen erhalten bleiben. Fehlt eine Zahl oder taucht eine neue auf, verwirft die Verwaltung die Stelle und erklärt den Grund in einem Satz.</p>
+<p>Nichts davon schreibt ungefragt in einen Artikel. Ein Vorschlag landet erst nach Diff, Bestätigung und Backup in der Datei. Ein Versionsverlauf hält jede Fassung fest und stellt sie auf Knopfdruck wieder her.</p>
+<h2 id="das-deploy-panel-und-der-menschen-schritt">Das Deploy-Panel und der Menschen-Schritt</h2>
+<p>Veröffentlichen folgt einer festen Reihenfolge: prüfen, bauen, Diff ansehen, veröffentlichen, live prüfen. Ein eigener Inspector ruft die Live-Seite so ab, wie es der Bot von LinkedIn tut. Er prüft die fünf Pflicht-Meta-Tags, das Vorschaubild und den Zwischenspeicher. Commit und Push laufen nur auf Knopfdruck und nur für ausgewählte Pfade.</p>
+<p>Zwei Schritte bleiben bei mir. Den Knopf „Veröffentlichen“ drücke ich selbst. Danach gebe ich die Live-Adresse im LinkedIn Post Inspector ein und kontrolliere Titel, Bild und Beschreibung. Der Inspector erneuert auch den Zwischenspeicher von LinkedIn. Diesen Schritt automatisiere ich nicht, und LinkedIn selbst bediene ich nie per Skript.</p>
+<p>Die Testsuite wuchs während der Arbeit von 62 auf 232 Tests. Mit dem Quick-Redaktor kamen 35 dazu, heute sind es 267.</p>
+<h2 id="was-schiefging">Was schiefging</h2>
+<p>Drei Pannen haben mich am meisten gelehrt.</p>
+<p><strong>Der Wrapper startete mitten im Lauf neu.</strong> Die Verwaltung bekam einen ConnectionResetError und brach ab. Jetzt wiederholt sie Anfragen bei Verbindungsfehlern nach 5, 15, 30, 60 und 120 Sekunden. Inhaltliche Fehler wiederholt sie nie.</p>
+<p><strong>Anführungszeichen zerbrachen das JSON.</strong> Claude antwortet in JSON und übernimmt dabei Zitate aus dem Artikel. Ein gerades Anführungszeichen mitten im Text beendet aber eine JSON-Zeichenkette. Die Auswertung repariert solche Stellen jetzt selbst. Beim Quick-Redaktor kam die Panne zurück: In den ersten fünf Probeläufen scheiterten alle fünf Antworten. Das Modell schrieb deutsche Anführungszeichen unten auf, oben aber gerade. Eine gezielte Reparatur und eine Nachfrage lösten das.</p>
+<p><strong>Die Schutzprüfung war strenger als gedacht.</strong> Claude wollte wörtliche Zitate glätten. Die Prüfung lehnte das ab, und das ist richtig so. Ein Zitat gehört dem, der es gesagt hat.</p>
+<p>Daraus habe ich gelernt: Ein Sprachmodell braucht eine Prüfung, die nicht von ihm selbst stammt. Die Regeln stehen im Code, und ein Test belegt jede einzelne.</p>
+<h2 id="der-quick-redaktor-fur-kollegen">Der Quick-Redaktor für Kollegen</h2>
+<p>Zwei bis vier Kollegen schreiben ebenfalls auf LinkedIn. Für sie gibt es jetzt eine kleine Seite. Man fügt den Beitrag ein, wählt einen Modus und drückt einen Knopf. Zurück kommen vier Dinge:</p>
+<ol>
+<li>der verbesserte Text mit Kopier-Knopf und einem Wortvergleich in Rot und Grün,</li>
+<li>die Liste „Was ich geändert habe“, je Änderung mit Begründung,</li>
+<li>„Was noch nicht gut ist“, je Punkt mit einem konkreten Handgriff,</li>
+<li>eine Prüfliste mit Messwert, Soll und Punktzahl von 0 bis 100, vorher und nachher.</li>
+</ol>
+<p>Es gibt drei Modi. „Behutsam“ behebt Fehler, KI-Muster und schwere Sätze und lässt die Stimme des Autors stehen. „Straffen“ kürzt auf 300, 600 oder 1.300 Zeichen. „Nur prüfen“ misst ohne KI und kostet nichts.</p>
+<p>Die Prüfliste kennzeichnet jede Regel. Belegt ist die harte Grenze von 3.000 Zeichen. Ein Praxiswert ist die Sichtbarkeit vor „…mehr“: mobil etwa 140 Zeichen, am Desktop etwa 210. Ebenfalls aus der Praxis stammt mein Befund, dass die Link-Karte in der Profil-Übersicht nur bei kurzem Text erschien. Ob die Stelle der Adresse dafür eine Rolle spielt, ist nicht belegt. Kurze Absätze und höchstens drei Hashtags sind Hausregeln, ebenso der Aufbau am Schluss. Die Seite markiert sie als „nicht geprüft“.</p>
+<p>Der Aufbau am Schluss folgt einer festen Reihenfolge. Die Adresse steht direkt hinter dem letzten Satz, im selben Absatz. Dann folgt eine Leerzeile, und in der letzten Zeile stehen die Hashtags. So steht die Adresse dort, wo das Auge nach dem Lesen hinfällt, und nichts drängt sich davor. Hashtags sind das Unwichtigste und kommen zuletzt. Die Leerzeile verhindert am Handy, dass der Daumen ein Hashtag statt der Adresse trifft.</p>
+<p>Im Hintergrund laufen dieselben Bausteine wie in der Verwaltung: Musterzählung, Amstad, Schutzprüfung und Modellwahl. Neu ist eine Ebene ohne KI. Sie entfernt Markdown-Sterne, wandelt Unicode-„Fett“ zurück und stellt auf Wunsch Adresse und Hashtags in diese Reihenfolge. Erwähnungen, Hashtags, Links und Zahlen schützt die Schutzprüfung zusätzlich.</p>
+<p>Für den Probelauf habe ich drei absichtlich schwache Beiträge geschrieben: Floskeln, Gedankenstriche, acht oder neun Hashtags, ein Link mitten im Satz, eine Textwand.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Beitrag</th>
+<th>Modus</th>
+<th>Punkte vorher</th>
+<th>Punkte nachher</th>
+<th>Zeichen</th>
+<th>Dauer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cloud-Migration</td>
+<td>Behutsam</td>
+<td>61</td>
+<td>75</td>
+<td>1.010 → 860</td>
+<td>30 s</td>
+</tr>
+<tr>
+<td>Cloud-Migration</td>
+<td>Straffen auf 600</td>
+<td>61</td>
+<td>94</td>
+<td>1.010 → 460</td>
+<td>44 s</td>
+</tr>
+<tr>
+<td>Zertifizierung</td>
+<td>Behutsam</td>
+<td>77</td>
+<td>99</td>
+<td>681 → 419</td>
+<td>24 s</td>
+</tr>
+<tr>
+<td>Konferenzbericht</td>
+<td>Behutsam</td>
+<td>69</td>
+<td>89</td>
+<td>1.004 → 812</td>
+<td>28 s</td>
+</tr>
+<tr>
+<td>Konferenzbericht</td>
+<td>Straffen auf 300</td>
+<td>69</td>
+<td>92</td>
+<td>1.004 → 318</td>
+<td>19 s</td>
+</tr>
+</tbody>
+</table></div>
+<p>Die fünf Läufe brauchten zusammen 143 Sekunden und sechs KI-Aufrufe. Beim Konferenzbericht verwarf die Schutzprüfung drei Änderungen. Claude hatte zwei Zahlen von einem Satz in einen anderen verschoben und eine Stelle auf ein Viertel gekürzt. Beim Straffen auf 300 Zeichen kamen 318 heraus; die Prüfliste zeigt das offen an.</p>
+<p>Die Ergebnisse schwanken. Ein früherer Lauf mit demselben Migrationsbeitrag kam auf 98 Punkte. Claude hatte damals den ersten Satz umgebaut; diesmal verwarf die Schutzprüfung diesen Umbau als zu starke Kürzung. Wer das Werkzeug nutzt, liest deshalb zuerst den Vergleich in Rot und Grün und erst danach die Punktzahl.</p>
+<p>Datenschutz hat Vorrang. Die Seite speichert keine Texte und protokolliert sie nicht. Sie zählt nur Länge, Modus, Dauer und Punktzahl. Ein Test sucht nach jedem Lauf alle neuen Dateien und die Logausgabe nach dem eingegebenen Text. Ein Hinweis auf der Seite bittet, keine vertraulichen Firmeninhalte einzufügen. Ohne ausdrückliche Einstellung läuft nur „Nur prüfen“. Ob die KI-Modi über mein persönliches Abo für andere laufen dürfen, kläre ich vor der Freigabe.</p>
+<h2 id="fazit-messen-bevor-man-postet">Fazit: Messen, bevor man postet</h2>
+<p>Zwei Tage reichten für eine Verwaltung und ein Werkzeug für Kollegen. Den größten Gewinn brachte die Messung. Claude formuliert gut, und die Prüfung danach sorgt dafür, dass dabei keine Zahl und kein Zitat verloren geht.</p>
+<p>Wer selbst auf LinkedIn postet, kann fünf Punkte ohne jedes Werkzeug prüfen:</p>
+<ul>
+<li>Den Kern in den ersten Satz stellen und den Satz vor Zeichen 140 beenden.</li>
+<li>Gedankenstriche, „Kurz vorweg“ und „wirklich“ streichen.</li>
+<li>Absätze mit mehr als 50 Wörtern teilen.</li>
+<li>Höchstens drei Hashtags setzen, gesammelt am Ende.</li>
+<li>Die Adresse direkt hinter den letzten Satz setzen, nach einer Leerzeile die Hashtags.</li>
+</ul>
+<p>Und vor jedem Beitrag mit Link gilt: erst den Post Inspector, dann posten.</p>
+    <section class="aenderungshistorie"><h2>Änderungshistorie</h2><ul><li><time datetime="2026-10-02">2026-10-02</time> — Entwurf: Blog-Verwaltung, Quick-Redaktor und Ergebnisse der Probeläufe.</li></ul></section>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <p>Andreas Brauckmann — <a href="https://blog.brauckmann.ch/rss.xml">RSS</a></p>
+</footer>
+
+<div class="lightbox-overlay" id="lightbox-overlay">
+  <img id="lightbox-img" src="" alt="">
+</div>
+<script>
+(function () {
+  // Bilder im Text erst hier laden (siehe build.py, bilder_nachladen)
+  document.querySelectorAll('img[data-src]').forEach(function (i) { i.src = i.getAttribute('data-src'); });
+  var overlay = document.getElementById('lightbox-overlay');
+  var overlayImg = document.getElementById('lightbox-img');
+
+  function openLightbox(src, alt) {
+    overlayImg.src = src;
+    overlayImg.alt = alt || '';
+    overlay.classList.add('is-open');
+  }
+  function closeLightbox() {
+    overlay.classList.remove('is-open');
+    overlayImg.src = '';
+  }
+
+  document.querySelectorAll('article img').forEach(function (el) {
+    el.addEventListener('click', function () {
+      openLightbox(el.getAttribute('src'), el.getAttribute('alt'));
+    });
+  });
+
+  overlay.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  var summaryBtn = document.getElementById('summary-toggle');
+  var summaryBox = document.getElementById('summary-box');
+  if (summaryBtn && summaryBox) {
+    summaryBtn.addEventListener('click', function () {
+      var isOpen = summaryBox.classList.toggle('is-open');
+      summaryBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+</body>
+</html>

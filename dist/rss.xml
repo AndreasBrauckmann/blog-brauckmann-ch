@@ -4,6 +4,13 @@
   <link>https://blog.brauckmann.ch</link>
   <description>IT, KI und Automatisierung für Fachpublikum</description>
   <item>
+    <title>Quick-Redaktor: Wie Claude meine LinkedIn-Texte lektoriert</title>
+    <link>https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/</link>
+    <guid>https://blog.brauckmann.ch/artikel/quick-redaktor-und-blog-verwaltung/</guid>
+    <description>Aus einer Blog-Verwaltung mit 6 Teilnoten, Schutzprüfung und Deploy-Panel entstand ein Werkzeug für Kollegen: mit Messwerten, Pannen und Probeläufen.</description>
+    <pubDate>Fri, 02 Oct 2026 00:00:00 +0000</pubDate>
+  </item>
+  <item>
     <title>KI-Monitoring mit Claude MCP: Cloudflare &amp; Firewall im Griff</title>
     <link>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</link>
     <guid>https://blog.brauckmann.ch/artikel/monitoring-homelab-teil-2-cloudflare-firewall/</guid>
